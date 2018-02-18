@@ -14,7 +14,7 @@ import java.io.IOException;
 public class MyServerStarter {
 
     private static String serverIp = null;
-    private static int serverPort = Const.PORT;
+    private static int serverPort = Const.Server.PORT;
 
     private static ServerAioHandler serverAioHandler = new MyServerAioHandler();
     private static ServerAioListener serverAioListener = new MyServerAioListener();

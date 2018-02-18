@@ -31,7 +31,7 @@ public abstract class AbstractMsgHandler<T extends BaseBody> {
         String jsonStr;
         T baseMsgBody = null;
         if (packet.getMsgBody() != null) {
-            jsonStr = new String(packet.getMsgBody(), Const.CHARSET);
+            jsonStr = new String(packet.getMsgBody(), Const.Handler.CHARSET);
             baseMsgBody = Json.toBean(jsonStr, getMsgBodyClass());
         }
         return handler(packet, baseMsgBody, channelContext);

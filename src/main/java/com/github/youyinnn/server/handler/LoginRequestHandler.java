@@ -50,10 +50,11 @@ public class LoginRequestHandler extends AbstractMsgHandler<LoginRequestBody> {
         //创建登陆响应的响应体
         LoginResponseBody loginResponseBody = new LoginResponseBody();
         loginResponseBody.setToken(newToken());
+        loginResponseBody.setResultCode(Const.RequestCode.success);
         /*
          * 组登陆的响应包, 发送回登陆的请求方.
          */
-        BasePacket responsePacket = new BasePacket(MsgType.LOGIN_RESP, Json.toJson(loginResponseBody).getBytes(Const.CHARSET));
+        BasePacket responsePacket = new BasePacket(MsgType.LOGIN_RESP, Json.toJson(loginResponseBody).getBytes(Const.Handler.CHARSET));
         Aio.send(channelContext, responsePacket);
         return null;
     }

@@ -22,8 +22,8 @@ import org.tio.utils.json.Json;
  */
 public class MyClientStarter {
 
-    private static String serverIp = "127.0.0.1";
-    private static int serverPort = Const.PORT;
+    private static String serverIp = Const.Server.LOCAL_SERVER_IP;
+    private static int serverPort = Const.Server.PORT;
 
     private static Node serverNode = new Node(serverIp, serverPort);
     private static ReconnConf reconnConf = new ReconnConf(3000L);

@@ -5,9 +5,17 @@ package com.github.youyinnn.common;
  */
 public interface Const {
 
-    String CHARSET = "utf-8";
+    interface RequestCode {
+        String success = "success";
+        String fail = "fail";
+    }
 
-    int PORT = 5678;
+    interface Handler {
+        String CHARSET = "utf-8";
+    }
 
-    String LOCAL_SERVER_IP = "127.0.0.1";
+    interface Server {
+        int PORT = 5678;
+        String LOCAL_SERVER_IP = "127.0.0.1";
+    }
 }
