@@ -1,14 +1,12 @@
 package com.github.youyinnn.server;
 
-import com.github.youyinnn.common.BaseSessionContext;
 import org.tio.core.ChannelContext;
 import org.tio.core.intf.Packet;
-import org.tio.server.intf.ServerAioListener;
 
 /**
  * @author youyinnn
  */
-public class MyServerAioListener implements ServerAioListener {
+public class MyServerAioListener extends AbstractServerAioListener {
 
     @Override
     public void onAfterClose(ChannelContext channelContext, Throwable throwable, String remark, boolean isRemove) throws Exception {
@@ -18,14 +16,12 @@ public class MyServerAioListener implements ServerAioListener {
                 ", isRemove:" +  isRemove);
     }
 
+
     @Override
-    public void onAfterConnected(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {
+    public void onAfterConnectedAndSetSession(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {
         System.out.println("onAfterConnected channelContext:" + channelContext +
                 ", isConnected:" + isConnected +
                 ", isReconnect:" + isReconnect);
-
-        //连接成功后设置一个连接会话对象给该连接通道
-        channelContext.setAttribute(new BaseSessionContext());
     }
 
     @Override
