@@ -1,12 +1,14 @@
 package com.github.youyinnn.client;
 
 import com.github.youyinnn.common.Const;
+import com.github.youyinnn.common.packet.BasePacket;
 import org.tio.client.AioClient;
 import org.tio.client.ClientChannelContext;
 import org.tio.client.ClientGroupContext;
 import org.tio.client.ReconnConf;
 import org.tio.client.intf.ClientAioHandler;
 import org.tio.client.intf.ClientAioListener;
+import org.tio.core.Aio;
 import org.tio.core.Node;
 
 import java.io.IOException;
@@ -103,10 +105,27 @@ public class Client {
         aioClient.stop();
     }
 
-    public static void login(String userId) {
+    private static Boolean aioSend(BasePacket packet) {
         if (clientChannelContext != null) {
-
+            return Aio.send(clientChannelContext, packet);
         }
+        return false;
+    }
+
+    public static void login(String userId) {
+        aioSend(BasePacket.loginRequestPacket(userId));
+    }
+
+    public static void join(String group) {
+        aioSend(BasePacket.joinGroupRequestPacket(group));
+    }
+
+    public static void p2g(String msg, String toGroup) {
+        aioSend(BasePacket.groupMsgRequestPacket(msg, toGroup));
+    }
+
+    public static void p2p(String msg, String toUserId) {
+        aioSend(BasePacket.p2pMsgRequestPacket(msg, toUserId));
     }
 
     public static void setReconnConf(long interval) {

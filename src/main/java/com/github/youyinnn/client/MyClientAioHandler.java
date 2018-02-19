@@ -7,7 +7,6 @@ import com.github.youyinnn.client.handler.P2PResponseHandler;
 import com.github.youyinnn.common.AbstractAioHandler;
 import com.github.youyinnn.common.AbstractMsgHandler;
 import com.github.youyinnn.common.MsgType;
-import com.github.youyinnn.common.packet.BaseBody;
 import com.github.youyinnn.common.packet.BasePacket;
 import org.tio.client.intf.ClientAioHandler;
 import org.tio.core.ChannelContext;
@@ -30,7 +29,7 @@ public class MyClientAioHandler extends AbstractAioHandler implements ClientAioH
         handlerMap.put(MsgType.GROUP_MSG_RESP, new GroupMsgResponseHandler());
     }
 
-    private static BasePacket heartbeatPacket = new BasePacket(MsgType.HEART_BEAT_REQ, new BaseBody());
+    private static BasePacket heartbeatPacket = BasePacket.heartbeatRequestPacket();
 
     @Override
     public Packet heartbeatPacket() {

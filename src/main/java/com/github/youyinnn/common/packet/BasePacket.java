@@ -79,4 +79,8 @@ public class BasePacket extends Packet {
     public static BasePacket groupMsgResponsePacket(String msg, String fromUserId, String toGroup) {
         return new BasePacket(MsgType.GROUP_MSG_RESP, new GroupMsgResponseBody(msg, fromUserId, toGroup));
     }
+
+    public static BasePacket heartbeatRequestPacket() {
+        return new BasePacket(MsgType.HEART_BEAT_REQ, new BaseBody());
+    }
 }

@@ -3,10 +3,8 @@ package com.github.youyinnn.server.handler;
 import com.github.youyinnn.common.AbstractMsgHandler;
 import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.Const;
-import com.github.youyinnn.common.MsgType;
 import com.github.youyinnn.common.packet.BasePacket;
 import com.github.youyinnn.common.packet.LoginRequestBody;
-import com.github.youyinnn.common.packet.LoginResponseBody;
 import org.tio.core.Aio;
 import org.tio.core.ChannelContext;
 import org.tio.utils.json.Json;
@@ -47,14 +45,10 @@ public class LoginRequestHandler extends AbstractMsgHandler<LoginRequestBody> {
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         sessionContext.setUserId(userId);
 
-        //创建登陆响应的响应体
-        LoginResponseBody loginResponseBody = new LoginResponseBody();
-        loginResponseBody.setToken(newToken());
-        loginResponseBody.setResultCode(Const.RequestCode.SUCCESS);
         /*
          * 组登陆的响应包, 发送回登陆的请求方.
          */
-        BasePacket responsePacket = new BasePacket(MsgType.LOGIN_RESP, loginResponseBody);
+        BasePacket responsePacket = BasePacket.loginResponsePacket(Const.RequestCode.SUCCESS,newToken());
         Aio.send(channelContext, responsePacket);
         return null;
     }
