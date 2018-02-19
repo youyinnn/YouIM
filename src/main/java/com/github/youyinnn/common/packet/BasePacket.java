@@ -1,6 +1,9 @@
 package com.github.youyinnn.common.packet;
 
 import org.tio.core.intf.Packet;
+import org.tio.utils.json.Json;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author youyinnn
@@ -33,5 +36,14 @@ public class BasePacket extends Packet {
     public BasePacket(byte msgType, byte[] msgBody) {
         this.msgType = msgType;
         this.msgBody = msgBody;
+    }
+
+    public BasePacket(byte msgType, BaseBody baseBody) {
+        this.msgType = msgType;
+        try {
+            this.msgBody = Json.toJson(baseBody).getBytes(CHARSET);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }

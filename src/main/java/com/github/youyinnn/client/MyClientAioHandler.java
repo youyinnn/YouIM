@@ -1,10 +1,13 @@
 package com.github.youyinnn.client;
 
+import com.github.youyinnn.client.handler.GroupMsgResponseHandler;
+import com.github.youyinnn.client.handler.JoinGroupResponseHandler;
 import com.github.youyinnn.client.handler.LoginResponseHandler;
 import com.github.youyinnn.client.handler.P2PResponseHandler;
 import com.github.youyinnn.common.AbstractAioHandler;
 import com.github.youyinnn.common.AbstractMsgHandler;
 import com.github.youyinnn.common.MsgType;
+import com.github.youyinnn.common.packet.BaseBody;
 import com.github.youyinnn.common.packet.BasePacket;
 import org.tio.client.intf.ClientAioHandler;
 import org.tio.core.ChannelContext;
@@ -23,9 +26,11 @@ public class MyClientAioHandler extends AbstractAioHandler implements ClientAioH
     static {
         handlerMap.put(MsgType.LOGIN_RESP, new LoginResponseHandler());
         handlerMap.put(MsgType.P2P_RESP, new P2PResponseHandler());
+        handlerMap.put(MsgType.JOIN_GROUP_RESP, new JoinGroupResponseHandler());
+        handlerMap.put(MsgType.GROUP_MSG_RESP, new GroupMsgResponseHandler());
     }
 
-    private static BasePacket heartbeatPacket = new BasePacket(MsgType.HEART_BEAT_REQ, null);
+    private static BasePacket heartbeatPacket = new BasePacket(MsgType.HEART_BEAT_REQ, new BaseBody());
 
     @Override
     public Packet heartbeatPacket() {

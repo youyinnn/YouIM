@@ -29,7 +29,7 @@ public class P2PRequestHandler extends AbstractMsgHandler<P2PRequestBody> {
         responseBody.setFromUserId(sessionContext.getUserId());
         responseBody.setMsg(baseMsgBody.getMsg());
 
-        BasePacket responsePacket = new BasePacket(MsgType.P2P_RESP, Json.toJson(responseBody).getBytes(BasePacket.CHARSET));
+        BasePacket responsePacket = new BasePacket(MsgType.P2P_RESP, responseBody);
         Aio.sendToUser(channelContext.getGroupContext(), baseMsgBody.getToUserId(), responsePacket);
 
         return null;

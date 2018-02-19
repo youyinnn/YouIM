@@ -3,9 +3,7 @@ package com.github.youyinnn.client;
 
 import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.MsgType;
-import com.github.youyinnn.common.packet.BasePacket;
-import com.github.youyinnn.common.packet.LoginRequestBody;
-import com.github.youyinnn.common.packet.P2PRequestBody;
+import com.github.youyinnn.common.packet.*;
 import org.apache.commons.lang3.StringUtils;
 import org.tio.client.AioClient;
 import org.tio.client.ClientChannelContext;
@@ -49,7 +47,9 @@ public class MyClientStarter {
         sb.append("使用指南:\r\n");
         sb.append(i++ + "、需要帮助，输入 '?'.\r\n");
         sb.append(i++ + "、登录，输入 'login userId'.\r\n");
-        sb.append(i++ + "、点对点聊天，输入 'p2p userId text'.\r\n");
+        sb.append(i++ + "、进入群组，输入 'join groupId'.\r\n");
+        sb.append(i++ + "、群聊，输入 '2group groupId msg'.\r\n");
+        sb.append(i++ + "、点对点聊天，输入 'p2p userId msg'.\r\n");
 
         sb.append(i++ + "、退出程序，输入 'exit'.\r\n");
 
@@ -90,6 +90,26 @@ public class MyClientStarter {
                     Json.toJson(loginRequestBody).getBytes(BasePacket.CHARSET));
 
             Aio.send(clientChannelContext, loginRequestPacket);
+        } else if ("join".equalsIgnoreCase(command)) {
+            String group = args[1];
+
+            JoinGroupRequestBody joinGroupRequestBody = new JoinGroupRequestBody();
+            joinGroupRequestBody.setGroup(group);
+
+            BasePacket joinGroupRequestPacket = new BasePacket(MsgType.JOIN_GROUP_REQ, joinGroupRequestBody);
+            Aio.send(clientChannelContext, joinGroupRequestPacket);
+
+        } else if ("2group".equalsIgnoreCase(command)) {
+            String group = args[1];
+            String msg = args[2];
+
+            GroupMsgRequestBody groupMsgRequestBody = new GroupMsgRequestBody();
+            groupMsgRequestBody.setMsg(msg);
+            groupMsgRequestBody.setToGroup(group);
+
+            BasePacket groupMsgRequestPacket = new BasePacket(MsgType.GROUP_MSG_REQ, groupMsgRequestBody);
+            Aio.send(clientChannelContext, groupMsgRequestPacket);
+
         } else if ("p2p".equalsIgnoreCase(command)) {
             String toUserId = args[1];
             String msg = args[2];

@@ -4,9 +4,7 @@ import com.github.youyinnn.common.AbstractAioHandler;
 import com.github.youyinnn.common.AbstractMsgHandler;
 import com.github.youyinnn.common.MsgType;
 import com.github.youyinnn.common.packet.BasePacket;
-import com.github.youyinnn.server.handler.HeartbeatRequestHandler;
-import com.github.youyinnn.server.handler.LoginRequestHandler;
-import com.github.youyinnn.server.handler.P2PRequestHandler;
+import com.github.youyinnn.server.handler.*;
 import org.tio.core.ChannelContext;
 import org.tio.core.intf.Packet;
 import org.tio.server.intf.ServerAioHandler;
@@ -25,6 +23,8 @@ public class MyServerAioHandler extends AbstractAioHandler implements ServerAioH
         handlerMap.put(MsgType.LOGIN_REQ, new LoginRequestHandler());
         handlerMap.put(MsgType.P2P_REQ, new P2PRequestHandler());
         handlerMap.put(MsgType.HEART_BEAT_REQ, new HeartbeatRequestHandler());
+        handlerMap.put(MsgType.JOIN_GROUP_REQ, new JoinGroupRequestHandler());
+        handlerMap.put(MsgType.GROUP_MSG_REQ, new GroupMsgRequestHandler());
     }
 
     @Override

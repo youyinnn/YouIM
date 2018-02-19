@@ -6,8 +6,8 @@ package com.github.youyinnn.common;
 public interface Const {
 
     interface RequestCode {
-        String success = "success";
-        String fail = "fail";
+        String SUCCESS = "success";
+        String FAIL = "fail";
     }
 
     interface Handler {

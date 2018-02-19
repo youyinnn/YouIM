@@ -1,6 +1,5 @@
 package com.github.youyinnn.common;
 
-import cn.youyinnn.helloworld.common.MyPacket;
 import com.github.youyinnn.common.packet.BasePacket;
 import org.tio.core.ChannelContext;
 import org.tio.core.GroupContext;
@@ -29,7 +28,7 @@ public abstract class AbstractAioHandler implements AioHandler {
     public Packet decode(ByteBuffer byteBuffer, ChannelContext channelContext) throws AioDecodeException {
         int readableLength = byteBuffer.limit() - byteBuffer.position();
         //收到的数据不足以组成业务包, 则返回null告诉框架数据不够
-        if (readableLength < MyPacket.HEADER_LENGTH) {
+        if (readableLength < BasePacket.HEADER_LENGTH) {
             return null;
         }
 
