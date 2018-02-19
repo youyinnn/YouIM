@@ -43,4 +43,13 @@ public class JoinGroupResponseBody extends BaseBody{
     public void setGroup(String group) {
         this.group = group;
     }
+
+    public JoinGroupResponseBody() {
+    }
+
+    public JoinGroupResponseBody(String resultCode, String msg, String group) {
+        this.resultCode = resultCode;
+        this.msg = msg;
+        this.group = group;
+    }
 }

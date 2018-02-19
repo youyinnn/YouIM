@@ -22,7 +22,7 @@ public class P2PRequestHandler extends AbstractMsgHandler<P2PRequestBody> {
 
     @Override
     public Object handler(BasePacket packet, P2PRequestBody baseMsgBody, ChannelContext channelContext) throws Exception {
-        System.out.println("收到点对点请求消息:{}" + Json.toJson(baseMsgBody));
+        System.out.println("收到点对点请求消息:" + Json.toJson(baseMsgBody));
 
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         P2PResponseBody responseBody = new P2PResponseBody();

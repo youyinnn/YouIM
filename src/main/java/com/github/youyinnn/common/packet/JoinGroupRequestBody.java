@@ -14,4 +14,11 @@ public class JoinGroupRequestBody extends BaseBody {
     public void setGroup(String group) {
         this.group = group;
     }
+
+    public JoinGroupRequestBody() {
+    }
+
+    public JoinGroupRequestBody(String group) {
+        this.group = group;
+    }
 }

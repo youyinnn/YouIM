@@ -30,4 +30,12 @@ public class GroupMsgRequestBody extends BaseBody {
     public void setToGroup(String toGroup) {
         this.toGroup = toGroup;
     }
+
+    public GroupMsgRequestBody() {
+    }
+
+    public GroupMsgRequestBody(String msg, String toGroup) {
+        this.msg = msg;
+        this.toGroup = toGroup;
+    }
 }

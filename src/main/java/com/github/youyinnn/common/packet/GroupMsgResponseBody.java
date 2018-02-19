@@ -43,4 +43,13 @@ public class GroupMsgResponseBody extends BaseBody {
     public void setToGroup(String toGroup) {
         this.toGroup = toGroup;
     }
+
+    public GroupMsgResponseBody() {
+    }
+
+    public GroupMsgResponseBody(String msg, String fromUserId, String toGroup) {
+        this.msg = msg;
+        this.fromUserId = fromUserId;
+        this.toGroup = toGroup;
+    }
 }

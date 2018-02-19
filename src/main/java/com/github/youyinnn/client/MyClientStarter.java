@@ -1,18 +1,10 @@
 package com.github.youyinnn.client;
 
 
-import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.MsgType;
 import com.github.youyinnn.common.packet.*;
 import org.apache.commons.lang3.StringUtils;
-import org.tio.client.AioClient;
-import org.tio.client.ClientChannelContext;
-import org.tio.client.ClientGroupContext;
-import org.tio.client.ReconnConf;
-import org.tio.client.intf.ClientAioHandler;
-import org.tio.client.intf.ClientAioListener;
 import org.tio.core.Aio;
-import org.tio.core.Node;
 import org.tio.utils.json.Json;
 
 /**
@@ -20,23 +12,9 @@ import org.tio.utils.json.Json;
  */
 public class MyClientStarter {
 
-    private static String serverIp = Const.Server.LOCAL_SERVER_IP;
-    private static int serverPort = Const.Server.PORT;
-
-    private static Node serverNode = new Node(serverIp, serverPort);
-    private static ReconnConf reconnConf = new ReconnConf(3000L);
-
-    private static ClientAioHandler clientAioHandler = new MyClientAioHandler();
-    private static ClientAioListener clientAioListener = new MyClientAioListener();
-    private static ClientGroupContext clientGroupContext = new ClientGroupContext(clientAioHandler, clientAioListener, reconnConf);
-
-    private static AioClient aioClient = null;
-
-    private static ClientChannelContext clientChannelContext;
-
     public static void main(String[] args) throws Exception {
-        aioClient = new AioClient(clientGroupContext);
-        clientChannelContext = aioClient.connect(serverNode);
+        Client.init(5556);
+        Client.connect();
         command();
     }
 
@@ -68,7 +46,7 @@ public class MyClientStarter {
             line = sc.nextLine();
         }
 
-        aioClient.stop();
+        Client.stop();
         System.exit(0);
     }
 
@@ -89,7 +67,7 @@ public class MyClientStarter {
             BasePacket loginRequestPacket = new BasePacket(MsgType.LOGIN_REQ,
                     Json.toJson(loginRequestBody).getBytes(BasePacket.CHARSET));
 
-            Aio.send(clientChannelContext, loginRequestPacket);
+            Aio.send(Client.getClientChannelContext(), loginRequestPacket);
         } else if ("join".equalsIgnoreCase(command)) {
             String group = args[1];
 
@@ -97,7 +75,7 @@ public class MyClientStarter {
             joinGroupRequestBody.setGroup(group);
 
             BasePacket joinGroupRequestPacket = new BasePacket(MsgType.JOIN_GROUP_REQ, joinGroupRequestBody);
-            Aio.send(clientChannelContext, joinGroupRequestPacket);
+            Aio.send(Client.getClientChannelContext(), joinGroupRequestPacket);
 
         } else if ("2group".equalsIgnoreCase(command)) {
             String group = args[1];
@@ -108,7 +86,7 @@ public class MyClientStarter {
             groupMsgRequestBody.setToGroup(group);
 
             BasePacket groupMsgRequestPacket = new BasePacket(MsgType.GROUP_MSG_REQ, groupMsgRequestBody);
-            Aio.send(clientChannelContext, groupMsgRequestPacket);
+            Aio.send(Client.getClientChannelContext(), groupMsgRequestPacket);
 
         } else if ("p2p".equalsIgnoreCase(command)) {
             String toUserId = args[1];
@@ -121,7 +99,7 @@ public class MyClientStarter {
             BasePacket p2pRequestPacket = new BasePacket(MsgType.P2P_REQ,
                     Json.toJson(p2PRequestBody).getBytes(BasePacket.CHARSET));
 
-            Aio.send(clientChannelContext, p2pRequestPacket);
+            Aio.send(Client.getClientChannelContext(), p2pRequestPacket);
         }
     }
 

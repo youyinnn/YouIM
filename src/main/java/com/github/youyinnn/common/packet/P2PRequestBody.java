@@ -30,4 +30,12 @@ public class P2PRequestBody extends BaseBody {
     public void setToUserId(String toUserId) {
         this.toUserId = toUserId;
     }
+
+    public P2PRequestBody() {
+    }
+
+    public P2PRequestBody(String msg, String toUserId) {
+        this.msg = msg;
+        this.toUserId = toUserId;
+    }
 }

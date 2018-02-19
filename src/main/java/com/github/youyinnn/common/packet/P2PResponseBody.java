@@ -30,4 +30,12 @@ public class P2PResponseBody extends BaseBody {
     public void setFromUserId(String fromUserId) {
         this.fromUserId = fromUserId;
     }
+
+    public P2PResponseBody() {
+    }
+
+    public P2PResponseBody(String msg, String fromUserId) {
+        this.msg = msg;
+        this.fromUserId = fromUserId;
+    }
 }
