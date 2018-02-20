@@ -11,6 +11,12 @@ import org.tio.utils.json.Json;
 public class MyClientAioHandler extends AbstractClientAioHandler {
 
     @Override
+    protected Object sysMsgHandler(BasePacket packet, P2PResponseBody baseMsgBody, ChannelContext channelContext) {
+        System.out.println("收到系统消息:" + Json.toJson(baseMsgBody));
+        return null;
+    }
+
+    @Override
     protected Object loginResponseHandler(BasePacket packet, LoginResponseBody baseMsgBody, ChannelContext channelContext) {
         System.out.println("登陆收到响应:" + Json.toJson(baseMsgBody));
         String token = baseMsgBody.getToken();
@@ -24,13 +30,13 @@ public class MyClientAioHandler extends AbstractClientAioHandler {
 
     @Override
     protected Object p2PResponseHandler(BasePacket packet, P2PResponseBody baseMsgBody, ChannelContext channelContext) {
-        System.out.println("收到P2P响应消息:" + Json.toJson(baseMsgBody));
+        System.out.println("收到P2P响应:" + Json.toJson(baseMsgBody));
         return null;
     }
 
     @Override
     protected Object joinGroupResponseHandler(BasePacket packet, JoinGroupResponseBody baseMsgBody, ChannelContext channelContext) {
-        System.out.println("收到进群响应消息:" + Json.toJson(baseMsgBody));
+        System.out.println("收到进群响应:" + Json.toJson(baseMsgBody));
         return null;
     }
 

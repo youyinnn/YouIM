@@ -87,4 +87,12 @@ public class BasePacket extends Packet {
     public static BasePacket systemMsgToAllPacket(String msg) {
         return new BasePacket(MsgType.SYS_MSG_2ALL, new P2PResponseBody(msg, "SYSTEM"));
     }
+
+    public static BasePacket systemMsgToOnePacket(String msg) {
+        return new BasePacket(MsgType.SYS_MSG_2ONE, new P2PResponseBody(msg, "SYSTEM"));
+    }
+
+    public static BasePacket systemMsgToGroupPacket(String msg, String toGroup) {
+        return new BasePacket(MsgType.SYS_MSG_2GROUP, new GroupMsgResponseBody(msg, "SYSTEM", toGroup));
+    }
 }

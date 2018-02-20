@@ -22,7 +22,7 @@ public class MyServerStarter {
         sb.append("使用指南:\r\n");
         sb.append(i++ + "、给点发消息，输入 '2p userId msg'.\r\n");
         sb.append(i++ + "、给所有点发消息，输入 '2ps msg'.\r\n");
-        sb.append(i++ + "、给某群组发消息，输入 '2g msg'.\r\n");
+        sb.append(i++ + "、给某群组发消息，输入 '2g toGroup msg'.\r\n");
 
         sb.append(i++ + "、退出程序，输入 'exit'.\r\n");
 
@@ -53,13 +53,14 @@ public class MyServerStarter {
         if ("2p".equalsIgnoreCase(command)) {
             String userId = args[1];
             String msg = args[2];
-
+            Server.toUser(msg, userId);
         } else if ("2ps".equalsIgnoreCase(command)) {
             String msg = args[1];
             Server.toAllUser(msg);
         } else if ("2g".equalsIgnoreCase(command)) {
-            String msg = args[1];
-
+            String toGroup = args[1];
+            String msg = args[2];
+            Server.toGroup(msg, toGroup);
         }
     }
 

@@ -44,10 +44,24 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
                 baseMsgBody = Json.toBean(jsonStr, GroupMsgResponseBody.class);
                 return groupMsgResponseHandler(packet, (GroupMsgResponseBody) baseMsgBody, channelContext);
             }
+            if (msgType == MsgType.SYS_MSG_2ONE || msgType == MsgType.SYS_MSG_2ALL || msgType == MsgType.SYS_MSG_2GROUP) {
+                baseMsgBody = Json.toBean(jsonStr, P2PResponseBody.class);
+                return sysMsgHandler(packet, (P2PResponseBody) baseMsgBody, channelContext);
+            }
         }
 
         return null;
     }
+
+    /**
+     * 系统消息处理
+     *
+     * @param packet
+     * @param baseMsgBody
+     * @param channelContext
+     * @return
+     */
+    protected abstract Object sysMsgHandler(BasePacket packet, P2PResponseBody baseMsgBody, ChannelContext channelContext);
 
     /**
      * 登陆响应处理

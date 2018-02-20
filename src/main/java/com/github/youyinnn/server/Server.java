@@ -1,7 +1,6 @@
 package com.github.youyinnn.server;
 
 import com.github.youyinnn.common.Const;
-import com.github.youyinnn.common.packet.BaseBody;
 import com.github.youyinnn.common.packet.BasePacket;
 import org.tio.core.Aio;
 import org.tio.server.AioServer;
@@ -78,8 +77,15 @@ public class Server {
     }
 
     public static void toAllUser(String msg) {
-        System.out.println(msg);
-        Aio.sendToAll(serverGroupContext, new BasePacket((byte) 55, new BaseBody()));
+        Aio.sendToAll(serverGroupContext, BasePacket.systemMsgToAllPacket(msg));
+    }
+
+    public static void toUser(String msg, String userId) {
+        Aio.sendToUser(serverGroupContext, userId, BasePacket.systemMsgToOnePacket(msg));
+    }
+
+    public static void toGroup(String msg, String toGroup) {
+        Aio.sendToGroup(serverGroupContext, toGroup, BasePacket.systemMsgToGroupPacket(msg, toGroup));
     }
 
     public static void setServerIp(String serverIp) {
