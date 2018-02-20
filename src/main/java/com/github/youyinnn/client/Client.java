@@ -29,6 +29,7 @@ public class Client {
 
     private static ClientChannelContext clientChannelContext = null;
     private static AioClient aioClient = null;
+    private static String loginUserId = null;
 
     private Client() {
     }
@@ -112,20 +113,36 @@ public class Client {
         return false;
     }
 
-    public static void login(String userId) {
-        aioSend(BasePacket.loginRequestPacket(userId));
+    public static Boolean login(String userId) {
+        Boolean send = aioSend(BasePacket.loginRequestPacket(userId));
+        if (send) {
+            loginUserId = userId;
+        }
+        return send;
     }
 
-    public static void join(String group, String fromUserId) {
-        aioSend(BasePacket.joinGroupRequestPacket(group, fromUserId));
+    public static Boolean join(String group, String fromUserId) {
+        if (isLogin()) {
+            return aioSend(BasePacket.joinGroupRequestPacket(group, fromUserId));
+        } else {
+            return false;
+        }
     }
 
-    public static void p2g(String msg, String toGroup, String fromUserId) {
-        aioSend(BasePacket.groupMsgRequestPacket(msg, toGroup, fromUserId));
+    public static Boolean p2g(String msg, String toGroup, String fromUserId) {
+        if (isLogin()) {
+            return aioSend(BasePacket.groupMsgRequestPacket(msg, toGroup, fromUserId));
+        } else {
+            return false;
+        }
     }
 
-    public static void p2p(String msg, String toUserId, String fromUserId) {
-        aioSend(BasePacket.p2pMsgRequestPacket(msg, toUserId, fromUserId));
+    public static Boolean p2p(String msg, String toUserId, String fromUserId) {
+        if (isLogin()) {
+            return aioSend(BasePacket.p2pMsgRequestPacket(msg, toUserId, fromUserId));
+        } else {
+            return false;
+        }
     }
 
     public static void setReconnConf(long interval) {
@@ -194,5 +211,13 @@ public class Client {
 
     public static AioClient getAioClient() {
         return aioClient;
+    }
+
+    public static String getLoginUserId() {
+        return loginUserId;
+    }
+
+    public static boolean isLogin() {
+        return loginUserId != null;
     }
 }
