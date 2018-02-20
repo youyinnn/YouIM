@@ -56,24 +56,24 @@ public class BasePacket extends Packet {
         return new BasePacket(MsgType.LOGIN_RESP, new LoginResponseBody(resultCode, token));
     }
 
-    public static BasePacket joinGroupRequestPacket(String group) {
-        return new BasePacket(MsgType.JOIN_GROUP_REQ, new JoinGroupRequestBody(group));
+    public static BasePacket joinGroupRequestPacket(String group, String fromUserId) {
+        return new BasePacket(MsgType.JOIN_GROUP_REQ, new JoinGroupRequestBody(group, fromUserId));
     }
 
     public static BasePacket joinGroupResponsePacket(String resultCode, String msg, String group) {
         return new BasePacket(MsgType.JOIN_GROUP_RESP, new JoinGroupResponseBody(resultCode, msg, group));
     }
 
-    public static BasePacket p2pMsgRequestPacket(String msg, String toUserId) {
-        return new BasePacket(MsgType.P2P_REQ, new P2PRequestBody(msg, toUserId));
+    public static BasePacket p2pMsgRequestPacket(String msg, String toUserId, String fromUserId) {
+        return new BasePacket(MsgType.P2P_REQ, new P2PRequestBody(msg, toUserId, fromUserId));
     }
 
     public static BasePacket p2pMsgResponsePacket(String msg, String fromUserId) {
         return new BasePacket(MsgType.P2P_RESP, new P2PResponseBody(msg, fromUserId));
     }
 
-    public static BasePacket groupMsgRequestPacket(String msg, String toGroup) {
-        return new BasePacket(MsgType.GROUP_MSG_REQ, new GroupMsgRequestBody(msg, toGroup));
+    public static BasePacket groupMsgRequestPacket(String msg, String toGroup, String fromUserId) {
+        return new BasePacket(MsgType.GROUP_MSG_REQ, new GroupMsgRequestBody(msg, toGroup, fromUserId));
     }
 
     public static BasePacket groupMsgResponsePacket(String msg, String fromUserId, String toGroup) {
@@ -82,5 +82,9 @@ public class BasePacket extends Packet {
 
     public static BasePacket heartbeatRequestPacket() {
         return new BasePacket(MsgType.HEART_BEAT_REQ, new BaseBody());
+    }
+
+    public static BasePacket systemMsgToAllPacket(String msg) {
+        return new BasePacket(MsgType.SYS_MSG_2ALL, new P2PResponseBody(msg, "SYSTEM"));
     }
 }

@@ -1,46 +1,42 @@
 package com.github.youyinnn.client;
 
-import com.github.youyinnn.client.handler.GroupMsgResponseHandler;
-import com.github.youyinnn.client.handler.JoinGroupResponseHandler;
-import com.github.youyinnn.client.handler.LoginResponseHandler;
-import com.github.youyinnn.client.handler.P2PResponseHandler;
-import com.github.youyinnn.common.AbstractAioHandler;
-import com.github.youyinnn.common.AbstractMsgHandler;
-import com.github.youyinnn.common.MsgType;
-import com.github.youyinnn.common.packet.BasePacket;
-import org.tio.client.intf.ClientAioHandler;
+import com.github.youyinnn.common.BaseSessionContext;
+import com.github.youyinnn.common.packet.*;
 import org.tio.core.ChannelContext;
-import org.tio.core.intf.Packet;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.tio.utils.json.Json;
 
 /**
  * @author youyinnn
  */
-public class MyClientAioHandler extends AbstractAioHandler implements ClientAioHandler {
-
-    private static Map<Byte, AbstractMsgHandler<?>> handlerMap = new HashMap<>();
-
-    static {
-        handlerMap.put(MsgType.LOGIN_RESP, new LoginResponseHandler());
-        handlerMap.put(MsgType.P2P_RESP, new P2PResponseHandler());
-        handlerMap.put(MsgType.JOIN_GROUP_RESP, new JoinGroupResponseHandler());
-        handlerMap.put(MsgType.GROUP_MSG_RESP, new GroupMsgResponseHandler());
-    }
-
-    private static BasePacket heartbeatPacket = BasePacket.heartbeatRequestPacket();
+public class MyClientAioHandler extends AbstractClientAioHandler {
 
     @Override
-    public Packet heartbeatPacket() {
-        return heartbeatPacket;
+    protected Object loginResponseHandler(BasePacket packet, LoginResponseBody baseMsgBody, ChannelContext channelContext) {
+        System.out.println("登陆收到响应:" + Json.toJson(baseMsgBody));
+        String token = baseMsgBody.getToken();
+        if (token != null) {
+            BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+            sessionContext.setToken(token);
+            System.out.println("登录成功，token是:" + baseMsgBody.getToken());
+        }
+        return null;
     }
 
     @Override
-    public void handler(Packet packet, ChannelContext channelContext) throws Exception {
-        BasePacket basePacket = (BasePacket) packet;
-        Byte msgType = basePacket.getMsgType();
-        AbstractMsgHandler<?> msgHandler = handlerMap.get(msgType);
-        msgHandler.handler(basePacket, channelContext);
+    protected Object p2PResponseHandler(BasePacket packet, P2PResponseBody baseMsgBody, ChannelContext channelContext) {
+        System.out.println("收到P2P响应消息:" + Json.toJson(baseMsgBody));
+        return null;
+    }
+
+    @Override
+    protected Object joinGroupResponseHandler(BasePacket packet, JoinGroupResponseBody baseMsgBody, ChannelContext channelContext) {
+        System.out.println("收到进群响应消息:" + Json.toJson(baseMsgBody));
+        return null;
+    }
+
+    @Override
+    protected Object groupMsgResponseHandler(BasePacket packet, GroupMsgResponseBody baseMsgBody, ChannelContext channelContext) {
+        System.out.println("收到群组消息:" + Json.toJson(baseMsgBody));
+        return null;
     }
 }

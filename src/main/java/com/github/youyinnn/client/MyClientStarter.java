@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class MyClientStarter {
 
+    private static String loginUserId;
+
     public static void main(String[] args) throws Exception {
         Client.init(5556);
         Client.connect();
@@ -56,18 +58,19 @@ public class MyClientStarter {
 
         if ("login".equalsIgnoreCase(command)) {
             String userId = args[1];
+            loginUserId = userId;
             Client.login(userId);
         } else if ("join".equalsIgnoreCase(command)) {
             String group = args[1];
-            Client.join(group);
+            Client.join(group, loginUserId);
         } else if ("p2g".equalsIgnoreCase(command)) {
             String group = args[1];
             String msg = args[2];
-            Client.p2g(msg, group);
+            Client.p2g(msg, group, loginUserId);
         } else if ("p2p".equalsIgnoreCase(command)) {
             String toUserId = args[1];
             String msg = args[2];
-            Client.p2p(msg, toUserId);
+            Client.p2p(msg, toUserId, loginUserId);
         }
     }
 

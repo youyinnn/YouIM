@@ -15,6 +15,11 @@ public class P2PRequestBody extends BaseBody {
      */
     private String toUserId;
 
+    /**
+     * 消息发送方id
+     */
+    private String fromUserId;
+
     public String getMsg() {
         return msg;
     }
@@ -31,11 +36,20 @@ public class P2PRequestBody extends BaseBody {
         this.toUserId = toUserId;
     }
 
+    public String getFromUserId() {
+        return fromUserId;
+    }
+
+    public void setFromUserId(String fromUserId) {
+        this.fromUserId = fromUserId;
+    }
+
     public P2PRequestBody() {
     }
 
-    public P2PRequestBody(String msg, String toUserId) {
+    public P2PRequestBody(String msg, String toUserId, String fromUserId) {
         this.msg = msg;
         this.toUserId = toUserId;
+        this.fromUserId = fromUserId;
     }
 }

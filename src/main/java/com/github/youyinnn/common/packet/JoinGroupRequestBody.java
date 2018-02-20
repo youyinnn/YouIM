@@ -5,7 +5,15 @@ package com.github.youyinnn.common.packet;
  */
 public class JoinGroupRequestBody extends BaseBody {
 
+    /**
+     * 要加入的群组
+     */
     private String group;
+
+    /**
+     * 请求者Id
+     */
+    private String fromUserId;
 
     public String getGroup() {
         return group;
@@ -15,10 +23,21 @@ public class JoinGroupRequestBody extends BaseBody {
         this.group = group;
     }
 
+    public String getFromUserId() {
+
+        return fromUserId;
+    }
+
+    public void setFromUserId(String fromUserId) {
+        this.fromUserId = fromUserId;
+    }
+
     public JoinGroupRequestBody() {
     }
 
-    public JoinGroupRequestBody(String group) {
+    public JoinGroupRequestBody(String group, String fromUserId) {
         this.group = group;
+        this.fromUserId = fromUserId;
     }
+
 }

@@ -15,6 +15,11 @@ public class GroupMsgRequestBody extends BaseBody {
      */
     private String toGroup;
 
+    /**
+     * 发送者id
+     */
+    private String fromUserId;
+
     public String getMsg() {
         return msg;
     }
@@ -34,8 +39,17 @@ public class GroupMsgRequestBody extends BaseBody {
     public GroupMsgRequestBody() {
     }
 
-    public GroupMsgRequestBody(String msg, String toGroup) {
+    public String getFromUserId() {
+        return fromUserId;
+    }
+
+    public void setFromUserId(String fromUserId) {
+        this.fromUserId = fromUserId;
+    }
+
+    public GroupMsgRequestBody(String msg, String toGroup, String fromUserId) {
         this.msg = msg;
         this.toGroup = toGroup;
+        this.fromUserId = fromUserId;
     }
 }

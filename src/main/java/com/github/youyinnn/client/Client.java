@@ -116,16 +116,16 @@ public class Client {
         aioSend(BasePacket.loginRequestPacket(userId));
     }
 
-    public static void join(String group) {
-        aioSend(BasePacket.joinGroupRequestPacket(group));
+    public static void join(String group, String fromUserId) {
+        aioSend(BasePacket.joinGroupRequestPacket(group, fromUserId));
     }
 
-    public static void p2g(String msg, String toGroup) {
-        aioSend(BasePacket.groupMsgRequestPacket(msg, toGroup));
+    public static void p2g(String msg, String toGroup, String fromUserId) {
+        aioSend(BasePacket.groupMsgRequestPacket(msg, toGroup, fromUserId));
     }
 
-    public static void p2p(String msg, String toUserId) {
-        aioSend(BasePacket.p2pMsgRequestPacket(msg, toUserId));
+    public static void p2p(String msg, String toUserId, String fromUserId) {
+        aioSend(BasePacket.p2pMsgRequestPacket(msg, toUserId, fromUserId));
     }
 
     public static void setReconnConf(long interval) {

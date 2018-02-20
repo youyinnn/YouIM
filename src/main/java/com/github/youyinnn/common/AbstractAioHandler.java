@@ -103,4 +103,20 @@ public abstract class AbstractAioHandler implements AioHandler {
         return buffer;
     }
 
+    @Override
+    public void handler(Packet packet, ChannelContext channelContext) throws Exception {
+        handler((BasePacket) packet, channelContext);
+    }
+
+    /**
+     * 第二层handler:
+     * 该方法需要在框架自调用的handler方法里最后调用,
+     * 意图统一抽出对应的msgBody对象,紧接着调用第三层handler.
+     *
+     * @param packet
+     * @param channelContext
+     * @return
+     * @throws Exception
+     */
+    public abstract Object handler(BasePacket packet, ChannelContext channelContext) throws Exception;
 }
