@@ -88,6 +88,10 @@ public class Server {
         Aio.sendToGroup(serverGroupContext, toGroup, BasePacket.systemMsgToGroupPacket(msg, toGroup));
     }
 
+    public static boolean isLogin(String userId) {
+        return serverGroupContext.users.find(serverGroupContext, userId) != null;
+    }
+
     public static void setServerIp(String serverIp) {
         Server.serverIp = serverIp;
     }
