@@ -8,12 +8,46 @@
     <artifactId>YouIM</artifactId>
     <version>1.0</version>
 
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url> https://github.com/youyinnn/YouIM</url>
+        <connection>https://github.com/youyinnn/YouWebUtils.git</connection>
+        <developerConnection>https://youyinnn.github.io</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>youyinnn</name>
+            <email>youyinnn@gmail.com</email>
+            <url>https://youyinnn.github.io</url>
+        </developer>
+    </developers>
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.t-io/tio-core -->
         <dependency>
             <groupId>org.t-io</groupId>
             <artifactId>tio-core</artifactId>
             <version>2.0.8.v20180205-RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.youyinnn</groupId>
+            <artifactId>you-db-utils</artifactId>
+            <version>RELEASE</version>
         </dependency>
     </dependencies>
 </project>
