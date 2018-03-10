@@ -39,7 +39,6 @@ public class MyServerStarter {
             line = sc.nextLine();
         }
 
-        Server.stop();
         System.exit(0);
     }
 
