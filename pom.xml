@@ -24,7 +24,7 @@
 
     <scm>
         <url> https://github.com/youyinnn/YouIM</url>
-        <connection>https://github.com/youyinnn/YouWebUtils.git</connection>
+        <connection>https://github.com/youyinnn/YouIM.git</connection>
         <developerConnection>https://youyinnn.github.io</developerConnection>
     </scm>
 
