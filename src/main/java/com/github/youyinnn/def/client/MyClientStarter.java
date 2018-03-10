@@ -1,6 +1,7 @@
-package com.github.youyinnn.client;
+package com.github.youyinnn.def.client;
 
 
+import com.github.youyinnn.client.core.Client;
 import org.apache.commons.lang3.StringUtils;
 
 /**

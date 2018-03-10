@@ -1,4 +1,4 @@
-package com.github.youyinnn.server;
+package com.github.youyinnn.server.core;
 
 import com.github.youyinnn.common.AbstractAioHandler;
 import com.github.youyinnn.common.Const;

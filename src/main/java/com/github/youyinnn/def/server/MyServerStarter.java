@@ -1,6 +1,6 @@
-package com.github.youyinnn.server;
+package com.github.youyinnn.def.server;
 
-import com.github.youyinnn.client.Client;
+import com.github.youyinnn.server.core.Server;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -39,7 +39,7 @@ public class MyServerStarter {
             line = sc.nextLine();
         }
 
-        Client.stop();
+        Server.stop();
         System.exit(0);
     }
 

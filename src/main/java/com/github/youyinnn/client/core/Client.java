@@ -1,5 +1,7 @@
-package com.github.youyinnn.client;
+package com.github.youyinnn.client.core;
 
+import com.github.youyinnn.def.client.MyClientAioHandler;
+import com.github.youyinnn.def.client.MyClientAioListener;
 import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.packet.BasePacket;
 import org.tio.client.AioClient;
