@@ -1,6 +1,6 @@
 package com.github.youyinnn.def.client;
 
-import com.github.youyinnn.client.core.AbstractClientAioHandler;
+import com.github.youyinnn.client.AbstractClientAioHandler;
 import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.packet.*;
 import org.tio.core.ChannelContext;

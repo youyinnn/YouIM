@@ -1,4 +1,4 @@
-package com.github.youyinnn.server.core;
+package com.github.youyinnn.server;
 
 import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.packet.BasePacket;

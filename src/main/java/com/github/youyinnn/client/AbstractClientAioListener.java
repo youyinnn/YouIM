@@ -1,13 +1,13 @@
-package com.github.youyinnn.server.core;
+package com.github.youyinnn.client;
 
 import com.github.youyinnn.common.BaseSessionContext;
+import org.tio.client.intf.ClientAioListener;
 import org.tio.core.ChannelContext;
-import org.tio.server.intf.ServerAioListener;
 
 /**
  * @author youyinnn
  */
-public abstract class AbstractServerAioListener implements ServerAioListener {
+public abstract class AbstractClientAioListener implements ClientAioListener {
 
     @Override
     public void onAfterConnected(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {
@@ -24,5 +24,5 @@ public abstract class AbstractServerAioListener implements ServerAioListener {
      * @param isReconnect
      * @throws Exception
      */
-    public abstract void onAfterConnectedAndSetSession(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception;
+    public abstract void onAfterConnectedAndSetSession(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception ;
 }

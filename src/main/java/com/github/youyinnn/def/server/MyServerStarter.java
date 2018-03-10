@@ -1,6 +1,6 @@
 package com.github.youyinnn.def.server;
 
-import com.github.youyinnn.server.core.Server;
+import com.github.youyinnn.server.Server;
 import org.apache.commons.lang3.StringUtils;
 
 /**
