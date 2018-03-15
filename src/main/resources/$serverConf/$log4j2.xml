@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="off" monitorInterval="150">
+
+    <Appenders>
+        <Console name="$im_console" target="SYSTEM_ERR">
+            <PatternLayout pattern="[YouIM Server] [Time: %d{yyyy-MM-dd hh:mm} ] [Message: %msg ]%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="$im_server" level="info" additivity="false">
+            <AppenderRef ref="$im_console"/>
+        </Logger>
+    </Loggers>
+</Configuration>

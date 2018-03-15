@@ -10,19 +10,19 @@ import org.tio.core.intf.Packet;
 public class MyServerAioListener extends AbstractServerAioListener {
 
     @Override
-    public void onAfterClose(ChannelContext channelContext, Throwable throwable, String remark, boolean isRemove) throws Exception {
-        System.out.println("onAfterClose channelContext:" + channelContext +
-                ", throwable:" + throwable +
-                ", remark:" + remark +
-                ", isRemove:" +  isRemove);
+    public void afterClosed(ChannelContext channelContext, Throwable throwable, String remark, boolean isRemove) throws Exception {
+        //System.out.println("onAfterClose channelContext:" + channelContext +
+        //        ", throwable:" + throwable +
+        //        ", remark:" + remark +
+        //        ", isRemove:" +  isRemove);
     }
 
 
     @Override
-    public void onAfterConnectedAndSetSession(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {
-        System.out.println("onAfterConnected channelContext:" + channelContext +
-                ", isConnected:" + isConnected +
-                ", isReconnect:" + isReconnect);
+    public void afterConnected(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {
+        //System.out.println("onAfterConnected channelContext:" + channelContext +
+        //        ", isConnected:" + isConnected +
+        //        ", isReconnect:" + isReconnect);
     }
 
     @Override

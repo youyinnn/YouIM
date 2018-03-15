@@ -4,6 +4,12 @@ import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.packet.BasePacket;
 import com.github.youyinnn.def.server.MyServerAioHandler;
 import com.github.youyinnn.def.server.MyServerAioListener;
+import com.github.youyinnn.youdbutils.YouDbManager;
+import com.github.youyinnn.youwebutils.second.PropertiesHelper;
+import com.github.youyinnn.youwebutils.third.Log4j2Helper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dom4j.DocumentException;
 import org.tio.core.Aio;
 import org.tio.server.AioServer;
 import org.tio.server.ServerGroupContext;
@@ -26,7 +32,54 @@ public class Server {
 
     private static AioServer aioServer = null;
 
+    private static boolean serverLogEnabled = false;
+    private static boolean serverHandlerLogEnabled = false;
+    private static boolean serverListenerLogEnabled = false;
+
+    public static void enableServerLog() {
+        serverLogEnabled = true;
+    }
+
+    public static void enableServerHandlerLog() {
+        serverHandlerLogEnabled = true;
+    }
+
+    public static void enableServerListenerLog() {
+        serverListenerLogEnabled = true;
+    }
+
+    public static void enableAllLogEnabled() {
+        enableServerHandlerLog();
+        enableServerListenerLog();
+        enableServerLog();
+    }
+
+    static boolean isServerLogEnabled() {
+        return serverLogEnabled;
+    }
+
+    static boolean isServerHandlerLogEnabled() {
+        return serverHandlerLogEnabled;
+    }
+
+    static boolean isServerListenerLogEnabled() {
+        return serverListenerLogEnabled;
+    }
+
+    static {
+        try {
+            Log4j2Helper.useConfig("$serverConf/$log4j2.xml");
+        } catch (IOException | DocumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final Logger SERVER_LOG = LogManager.getLogger("$im_server");
+
     public static void init() {
+        YouDbManager.youDruid.initSQLiteDataSource("$serverConf/$sqlite.properties");
+        YouDbManager.scanPackageForModel("com.github.youyinnn.server.model");
+        YouDbManager.scanPackageForService("com.github.youyinnn.server.service");
         if (serverPort == null) {
             serverPort = Const.Server.PORT;
         }
@@ -38,6 +91,13 @@ public class Server {
         }
         serverGroupContext = new ServerGroupContext(serverAioHandler, serverAioListener);
         aioServer = new AioServer(serverGroupContext);
+        if (serverLogEnabled) {
+            if (serverIp != null) {
+                SERVER_LOG.info("YouIM server init with IP:{}, Port:{}, PID:{}.", serverIp, serverPort, PropertiesHelper.getPID());
+            } else {
+                SERVER_LOG.info("YouIM server init with Port:{}, PID:{}", serverPort,PropertiesHelper.getPID());
+            }
+        }
     }
 
     public static void init(String serverIp) {

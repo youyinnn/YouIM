@@ -6,7 +6,6 @@ import com.github.youyinnn.common.packet.*;
 import com.github.youyinnn.server.AbstractServerAioHandler;
 import org.tio.core.Aio;
 import org.tio.core.ChannelContext;
-import org.tio.utils.json.Json;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -23,8 +22,7 @@ public class MyServerAioHandler extends AbstractServerAioHandler {
     }
 
     @Override
-    protected Object loginRequestHandler(BasePacket packet, LoginRequestBody baseMsgBody, ChannelContext channelContext) {
-        System.out.println("收到登录请求消息: " + Json.toJson(baseMsgBody));
+    protected boolean loginRequestHandler(BasePacket packet, LoginRequestBody baseMsgBody, ChannelContext channelContext) {
         /*
          * 从请求登陆方获取请求者id,将该连接通道和该id进行绑定
          * 需要注意的是,这里的绑定的含义是告诉框架:我这个连接通道和该id绑定了
@@ -44,49 +42,38 @@ public class MyServerAioHandler extends AbstractServerAioHandler {
          * 组成登陆的响应包, 发送回登陆的请求方.
          */
         BasePacket responsePacket = BasePacket.loginResponsePacket(Const.RequestCode.SUCCESS,getToken());
-        Aio.send(channelContext, responsePacket);
-        return null;
+        return Aio.send(channelContext, responsePacket);
     }
 
     @Override
-    protected Object joinGroupRequestHandler(BasePacket packet, JoinGroupRequestBody baseMsgBody, ChannelContext channelContext) {
-        System.out.println("收到进群请求消息:" + Json.toJson(baseMsgBody));
-
+    protected boolean joinGroupRequestHandler(BasePacket packet, JoinGroupRequestBody baseMsgBody, ChannelContext channelContext) {
         Aio.bindGroup(channelContext, baseMsgBody.getGroup());
 
         BasePacket responsePacket =
                 BasePacket.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",baseMsgBody.getGroup());
-        Aio.send(channelContext, responsePacket);
-        return null;
+        return Aio.send(channelContext, responsePacket);
     }
 
     @Override
-    protected Object p2pRequestHandler(BasePacket packet, P2PRequestBody baseMsgBody, ChannelContext channelContext) {
-        System.out.println("收到点对点请求消息:" + Json.toJson(baseMsgBody));
-
+    protected boolean p2pRequestHandler(BasePacket packet, P2PRequestBody baseMsgBody, ChannelContext channelContext) {
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         BasePacket responsePacket =
                 BasePacket.p2pMsgResponsePacket(baseMsgBody.getMsg(), sessionContext.getUserId());
-        Aio.sendToUser(channelContext.getGroupContext(), baseMsgBody.getToUserId(), responsePacket);
-
-        return null;
+        return Aio.sendToUser(channelContext.getGroupContext(), baseMsgBody.getToUserId(), responsePacket);
     }
 
     @Override
-    protected Object groupMsgRequestHandler(BasePacket packet, GroupMsgRequestBody baseMsgBody, ChannelContext channelContext) {
-        System.out.println("收到群聊请求消息:" + Json.toJson(baseMsgBody));
-
+    protected boolean groupMsgRequestHandler(BasePacket packet, GroupMsgRequestBody baseMsgBody, ChannelContext channelContext) {
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
 
         BasePacket responsePacket =
                 BasePacket.groupMsgResponsePacket(baseMsgBody.getMsg(), sessionContext.getUserId(), baseMsgBody.getToGroup());
         Aio.sendToGroup(channelContext.getGroupContext(), baseMsgBody.getToGroup(), responsePacket);
-        return null;
+        return true;
     }
 
     @Override
-    protected Object heartbeatRequestHandler(BasePacket packet, GroupMsgRequestBody baseMsgBody, ChannelContext channelContext) {
-        System.out.println("心跳消息");
-        return null;
+    protected boolean heartbeatRequestHandler(BasePacket packet, GroupMsgRequestBody baseMsgBody, ChannelContext channelContext) {
+        return true;
     }
 }

@@ -8,14 +8,15 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class MyServerStarter {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+        Server.enableAllLogEnabled();
         Server.init();
         Server.setServerPort(5556);
         Server.start();
         command();
     }
 
-    private static void command() throws Exception {
+    private static void command() {
         java.util.Scanner sc = new java.util.Scanner(System.in);
         int i = 1;
         StringBuilder sb = new StringBuilder();
@@ -42,7 +43,7 @@ public class MyServerStarter {
         System.exit(0);
     }
 
-    private static void processCommand(String line) throws Exception {
+    private static void processCommand(String line) {
         if (StringUtils.isBlank(line)) {
             return;
         }
