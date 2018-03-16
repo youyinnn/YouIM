@@ -1,25 +1,27 @@
 package com.github.youyinnn.common;
 
 /**
+ * The interface Msg type.
+ *
  * @author youyinnn
  */
 public interface MsgType {
 
     /**
-     * 登录消息请求
+     * 登录请求
      */
     byte LOGIN_REQ = 1;
     /**
-     * 登录消息响应
+     * 登录响应
      */
     byte LOGIN_RESP = 2;
 
     /**
-     * 进入群组消息请求
+     * 进入群组请求
      */
     byte JOIN_GROUP_REQ = 3;
     /**
-     * 进入群组消息响应
+     * 进入群组响应
      */
     byte JOIN_GROUP_RESP = 4;
 
@@ -40,6 +42,26 @@ public interface MsgType {
      * 群聊消息响应
      */
     byte GROUP_MSG_RESP = 8;
+
+    /**
+     * 登出请求
+     */
+    byte LOGOUT_REQ = 9;
+
+    /**
+     * 登出响应
+     */
+    byte LOGOUT_RESP = 10;
+
+    /**
+     * 退群请求
+     */
+    byte QUIT_GROUP_REQ = 11;
+
+    /**
+     * 退群响应
+     */
+    byte QUIT_GROUP_RESP = 12;
 
     /**
      * 系统消息-所有人

@@ -26,7 +26,7 @@ public class MyClientStarter {
         sb.append(i++ + "、登录，输入 'login userId'.\r\n");
         sb.append(i++ + "、进入群组，输入 'join groupId'.\r\n");
         sb.append(i++ + "、群聊，输入 'p2g groupId msg'.\r\n");
-        sb.append(i++ + "、点对点聊天，输入 'p2p userId msg'.\r\n");
+        sb.append(i++ + "、点对点聊天，输入 'p2P userId msg'.\r\n");
 
         sb.append(i++ + "、退出程序，输入 'exit'.\r\n");
 
@@ -67,11 +67,11 @@ public class MyClientStarter {
         } else if ("p2g".equalsIgnoreCase(command)) {
             String group = args[1];
             String msg = args[2];
-            Client.p2g(msg, group, loginUserId);
-        } else if ("p2p".equalsIgnoreCase(command)) {
+            Client.p2G(msg, group, loginUserId);
+        } else if ("p2P".equalsIgnoreCase(command)) {
             String toUserId = args[1];
             String msg = args[2];
-            Client.p2p(msg, toUserId, loginUserId);
+            Client.p2P(msg, toUserId, loginUserId);
         }
     }
 

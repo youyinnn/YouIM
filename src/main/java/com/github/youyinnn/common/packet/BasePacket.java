@@ -64,11 +64,11 @@ public class BasePacket extends Packet {
         return new BasePacket(MsgType.JOIN_GROUP_RESP, new JoinGroupResponseBody(resultCode, msg, group));
     }
 
-    public static BasePacket p2pMsgRequestPacket(String msg, String toUserId, String fromUserId) {
+    public static BasePacket p2PMsgRequestPacket(String msg, String toUserId, String fromUserId) {
         return new BasePacket(MsgType.P2P_REQ, new P2PRequestBody(msg, toUserId, fromUserId));
     }
 
-    public static BasePacket p2pMsgResponsePacket(String msg, String fromUserId) {
+    public static BasePacket p2PMsgResponsePacket(String msg, String fromUserId) {
         return new BasePacket(MsgType.P2P_RESP, new P2PResponseBody(msg, fromUserId));
     }
 
@@ -95,4 +95,13 @@ public class BasePacket extends Packet {
     public static BasePacket systemMsgToGroupPacket(String msg, String toGroup) {
         return new BasePacket(MsgType.SYS_MSG_2GROUP, new GroupMsgResponseBody(msg, "SYSTEM", toGroup));
     }
+
+    public static BasePacket logoutRequestPacket(String userId) {
+        return new BasePacket(MsgType.LOGIN_REQ, new LogoutRequestBody(userId));
+    }
+
+    public static BasePacket quitGroupRequestPacket(String userId, String groupId) {
+        return new BasePacket(MsgType.QUIT_GROUP_REQ, new QuitGroupRequestBody(userId, groupId));
+    }
+
 }

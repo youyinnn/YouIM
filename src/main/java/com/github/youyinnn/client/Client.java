@@ -131,7 +131,7 @@ public class Client {
         }
     }
 
-    public static Boolean p2g(String msg, String toGroup, String fromUserId) {
+    public static Boolean p2G(String msg, String toGroup, String fromUserId) {
         if (isLogin()) {
             return aioSend(BasePacket.groupMsgRequestPacket(msg, toGroup, fromUserId));
         } else {
@@ -139,9 +139,25 @@ public class Client {
         }
     }
 
-    public static Boolean p2p(String msg, String toUserId, String fromUserId) {
+    public static Boolean p2P(String msg, String toUserId, String fromUserId) {
         if (isLogin()) {
-            return aioSend(BasePacket.p2pMsgRequestPacket(msg, toUserId, fromUserId));
+            return aioSend(BasePacket.p2PMsgRequestPacket(msg, toUserId, fromUserId));
+        } else {
+            return false;
+        }
+    }
+
+    public static Boolean logout() {
+        if (isLogin()) {
+            return aioSend(BasePacket.logoutRequestPacket(loginUserId));
+        } else {
+            return false;
+        }
+    }
+
+    public static Boolean quit(String groupId) {
+        if (isLogin()) {
+            return aioSend(BasePacket.quitGroupRequestPacket(loginUserId, groupId));
         } else {
             return false;
         }
