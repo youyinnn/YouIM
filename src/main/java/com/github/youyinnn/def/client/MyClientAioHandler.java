@@ -12,8 +12,14 @@ import org.tio.utils.json.Json;
 public class MyClientAioHandler extends AbstractClientAioHandler {
 
     @Override
-    protected Object sysMsgHandler(BasePacket packet, P2PResponseBody baseMsgBody, ChannelContext channelContext) {
-        System.out.println("收到系统消息:" + Json.toJson(baseMsgBody));
+    protected Object s2PHandler(BasePacket packet, P2PResponseBody baseMsgBody, ChannelContext channelContext) {
+        System.out.println("个人收到系统消息:" + Json.toJson(baseMsgBody));
+        return null;
+    }
+
+    @Override
+    protected Object s2GHandler(BasePacket packet, GroupMsgResponseBody baseMsgBody, ChannelContext channelContext) {
+        System.out.println("群组收到系统消息:" + Json.toJson(baseMsgBody));
         return null;
     }
 

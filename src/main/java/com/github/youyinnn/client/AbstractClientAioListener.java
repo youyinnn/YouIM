@@ -13,7 +13,12 @@ public abstract class AbstractClientAioListener implements ClientAioListener {
     public void onAfterConnected(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {
         //连接成功后设置一个连接会话对象给该连接通道
         channelContext.setAttribute(new BaseSessionContext());
-        onAfterConnectedAndSetSession(channelContext,isConnected,isReconnect);
+        afterConnected(channelContext,isConnected,isReconnect);
+        if (isReconnect) {
+            if (Client.isLogin()) {
+                Client.login(Client.getLoginUserId());
+            }
+        }
     }
 
     /**
@@ -24,5 +29,5 @@ public abstract class AbstractClientAioListener implements ClientAioListener {
      * @param isReconnect
      * @throws Exception
      */
-    public abstract void onAfterConnectedAndSetSession(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception ;
+    public abstract void afterConnected(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception ;
 }

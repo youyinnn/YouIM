@@ -18,7 +18,7 @@ public class MyClientAioListener extends AbstractClientAioListener {
     }
 
     @Override
-    public void onAfterConnectedAndSetSession(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {
+    public void afterConnected(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {
         System.out.println("onAfterConnected channelContext:" + channelContext +
                 ", isConnected:" + isConnected +
                 ", isReconnect:" + isReconnect);

@@ -10,6 +10,8 @@ import org.tio.core.intf.Packet;
 import org.tio.utils.json.Json;
 
 /**
+ * The type Abstract client aio handler.
+ *
  * @author youyinnn
  */
 public abstract class AbstractClientAioHandler extends AbstractAioHandler implements ClientAioHandler {
@@ -44,9 +46,13 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
                 baseMsgBody = Json.toBean(jsonStr, GroupMsgResponseBody.class);
                 return groupMsgResponseHandler(packet, (GroupMsgResponseBody) baseMsgBody, channelContext);
             }
-            if (msgType == MsgType.SYS_MSG_2ONE || msgType == MsgType.SYS_MSG_2ALL || msgType == MsgType.SYS_MSG_2GROUP) {
+            if (msgType == MsgType.SYS_MSG_2ONE || msgType == MsgType.SYS_MSG_2ALL) {
                 baseMsgBody = Json.toBean(jsonStr, P2PResponseBody.class);
-                return sysMsgHandler(packet, (P2PResponseBody) baseMsgBody, channelContext);
+                return s2PHandler(packet, (P2PResponseBody) baseMsgBody, channelContext);
+            }
+            if (msgType == MsgType.SYS_MSG_2GROUP) {
+                baseMsgBody = Json.toBean(jsonStr, GroupMsgResponseBody.class);
+                return s2GHandler(packet, (GroupMsgResponseBody) baseMsgBody, channelContext);
             }
         }
 
@@ -54,52 +60,62 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
     }
 
     /**
-     * 系统消息处理
+     * 系统-用户消息处理
      *
-     * @param packet
-     * @param baseMsgBody
-     * @param channelContext
-     * @return
+     * @param packet         the packet
+     * @param baseMsgBody    the base msg body
+     * @param channelContext the channel context
+     * @return the object
      */
-    protected abstract Object sysMsgHandler(BasePacket packet, P2PResponseBody baseMsgBody, ChannelContext channelContext);
+    protected abstract Object s2PHandler(BasePacket packet, P2PResponseBody baseMsgBody, ChannelContext channelContext) ;
+
+    /**
+     * 系统-群组消息处理
+     *
+     * @param packet         the packet
+     * @param baseMsgBody    the base msg body
+     * @param channelContext the channel context
+     * @return the object
+     */
+    protected abstract Object s2GHandler(BasePacket packet, GroupMsgResponseBody baseMsgBody, ChannelContext channelContext) ;
 
     /**
      * 登陆响应处理
      *
-     * @param packet
-     * @param baseMsgBody
-     * @param channelContext
-     * @return
+     * @param packet         the packet
+     * @param baseMsgBody    the base msg body
+     * @param channelContext the channel context
+     * @return object
      */
     protected abstract Object loginResponseHandler(BasePacket packet, LoginResponseBody baseMsgBody, ChannelContext channelContext) ;
 
     /**
      * 点对点响应处理
      *
-     * @param packet
-     * @param baseMsgBody
-     * @param channelContext
-     * @return
+     * @param packet         the packet
+     * @param baseMsgBody    the base msg body
+     * @param channelContext the channel context
+     * @return object
      */
     protected abstract Object p2PResponseHandler(BasePacket packet, P2PResponseBody baseMsgBody, ChannelContext channelContext) ;
 
     /**
      * 群组加入响应处理
      *
-     * @param packet
-     * @param baseMsgBody
-     * @param channelContext
-     * @return
+     * @param packet         the packet
+     * @param baseMsgBody    the base msg body
+     * @param channelContext the channel context
+     * @return object
      */
     protected abstract Object joinGroupResponseHandler(BasePacket packet, JoinGroupResponseBody baseMsgBody, ChannelContext channelContext) ;
 
     /**
      * 群组消息响应处理
      *
-     * @param packet
-     * @param baseMsgBody
-     * @param channelContext
-     * @return
+     * @param packet         the packet
+     * @param baseMsgBody    the base msg body
+     * @param channelContext the channel context
+     * @return object
      */
     protected abstract Object groupMsgResponseHandler(BasePacket packet, GroupMsgResponseBody baseMsgBody, ChannelContext channelContext) ;
 }

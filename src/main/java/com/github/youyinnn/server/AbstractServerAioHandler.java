@@ -11,9 +11,12 @@ import com.github.youyinnn.youdbutils.exceptions.AutowiredException;
 import com.github.youyinnn.youdbutils.ioc.YouServiceIocContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.tio.core.Aio;
 import org.tio.core.ChannelContext;
 import org.tio.server.intf.ServerAioHandler;
 import org.tio.utils.json.Json;
+
+import java.util.List;
 
 /**
  * @author youyinnn
@@ -43,35 +46,50 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
             if (msgType == MsgType.LOGIN_REQ) {
                 baseMsgBody = Json.toBean(bodyJsonStr, LoginRequestBody.class);
                 LoginRequestBody loginRequestBody = (LoginRequestBody) baseMsgBody;
-                SERVER_LOG.info("登陆请求: userId:{}.",loginRequestBody.getLoginUserId());
+                if (Server.isServerHandlerLogEnabled()) {
+                    SERVER_LOG.info("登陆请求: userId:{}.",loginRequestBody.getLoginUserId());
+                }
                 handler = loginRequestHandler(packet, loginRequestBody, channelContext);
                 String userId = bodyJsonObj.getString("loginUserId");
                 String groupJsonStr = service.getGroupJsonStr(userId);
+                if (groupJsonStr != null) {
+                    List<String> groups = JSON.parseArray(groupJsonStr, String.class);
+                    for (String group : groups) {
+                        Aio.bindGroup(channelContext,group);
+                    }
+                }
             }
             if (msgType == MsgType.GROUP_MSG_REQ) {
                 baseMsgBody = Json.toBean(bodyJsonStr, GroupMsgRequestBody.class);
                 GroupMsgRequestBody groupMsgRequestBody = (GroupMsgRequestBody) baseMsgBody;
-                SERVER_LOG.info("群组消息请求: fromUserId:{}, toGroup:{}, msg:{}.",
-                        groupMsgRequestBody.getFromUserId(),
-                        groupMsgRequestBody.getToGroup(),
-                        groupMsgRequestBody.getMsg());
+                if (Server.isServerHandlerLogEnabled()) {
+                    SERVER_LOG.info("群组消息请求: fromUserId:{}, toGroup:{}, msg:{}.",
+                            groupMsgRequestBody.getFromUserId(),
+                            groupMsgRequestBody.getToGroup(),
+                            groupMsgRequestBody.getMsg());
+                }
                 handler = groupMsgRequestHandler(packet, groupMsgRequestBody, channelContext);
             }
             if (msgType == MsgType.JOIN_GROUP_REQ) {
                 baseMsgBody = Json.toBean(bodyJsonStr, JoinGroupRequestBody.class);
                 JoinGroupRequestBody joinGroupRequestBody = (JoinGroupRequestBody) baseMsgBody;
-                SERVER_LOG.info("加群请求: fromUserId:{}, toGroup:{}.",
-                        joinGroupRequestBody.getFromUserId(),
-                        joinGroupRequestBody.getGroup());
+                if (Server.isServerHandlerLogEnabled()) {
+                    SERVER_LOG.info("加群请求: fromUserId:{}, toGroup:{}.",
+                            joinGroupRequestBody.getFromUserId(),
+                            joinGroupRequestBody.getGroup());
+                }
+                service.registerGroupInJson(joinGroupRequestBody.getFromUserId(),joinGroupRequestBody.getGroup());
                 handler = joinGroupRequestHandler(packet, joinGroupRequestBody, channelContext);
             }
             if (msgType == MsgType.P2P_REQ) {
                 baseMsgBody = Json.toBean(bodyJsonStr, P2PRequestBody.class);
                 P2PRequestBody p2PRequestBody = (P2PRequestBody) baseMsgBody;
-                SERVER_LOG.info("P2P请求: fromUserId:{}, toUserId:{}, msg:{}.",
-                        p2PRequestBody.getFromUserId(),
-                        p2PRequestBody.getToUserId(),
-                        p2PRequestBody.getMsg());
+                if (Server.isServerHandlerLogEnabled()) {
+                    SERVER_LOG.info("P2P请求: fromUserId:{}, toUserId:{}, msg:{}.",
+                            p2PRequestBody.getFromUserId(),
+                            p2PRequestBody.getToUserId(),
+                            p2PRequestBody.getMsg());
+                }
                 handler = p2pRequestHandler(packet, p2PRequestBody, channelContext);
             }
             if (msgType == MsgType.HEART_BEAT_REQ) {
