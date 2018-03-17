@@ -1,4 +1,4 @@
-package com.github.youyinnn.def.client;
+package com.github.youyinnn.demo.client;
 
 
 import com.github.youyinnn.client.Client;
@@ -25,8 +25,10 @@ public class MyClientStarter {
         sb.append(i++ + "、需要帮助，输入 '?'.\r\n");
         sb.append(i++ + "、登录，输入 'login userId'.\r\n");
         sb.append(i++ + "、进入群组，输入 'join groupId'.\r\n");
+        sb.append(i++ + "、退出群组，输入 'quit groupId'.\r\n");
         sb.append(i++ + "、群聊，输入 'p2g groupId msg'.\r\n");
         sb.append(i++ + "、点对点聊天，输入 'p2P userId msg'.\r\n");
+        sb.append(i++ + "、登出，输入 'logout'.\r\n");
 
         sb.append(i++ + "、退出程序，输入 'exit'.\r\n");
 
@@ -72,6 +74,11 @@ public class MyClientStarter {
             String toUserId = args[1];
             String msg = args[2];
             Client.p2P(msg, toUserId, loginUserId);
+        } else if ("quit".equalsIgnoreCase(command)) {
+            String groupId = args[1];
+            Client.quit(groupId);
+        } else if ("logout".equalsIgnoreCase(command)) {
+            Client.logout();
         }
     }
 

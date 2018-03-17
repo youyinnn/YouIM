@@ -72,7 +72,7 @@
                     <!--</descriptorRefs>-->
                     <!--<archive>-->
                         <!--<manifest>-->
-                            <!--<mainClass>com.github.youyinnn.def.server.MyServerStarter</mainClass>-->
+                            <!--<mainClass>com.github.youyinnn.demoo.server.MyServerStarter</mainClass>-->
                         <!--</manifest>-->
                     <!--</archive>-->
                 <!--</configuration>-->

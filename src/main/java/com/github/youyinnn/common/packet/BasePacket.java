@@ -97,7 +97,7 @@ public class BasePacket extends Packet {
     }
 
     public static BasePacket logoutRequestPacket(String userId) {
-        return new BasePacket(MsgType.LOGIN_REQ, new LogoutRequestBody(userId));
+        return new BasePacket(MsgType.LOGOUT_REQ, new LogoutRequestBody(userId));
     }
 
     public static BasePacket quitGroupRequestPacket(String userId, String groupId) {

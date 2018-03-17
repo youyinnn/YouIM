@@ -1,4 +1,4 @@
-package com.github.youyinnn.def.server;
+package com.github.youyinnn.demo.server;
 
 import com.github.youyinnn.server.Server;
 import org.apache.commons.lang3.StringUtils;

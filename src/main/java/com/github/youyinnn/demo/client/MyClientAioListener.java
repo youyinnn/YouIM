@@ -1,4 +1,4 @@
-package com.github.youyinnn.def.client;
+package com.github.youyinnn.demo.client;
 
 import com.github.youyinnn.client.AbstractClientAioListener;
 import org.tio.core.ChannelContext;

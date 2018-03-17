@@ -2,8 +2,8 @@ package com.github.youyinnn.server;
 
 import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.packet.BasePacket;
-import com.github.youyinnn.def.server.MyServerAioHandler;
-import com.github.youyinnn.def.server.MyServerAioListener;
+import com.github.youyinnn.demo.server.MyServerAioHandler;
+import com.github.youyinnn.demo.server.MyServerAioListener;
 import com.github.youyinnn.youdbutils.YouDbManager;
 import com.github.youyinnn.youwebutils.second.PropertiesHelper;
 import com.github.youyinnn.youwebutils.third.Log4j2Helper;
@@ -29,13 +29,14 @@ public class Server {
     private static ServerAioHandler serverAioHandler = null;
     private static ServerAioListener serverAioListener = null;
     private static ServerGroupContext serverGroupContext = null;
+    private static String groupContextName = null;
 
     private static AioServer aioServer = null;
 
     private static boolean serverLogEnabled = false;
+
     private static boolean serverHandlerLogEnabled = false;
     private static boolean serverListenerLogEnabled = false;
-
     public static void enableServerLog() {
         serverLogEnabled = true;
     }
@@ -89,13 +90,13 @@ public class Server {
         if (serverAioListener == null) {
             serverAioListener = new MyServerAioListener();
         }
-        serverGroupContext = new ServerGroupContext(serverAioHandler, serverAioListener);
+        serverGroupContext = new ServerGroupContext(groupContextName, serverAioHandler, serverAioListener);
         aioServer = new AioServer(serverGroupContext);
         if (serverLogEnabled) {
             if (serverIp != null) {
-                SERVER_LOG.info("YouIM server init with IP:{}, Port:{}, PID:{}.", serverIp, serverPort, PropertiesHelper.getPID());
+                SERVER_LOG.info("YouIM server named: {} init with IP:{}, Port:{}, PID:{}.", serverGroupContext.getName(), serverIp, serverPort, PropertiesHelper.getPID());
             } else {
-                SERVER_LOG.info("YouIM server init with Port:{}, PID:{}", serverPort,PropertiesHelper.getPID());
+                SERVER_LOG.info("YouIM server named: {} init with Port:{}, PID:{}", serverGroupContext.getName(), serverPort,PropertiesHelper.getPID());
             }
         }
     }
@@ -168,6 +169,14 @@ public class Server {
 
     public static void setServerAioListener(ServerAioListener serverAioListener) {
         Server.serverAioListener = serverAioListener;
+    }
+
+    public static void setGroupContextName(String groupContextName) {
+        Server.groupContextName = groupContextName;
+    }
+
+    public static String getGroupContextName() {
+        return groupContextName;
     }
 
     public static String getServerIp() {
