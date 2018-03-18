@@ -42,7 +42,7 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
     public Object handler(BasePacket packet, ChannelContext channelContext) throws Exception {
         String bodyJsonStr;
         byte msgType = packet.getMsgType();
-        bodyJsonStr = new String(packet.getMsgBody(), Const.Handler.CHARSET);
+        bodyJsonStr = new String(packet.getMsgBody(), Const.CHARSET);
         if (packet.getMsgBody() != null) {
             Boolean handler = true;
             if (msgType == MsgType.LOGIN_REQ) {

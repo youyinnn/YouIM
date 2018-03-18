@@ -28,7 +28,7 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
         String jsonStr;
         byte msgType = packet.getMsgType();
         BaseBody baseMsgBody;
-        jsonStr = new String(packet.getMsgBody(), Const.Handler.CHARSET);
+        jsonStr = new String(packet.getMsgBody(), Const.CHARSET);
         if (packet.getMsgBody() != null) {
             if (msgType == MsgType.LOGIN_RESP) {
                 baseMsgBody = Json.toBean(jsonStr, LoginResponseBody.class);

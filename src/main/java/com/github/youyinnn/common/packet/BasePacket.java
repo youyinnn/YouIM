@@ -1,5 +1,6 @@
 package com.github.youyinnn.common.packet;
 
+import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.MsgType;
 import org.tio.core.intf.Packet;
 import org.tio.utils.json.Json;
@@ -12,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 public class BasePacket extends Packet {
 
     public static final int HEADER_LENGTH = 5;
-    public static final String CHARSET = "utf-8";
 
     private byte msgType;
 
@@ -42,7 +42,7 @@ public class BasePacket extends Packet {
     public BasePacket(byte msgType, BaseBody baseBody) {
         this.msgType = msgType;
         try {
-            this.msgBody = Json.toJson(baseBody).getBytes(CHARSET);
+            this.msgBody = Json.toJson(baseBody).getBytes(Const.CHARSET);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

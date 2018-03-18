@@ -10,9 +10,7 @@ public interface Const {
         String FAIL = "fail";
     }
 
-    interface Handler {
-        String CHARSET = "utf-8";
-    }
+    String CHARSET = "utf-8";
 
     interface Server {
         int PORT = 5678;
