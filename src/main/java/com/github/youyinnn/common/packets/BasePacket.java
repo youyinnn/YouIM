@@ -12,6 +12,8 @@ import java.io.UnsupportedEncodingException;
  */
 public class BasePacket extends Packet {
 
+    private static final long serialVersionUID = 1533379214657665716L;
+
     public static final int HEADER_LENGTH = 5;
 
     private byte msgType;

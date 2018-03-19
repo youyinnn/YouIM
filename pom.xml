@@ -116,5 +116,11 @@
             <version>4.0</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.t-io</groupId>
+            <artifactId>tio-http-common</artifactId>
+            <version>0.0.8-tio-http</version>
+        </dependency>
     </dependencies>
 </project>
