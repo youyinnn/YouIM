@@ -1,6 +1,7 @@
 package com.github.youyinnn.demo.server;
 
 import com.github.youyinnn.server.Server;
+import com.github.youyinnn.server.ServerConfig;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -10,8 +11,7 @@ public class MyServerStarter {
 
     public static void main(String[] args) {
         Server.enableAllLogEnabled();
-        Server.init();
-        Server.setServerPort(5556);
+        Server.init(new ServerConfig(5578));
         Server.start();
         command();
     }
