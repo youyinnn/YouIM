@@ -1,5 +1,6 @@
 package com.github.youyinnn.server;
 
+import org.tio.core.intf.TioUuid;
 import org.tio.server.intf.ServerAioHandler;
 import org.tio.server.intf.ServerAioListener;
 
@@ -17,6 +18,8 @@ public class ServerConfig {
     private ServerAioHandler handler = null;
 
     private ServerAioListener listener = null;
+
+    private TioUuid tioUuid;
 
     public ServerConfig(Integer bindPort, ServerAioHandler handler, ServerAioListener listener) {
         this.bindPort = bindPort;
@@ -78,5 +81,13 @@ public class ServerConfig {
 
     public void setListener(ServerAioListener listener) {
         this.listener = listener;
+    }
+
+    public TioUuid getTioUuid() {
+        return tioUuid;
+    }
+
+    public void setTioUuid(TioUuid tioUuid) {
+        this.tioUuid = tioUuid;
     }
 }

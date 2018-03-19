@@ -12,7 +12,7 @@ public class BaseWsPacket extends Packet {
 
     private static final long serialVersionUID = 8917071928251381128L;
 
-    public static final int MINMUM_HEADER_LENGTH = 2;
+    public static final int MINIMUM_HEADER_LENGTH = 2;
 
     public static final int MAX_BODY_LENGTH = 1024 * 512;
 

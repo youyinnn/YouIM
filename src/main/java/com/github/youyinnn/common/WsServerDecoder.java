@@ -25,7 +25,7 @@ public class WsServerDecoder {
          */
         int initPosition = buffer.position();
         int readableLength = buffer.limit() - initPosition;
-        int headLength = BaseWsPacket.MINMUM_HEADER_LENGTH;
+        int headLength = BaseWsPacket.MINIMUM_HEADER_LENGTH;
 
         if (readableLength < headLength) {
             return null;
@@ -75,7 +75,7 @@ public class WsServerDecoder {
             payloadLength = ByteBufferUtils.readUB2WithBigEdian(buffer);
         } else if (payloadLength == 127){
             //127读8个字节,后8个字节为payloadLength
-            headLength = 8;
+            headLength += 8;
             if (readableLength < headLength) {
                 return null;
             }

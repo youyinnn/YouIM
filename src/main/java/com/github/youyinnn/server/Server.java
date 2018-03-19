@@ -2,6 +2,7 @@ package com.github.youyinnn.server;
 
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.BasePacket;
+import com.github.youyinnn.common.utils.WsTioUuId;
 import com.github.youyinnn.demo.server.MyServerAioHandler;
 import com.github.youyinnn.demo.server.MyServerAioListener;
 import com.github.youyinnn.youdbutils.YouDbManager;
@@ -95,10 +96,15 @@ public class Server {
         if (serverConfig.getListener() == null) {
             serverConfig.setListener(new MyServerAioListener());
         }
+        if (serverConfig.getTioUuid() == null) {
+            serverConfig.setTioUuid(new WsTioUuId());
+        }
         serverGroupContext = new ServerGroupContext(serverConfig.getGroupContextName(),
                 serverConfig.getHandler(), serverConfig.getListener());
 
         aioServer = new AioServer(serverGroupContext);
+
+        serverGroupContext.setTioUuid(serverConfig.getTioUuid());
         if (serverLogEnabled) {
             if (serverConfig.getBindIp() != null) {
                 SERVER_LOG.info("Server named: {} init with IP:{}, Port:{}, PID:{}.", serverGroupContext.getName(), serverConfig.getBindIp(), serverConfig.getBindPort(), PropertiesHelper.getPID());
