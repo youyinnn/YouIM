@@ -1,6 +1,6 @@
 package com.github.youyinnn.demo.server;
 
-import com.github.youyinnn.common.packet.GroupMsgRequestBody;
+import com.github.youyinnn.common.packets.GroupMsgRequestBody;
 import com.github.youyinnn.server.AbstractServerAioHandler;
 import org.tio.core.ChannelContext;
 

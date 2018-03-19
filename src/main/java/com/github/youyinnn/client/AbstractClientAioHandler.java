@@ -3,7 +3,7 @@ package com.github.youyinnn.client;
 import com.github.youyinnn.common.AbstractAioHandler;
 import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.MsgType;
-import com.github.youyinnn.common.packet.*;
+import com.github.youyinnn.common.packets.*;
 import org.tio.client.intf.ClientAioHandler;
 import org.tio.core.ChannelContext;
 import org.tio.core.intf.Packet;
@@ -62,7 +62,7 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
     /**
      * 系统-用户消息处理
      *
-     * @param packet         the packet
+     * @param packet         the packets
      * @param baseMsgBody    the base msg body
      * @param channelContext the channel context
      * @return the object
@@ -72,7 +72,7 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
     /**
      * 系统-群组消息处理
      *
-     * @param packet         the packet
+     * @param packet         the packets
      * @param baseMsgBody    the base msg body
      * @param channelContext the channel context
      * @return the object
@@ -82,7 +82,7 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
     /**
      * 登陆响应处理
      *
-     * @param packet         the packet
+     * @param packet         the packets
      * @param baseMsgBody    the base msg body
      * @param channelContext the channel context
      * @return object
@@ -92,7 +92,7 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
     /**
      * 点对点响应处理
      *
-     * @param packet         the packet
+     * @param packet         the packets
      * @param baseMsgBody    the base msg body
      * @param channelContext the channel context
      * @return object
@@ -102,7 +102,7 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
     /**
      * 群组加入响应处理
      *
-     * @param packet         the packet
+     * @param packet         the packets
      * @param baseMsgBody    the base msg body
      * @param channelContext the channel context
      * @return object
@@ -112,7 +112,7 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
     /**
      * 群组消息响应处理
      *
-     * @param packet         the packet
+     * @param packet         the packets
      * @param baseMsgBody    the base msg body
      * @param channelContext the channel context
      * @return object

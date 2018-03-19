@@ -3,7 +3,7 @@ package com.github.youyinnn.client;
 import com.github.youyinnn.demo.client.MyClientAioHandler;
 import com.github.youyinnn.demo.client.MyClientAioListener;
 import com.github.youyinnn.common.Const;
-import com.github.youyinnn.common.packet.BasePacket;
+import com.github.youyinnn.common.packets.BasePacket;
 import org.tio.client.AioClient;
 import org.tio.client.ClientChannelContext;
 import org.tio.client.ClientGroupContext;

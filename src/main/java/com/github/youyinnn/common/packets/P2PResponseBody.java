@@ -1,9 +1,9 @@
-package com.github.youyinnn.common.packet;
+package com.github.youyinnn.common.packets;
 
 /**
  * @author youyinnn
  */
-public class GroupMsgResponseBody extends BaseBody {
+public class P2PResponseBody extends BaseBody {
 
     /**
      * 消息内容
@@ -11,14 +11,9 @@ public class GroupMsgResponseBody extends BaseBody {
     private String msg;
 
     /**
-     * 发送消息者Id
+     * 消息发送方id
      */
     private String fromUserId;
-
-    /**
-     * 发送到哪个组
-     */
-    private String toGroup;
 
     public String getMsg() {
         return msg;
@@ -36,20 +31,11 @@ public class GroupMsgResponseBody extends BaseBody {
         this.fromUserId = fromUserId;
     }
 
-    public String getToGroup() {
-        return toGroup;
+    public P2PResponseBody() {
     }
 
-    public void setToGroup(String toGroup) {
-        this.toGroup = toGroup;
-    }
-
-    public GroupMsgResponseBody() {
-    }
-
-    public GroupMsgResponseBody(String msg, String fromUserId, String toGroup) {
+    public P2PResponseBody(String msg, String fromUserId) {
         this.msg = msg;
         this.fromUserId = fromUserId;
-        this.toGroup = toGroup;
     }
 }

@@ -28,14 +28,14 @@ public class MyServerAioListener extends AbstractServerAioListener {
     @Override
     public void onAfterReceived(ChannelContext channelContext, Packet packet, int packetSize) throws Exception {
         //System.out.println("onAfterReceived channelContext:" + channelContext +
-        //        ", packet:" + packet +
+        //        ", packets:" + packets +
         //        ", packetSize:" + packetSize);
     }
 
     @Override
     public void onAfterSent(ChannelContext channelContext, Packet packet, boolean isSentSuccess) throws Exception {
         //System.out.println("onAfterSent channelContext:" + channelContext +
-        //        ", packet:" + packet +
+        //        ", packets:" + packets +
         //        ", isSentSuccess:" + isSentSuccess);
     }
 

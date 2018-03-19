@@ -1,9 +1,9 @@
-package com.github.youyinnn.common.packet;
+package com.github.youyinnn.common.packets;
 
 /**
  * @author youyinnn
  */
-public class P2PRequestBody extends BaseBody {
+public class GroupMsgRequestBody extends BaseBody {
 
     /**
      * 消息内容
@@ -11,12 +11,12 @@ public class P2PRequestBody extends BaseBody {
     private String msg;
 
     /**
-     * 消息接收方id, 以此为鉴权.
+     * 发送到哪个组
      */
-    private String toUserId;
+    private String toGroup;
 
     /**
-     * 消息发送方id
+     * 发送者id
      */
     private String fromUserId;
 
@@ -28,12 +28,15 @@ public class P2PRequestBody extends BaseBody {
         this.msg = msg;
     }
 
-    public String getToUserId() {
-        return toUserId;
+    public String getToGroup() {
+        return toGroup;
     }
 
-    public void setToUserId(String toUserId) {
-        this.toUserId = toUserId;
+    public void setToGroup(String toGroup) {
+        this.toGroup = toGroup;
+    }
+
+    public GroupMsgRequestBody() {
     }
 
     public String getFromUserId() {
@@ -44,12 +47,9 @@ public class P2PRequestBody extends BaseBody {
         this.fromUserId = fromUserId;
     }
 
-    public P2PRequestBody() {
-    }
-
-    public P2PRequestBody(String msg, String toUserId, String fromUserId) {
+    public GroupMsgRequestBody(String msg, String toGroup, String fromUserId) {
         this.msg = msg;
-        this.toUserId = toUserId;
+        this.toGroup = toGroup;
         this.fromUserId = fromUserId;
     }
 }

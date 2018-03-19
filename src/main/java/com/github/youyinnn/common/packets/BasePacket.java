@@ -1,4 +1,4 @@
-package com.github.youyinnn.common.packet;
+package com.github.youyinnn.common.packets;
 
 import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.MsgType;
