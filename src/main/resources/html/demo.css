@@ -1,0 +1,45 @@
+#box{
+  height: 500px;
+  width: 600px;
+  margin: 0 auto;
+  background-color :rgba(53,103,82,.56);
+  box-shadow: 3px 3px 5px 2px rgb(80,80,80);
+  border-radius: 20px;
+}
+
+#contentId{
+  padding-left: 10px;
+  padding-right: 10px;
+  position: relative;
+  top: 20px;
+  margin: 10px auto;
+  width: 85%;
+  height: 80%;
+  border: 1px rgb(103,103,103) solid;
+  box-shadow: 3px 3px 5px 2px rgb(80,80,80);
+}
+
+#textId{
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 70%;
+  width: 70%;
+  border: 2px rgb(103,103,103) solid;
+}
+
+#inputBox{
+  text-align: center;
+  height: 10%;
+  position: relative;
+  top: 30px;
+  /* 取消烦人的选中边框样式 */
+  outline: none;
+}
+
+#sendButton{
+  width: 15%;
+  height: 70%;
+  border-radius: 20px;
+  /* 取消烦人的选中边框样式 */
+  outline:none;
+}
