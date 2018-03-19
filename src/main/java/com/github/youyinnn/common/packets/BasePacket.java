@@ -1,7 +1,7 @@
 package com.github.youyinnn.common.packets;
 
-import com.github.youyinnn.common.Const;
-import com.github.youyinnn.common.MsgType;
+import com.github.youyinnn.common.intf.Const;
+import com.github.youyinnn.common.intf.MsgType;
 import org.tio.core.intf.Packet;
 import org.tio.utils.json.Json;
 
