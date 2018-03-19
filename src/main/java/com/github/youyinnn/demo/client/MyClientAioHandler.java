@@ -2,7 +2,7 @@ package com.github.youyinnn.demo.client;
 
 import com.github.youyinnn.client.AbstractClientAioHandler;
 import com.github.youyinnn.common.BaseSessionContext;
-import com.github.youyinnn.common.packet.*;
+import com.github.youyinnn.common.packets.*;
 import org.tio.core.ChannelContext;
 import org.tio.utils.json.Json;
 

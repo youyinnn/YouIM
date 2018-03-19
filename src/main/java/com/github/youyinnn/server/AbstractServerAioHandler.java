@@ -6,7 +6,7 @@ import com.github.youyinnn.common.AbstractAioHandler;
 import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.Const;
 import com.github.youyinnn.common.MsgType;
-import com.github.youyinnn.common.packet.*;
+import com.github.youyinnn.common.packets.*;
 import com.github.youyinnn.server.service.GroupCheckService;
 import com.github.youyinnn.youdbutils.exceptions.AutowiredException;
 import com.github.youyinnn.youdbutils.ioc.YouServiceIocContainer;

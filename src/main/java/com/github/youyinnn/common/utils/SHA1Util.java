@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.youyinnn.common.util;
+package com.github.youyinnn.common.utils;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;

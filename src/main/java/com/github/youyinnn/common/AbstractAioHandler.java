@@ -1,6 +1,6 @@
 package com.github.youyinnn.common;
 
-import com.github.youyinnn.common.packet.BasePacket;
+import com.github.youyinnn.common.packets.BasePacket;
 import org.tio.core.ChannelContext;
 import org.tio.core.GroupContext;
 import org.tio.core.exception.AioDecodeException;
