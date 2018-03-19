@@ -1,7 +1,9 @@
 package com.github.youyinnn.common.packets;
 
-import com.github.youyinnn.common.OperationCode;
+import com.github.youyinnn.common.OpCode;
 import org.tio.core.intf.Packet;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author youyinnn
@@ -23,7 +25,7 @@ public class BaseWsPacket extends Packet {
 
     private boolean wsEof;
 
-    private OperationCode wsOpCode = OperationCode.BINARY;
+    private OpCode wsOpCode = OpCode.BINARY;
 
     private boolean wsHasMask;
 
@@ -37,10 +39,6 @@ public class BaseWsPacket extends Packet {
     private String wsBodyText;
 
     public BaseWsPacket() {
-    }
-
-    public BaseWsPacket(byte[] body) {
-        this.body = body;
     }
 
     public boolean isHandshake() {
@@ -67,11 +65,11 @@ public class BaseWsPacket extends Packet {
         this.wsEof = wsEof;
     }
 
-    public OperationCode getWsOpCode() {
+    public OpCode getWsOpCode() {
         return wsOpCode;
     }
 
-    public void setWsOpCode(OperationCode wsOpCode) {
+    public void setWsOpCode(OpCode wsOpCode) {
         this.wsOpCode = wsOpCode;
     }
 
@@ -110,5 +108,23 @@ public class BaseWsPacket extends Packet {
     @Override
     public String logstr() {
         return "webSocket";
+    }
+
+    public static BaseWsPacket fromText(String text, String charset) {
+        BaseWsPacket wsResponse = new BaseWsPacket();
+        try {
+            wsResponse.setBody(text.getBytes(charset));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        wsResponse.setWsOpCode(OpCode.TEXT);
+        return wsResponse;
+    }
+
+    public static BaseWsPacket fromBytes(byte[] bytes) {
+        BaseWsPacket wsResponse = new BaseWsPacket();
+        wsResponse.setBody(bytes);
+        wsResponse.setWsOpCode(OpCode.BINARY);
+        return wsResponse;
     }
 }

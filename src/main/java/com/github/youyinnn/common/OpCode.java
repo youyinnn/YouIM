@@ -8,7 +8,7 @@ import java.util.Map;
  *
  * @author youyinnn
  */
-public enum  OperationCode {
+public enum  OpCode {
 
     /**
      * Text operation code.
@@ -33,10 +33,10 @@ public enum  OperationCode {
 
     private final byte code;
 
-    private static final Map<Byte, OperationCode> MAP = new HashMap<>();
+    private static final Map<Byte, OpCode> MAP = new HashMap<>();
 
     static {
-        for (OperationCode operationCode : values()) {
+        for (OpCode operationCode : values()) {
             MAP.put(operationCode.getCode(), operationCode);
         }
     }
@@ -47,11 +47,11 @@ public enum  OperationCode {
      * @param code the code
      * @return the operation code
      */
-    public static OperationCode valueOf(byte code) {
+    public static OpCode valueOf(byte code) {
         return MAP.get(code);
     }
 
-    private OperationCode(byte code) {
+    private OpCode(byte code) {
         this.code = code;
     }
 

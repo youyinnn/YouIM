@@ -38,8 +38,8 @@ public class WsServerDecoder {
         int rsv = (first & 0x70) >>> 4;
         // //后四位为opCode 00001111
         byte opCodeByte = (byte) (first & 0x0F);
-        OperationCode opCode = OperationCode.valueOf(opCodeByte);
-        if (opCode == OperationCode.CLOSE) {
+        OpCode opCode = OpCode.valueOf(opCodeByte);
+        if (opCode == OpCode.CLOSE) {
 
         }
         if (!fin) {
@@ -136,7 +136,7 @@ public class WsServerDecoder {
 
             wsPacket.setBody(array);
 
-            if (opCode == OperationCode.BINARY) {
+            if (opCode == OpCode.BINARY) {
 
             } else {
                 try {
