@@ -1,8 +1,8 @@
 package com.github.youyinnn.client;
 
 import com.github.youyinnn.common.AbstractAioHandler;
-import com.github.youyinnn.common.Const;
-import com.github.youyinnn.common.MsgType;
+import com.github.youyinnn.common.intf.Const;
+import com.github.youyinnn.common.intf.MsgType;
 import com.github.youyinnn.common.packets.*;
 import org.tio.client.intf.ClientAioHandler;
 import org.tio.core.ChannelContext;

@@ -1,4 +1,4 @@
-package com.github.youyinnn.common;
+package com.github.youyinnn.common.intf;
 
 /**
  * @author youyinnn

@@ -1,6 +1,6 @@
 package com.github.youyinnn.server;
 
-import com.github.youyinnn.common.Const;
+import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.BasePacket;
 import com.github.youyinnn.demo.server.MyServerAioHandler;
 import com.github.youyinnn.demo.server.MyServerAioListener;
