@@ -16,6 +16,8 @@ public class BasePacket extends Packet {
 
     public static final int HEADER_LENGTH = 5;
 
+    private static final long serialVersionUID = 1533379214657665716L;
+
     private byte msgType;
 
     private byte[] msgBody;

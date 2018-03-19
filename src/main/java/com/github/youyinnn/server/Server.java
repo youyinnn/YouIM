@@ -13,8 +13,6 @@ import org.dom4j.DocumentException;
 import org.tio.core.Aio;
 import org.tio.server.AioServer;
 import org.tio.server.ServerGroupContext;
-import org.tio.server.intf.ServerAioHandler;
-import org.tio.server.intf.ServerAioListener;
 
 import java.io.IOException;
 
@@ -23,20 +21,15 @@ import java.io.IOException;
  */
 public class Server {
 
-    private static String serverIp = null;
-    private static Integer serverPort = null;
+    private static ServerConfig serverConfig;
 
-    private static ServerAioHandler serverAioHandler = null;
-    private static ServerAioListener serverAioListener = null;
     private static ServerGroupContext serverGroupContext = null;
-    private static String groupContextName = null;
-
     private static AioServer aioServer = null;
 
     private static boolean serverLogEnabled = false;
-
     private static boolean serverHandlerLogEnabled = false;
     private static boolean serverListenerLogEnabled = false;
+
     public static void enableServerLog() {
         serverLogEnabled = true;
     }
@@ -78,60 +71,49 @@ public class Server {
     private static final Logger SERVER_LOG = LogManager.getLogger("$im_server");
 
     public static void init() {
+        if (serverConfig == null) {
+            serverConfig = new ServerConfig();
+        }
+        init(serverConfig);
+    }
+
+    public static void init(ServerConfig serverConfig) {
+        Server.serverConfig = serverConfig;
         YouDbManager.youDruid.initSQLiteDataSource("$serverConf/$sqlite.properties");
         YouDbManager.scanPackageForModel("com.github.youyinnn.server.model");
         YouDbManager.scanPackageForService("com.github.youyinnn.server.service");
-        if (serverPort == null) {
-            serverPort = Const.Server.PORT;
+
+        if (serverConfig.getGroupContextName() == null) {
+            serverConfig.setGroupContextName(Const.Server.DEF_GROUP_CONTEXT_NAME);
         }
-        if (serverAioHandler == null) {
-            serverAioHandler = new MyServerAioHandler();
+        if (serverConfig.getBindPort() == null) {
+            serverConfig.setBindPort(Const.Server.PORT);
         }
-        if (serverAioListener == null) {
-            serverAioListener = new MyServerAioListener();
+        if (serverConfig.getHandler() == null) {
+            serverConfig.setHandler(new MyServerAioHandler());
         }
-        serverGroupContext = new ServerGroupContext(groupContextName, serverAioHandler, serverAioListener);
+        if (serverConfig.getListener() == null) {
+            serverConfig.setListener(new MyServerAioListener());
+        }
+        serverGroupContext = new ServerGroupContext(serverConfig.getGroupContextName(),
+                serverConfig.getHandler(), serverConfig.getListener());
+
         aioServer = new AioServer(serverGroupContext);
         if (serverLogEnabled) {
-            if (serverIp != null) {
-                SERVER_LOG.info("YouIM server named: {} init with IP:{}, Port:{}, PID:{}.", serverGroupContext.getName(), serverIp, serverPort, PropertiesHelper.getPID());
+            if (serverConfig.getBindIp() != null) {
+                SERVER_LOG.info("Server named: {} init with IP:{}, Port:{}, PID:{}.", serverGroupContext.getName(), serverConfig.getBindIp(), serverConfig.getBindPort(), PropertiesHelper.getPID());
             } else {
-                SERVER_LOG.info("YouIM server named: {} init with Port:{}, PID:{}", serverGroupContext.getName(), serverPort,PropertiesHelper.getPID());
+                SERVER_LOG.info("Server named: {} init with Port:{}, PID:{}", serverGroupContext.getName(), serverConfig.getBindPort(),PropertiesHelper.getPID());
             }
         }
     }
 
-    public static void init(String serverIp) {
-        Server.serverIp = serverIp;
-        init();
-    }
-
-    public static void init(String serverIp, int serverPort) {
-        Server.serverIp = serverIp;
-        Server.serverPort = serverPort;
-        init();
-    }
-
-    public static void init(String serverIp, int serverPort, ServerAioHandler serverAioHandler) {
-        Server.serverIp = serverIp;
-        Server.serverPort = serverPort;
-        Server.serverAioHandler = serverAioHandler;
-        init();
-    }
-
-    public static void init(String serverIp, int serverPort, ServerAioHandler serverAioHandler, ServerAioListener serverAioListener) {
-        Server.serverIp = serverIp;
-        Server.serverPort = serverPort;
-        Server.serverAioHandler = serverAioHandler;
-        Server.serverAioListener = serverAioListener;
-        init();
-    }
-
     public static void start() {
         try {
-            aioServer.start(serverIp, serverPort);
+            aioServer.start(serverConfig.getBindIp(), serverConfig.getBindPort());
+            SERVER_LOG.info("Started success!");
         } catch (IOException e) {
-            e.printStackTrace();
+            SERVER_LOG.error(e.getMessage(), "Started fail because:" + e);
         }
     }
 
@@ -153,46 +135,6 @@ public class Server {
 
     public static boolean isLogin(String userId) {
         return serverGroupContext.users.find(serverGroupContext, userId) != null;
-    }
-
-    public static void setServerIp(String serverIp) {
-        Server.serverIp = serverIp;
-    }
-
-    public static void setServerPort(Integer serverPort) {
-        Server.serverPort = serverPort;
-    }
-
-    public static void setServerAioHandler(ServerAioHandler serverAioHandler) {
-        Server.serverAioHandler = serverAioHandler;
-    }
-
-    public static void setServerAioListener(ServerAioListener serverAioListener) {
-        Server.serverAioListener = serverAioListener;
-    }
-
-    public static void setGroupContextName(String groupContextName) {
-        Server.groupContextName = groupContextName;
-    }
-
-    public static String getGroupContextName() {
-        return groupContextName;
-    }
-
-    public static String getServerIp() {
-        return serverIp;
-    }
-
-    public static Integer getServerPort() {
-        return serverPort;
-    }
-
-    public static ServerAioHandler getServerAioHandler() {
-        return serverAioHandler;
-    }
-
-    public static ServerAioListener getServerAioListener() {
-        return serverAioListener;
     }
 
     public static ServerGroupContext getServerGroupContext() {
