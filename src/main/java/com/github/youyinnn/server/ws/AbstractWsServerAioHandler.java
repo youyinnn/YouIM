@@ -77,7 +77,7 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
      * @param channelContext the channel context
      * @return http response
      */
-    public static HttpResponse updateWebSocketProtocol(HttpRequest request, ChannelContext channelContext) {
+    private static HttpResponse updateWebSocketProtocol(HttpRequest request, ChannelContext channelContext) {
         Map<String, String> headers = request.getHeaders();
         String secWebSocketKey = headers.get(HttpConst.RequestHeaderKey.Sec_WebSocket_Key);
 
@@ -113,18 +113,18 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
                 Aio.remove(channelContext, "业务层不同意握手");
             } else {
                 wsSessionContext.setHandshakeResponsePacket(handshakeResponse);
-                BaseWsPacket wsResponse = new BaseWsPacket();
-                wsResponse.setHandshake(true);
+                BaseWsPacket wsResponsePacket = new BaseWsPacket();
+                wsResponsePacket.setHandshake(true);
                 wsSessionContext.setHandshaked(true);
-                Aio.send(channelContext, wsRequestPacket);
+                Aio.send(channelContext, wsResponsePacket);
             }
             afterHandshaked(request, response, channelContext);
         } else {
             beforeHandle(request, response, channelContext);
-            BaseWsPacket wsResponse =
+            BaseWsPacket wsResponsePacket =
                     handle(wsRequestPacket.getBody(), wsRequestPacket.getWsOpCode(), channelContext);
-            if (wsResponse != null) {
-                Aio.send(channelContext, wsResponse);
+            if (wsResponsePacket != null) {
+                Aio.send(channelContext, wsResponsePacket);
             }
             afterHandled(request, response, channelContext);
         }
@@ -134,14 +134,14 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
      * 按照类型处理webSocket消息
      */
     private BaseWsPacket handle(byte[] bytes, OpCode opCode, ChannelContext channelContext) throws Exception {
-        BaseWsPacket wsResponse = null;
+        BaseWsPacket wsResponsePacket = null;
         if (opCode == OpCode.TEXT) {
             if (bytes == null || bytes.length == 0) {
                 Aio.remove(channelContext, "错误的webSocket包, body无效");
             } else {
                 String onText = onText(new String(bytes, Const.CHARSET));
                 if (onText != null) {
-                    wsResponse = BaseWsPacket.fromText(onText, Const.CHARSET);
+                    wsResponsePacket = BaseWsPacket.fromText(onText, Const.CHARSET);
                 }
             }
         } else if (opCode == OpCode.BINARY) {
@@ -151,7 +151,7 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
                 ByteBuffer onBytes = onBytes(bytes);
                 if (onBytes != null) {
                     byte[] array = onBytes.array();
-                    wsResponse = BaseWsPacket.fromBytes(array);
+                    wsResponsePacket = BaseWsPacket.fromBytes(array);
                 }
             }
         } else if (opCode == OpCode.PING || opCode == OpCode.PONG) {
@@ -161,7 +161,7 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
         } else {
             Aio.remove(channelContext, "错误的webSocket包，错误的Opcode");
         }
-        return wsResponse;
+        return wsResponsePacket;
     }
 
     private HttpResponse handshake(HttpResponse httpResponse) {

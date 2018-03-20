@@ -3,7 +3,7 @@
 
     <Appenders>
         <Console name="$im_console" target="SYSTEM_ERR">
-            <PatternLayout pattern="[YouIM Server:%6p] [Time: %d{yyyy-MM-dd hh:mm} ] [Message: %msg ]%n"/>
+            <PatternLayout pattern="[YouIM Server:%6p] [Time: %d{yyyy-MM-dd HH:mm} ] [Message: %msg ]%n"/>
         </Console>
     </Appenders>
 
