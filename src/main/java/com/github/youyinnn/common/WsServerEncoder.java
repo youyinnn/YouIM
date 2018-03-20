@@ -19,7 +19,7 @@ public class WsServerEncoder {
             wsBodyLength = imBody.length;
         }
 
-        byte header0 = (byte) (0x8f & (wsPacket.getWsOpCode().getCode()) | 0xf0);
+        byte header0 = (byte) (0x8f & (wsPacket.getWsOpCode().getCode() | 0xf0));
         ByteBuffer buffer;
         if (wsBodyLength < 126) {
             buffer = ByteBuffer.allocate(2 + wsBodyLength);

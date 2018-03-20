@@ -7,9 +7,7 @@
   border-radius: 20px;
 }
 
-#contentId{
-  padding-left: 10px;
-  padding-right: 10px;
+#content{
   position: relative;
   top: 20px;
   margin: 10px auto;
@@ -42,4 +40,9 @@
   border-radius: 20px;
   /* 取消烦人的选中边框样式 */
   outline:none;
+}
+
+#contentId{
+    width: 99%;
+    height: 100%;
 }

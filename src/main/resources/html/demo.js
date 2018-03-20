@@ -2,6 +2,7 @@ var ws
 function initWs() {
     ws = new WebSocket("ws://localhost:5999");
     ws.onmessage = function (event) {
+        console.log('*****');
         document.getElementById("contentId").value += (event.data + "\r\n");
     };
     ws.onclose = function (event) {
