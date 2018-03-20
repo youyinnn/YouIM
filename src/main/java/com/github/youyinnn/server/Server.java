@@ -118,25 +118,17 @@ public class Server {
             serverGroupContext.setHeartbeatTimeout(0);
         }
         if (serverLogEnabled) {
-            if (serverConfig.getBindIp() != null) {
-                SERVER_LOG.info("Server init with Protocol:{}, IP:{}, Port:{}, PID:{}.",
-                        serverConfig.getServerProtocol(),
-                        serverConfig.getBindIp(),
-                        serverConfig.getBindPort(),
-                        PropertiesHelper.getPID());
-            } else {
-                SERVER_LOG.info("Server init with Protocol:{}, Port:{}, PID:{}",
-                        serverConfig.getServerProtocol(),
-                        serverConfig.getBindPort(),
-                        PropertiesHelper.getPID());
-            }
+            SERVER_LOG.info("Server init with Protocol:{}, Port:{}, PID:{}.",
+                    serverConfig.getServerProtocol(),
+                    serverConfig.getBindPort(),
+                    PropertiesHelper.getPID());
         }
     }
 
     public static void start() {
         try {
             aioServer.start(serverConfig.getBindIp(), serverConfig.getBindPort());
-            SERVER_LOG.info("Started success!");
+            SERVER_LOG.info("Started success in: Host: {}, PID: {}", aioServer.getServerNode(), PropertiesHelper.getPID());
         } catch (IOException e) {
             SERVER_LOG.error(e.getMessage(), "Started fail because:" + e);
         }
