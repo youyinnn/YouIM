@@ -9,7 +9,11 @@ import org.tio.server.intf.ServerAioListener;
  */
 public class ServerConfig {
 
-    private String groupContextName = null;
+    public static final String PROTOCOL_TCP = "tcp";
+
+    public static final String PROTOCOL_WEBSOCKET = "webSocket";
+
+    private String groupContextName = "def_context";
 
     private String bindIp = null;
 
@@ -19,29 +23,62 @@ public class ServerConfig {
 
     private ServerAioListener listener = null;
 
-    private TioUuid tioUuid;
+    private TioUuid tioUuid = null;
 
-    public ServerConfig(Integer bindPort, ServerAioHandler handler, ServerAioListener listener) {
-        this.bindPort = bindPort;
-        this.handler = handler;
-        this.listener = listener;
-    }
-
-    public ServerConfig(String groupContextName) {
-        this.groupContextName = groupContextName;
-    }
+    private String serverProtocol = PROTOCOL_TCP;
 
     public ServerConfig(Integer bindPort) {
         this.bindPort = bindPort;
     }
 
-    public ServerConfig(String bindIp, Integer bindPort) {
+    private ServerConfig(String bindIp, Integer bindPort, ServerAioHandler handler, ServerAioListener listener) {
         this.bindIp = bindIp;
         this.bindPort = bindPort;
+        this.handler = handler;
+        this.listener = listener;
     }
 
-    public ServerConfig() {
+    private ServerConfig() {
+
     }
+
+    private ServerConfig(String serverProtocol) {
+        this.serverProtocol = serverProtocol;
+    }
+
+    public static ServerConfig getTcpServerConfig(){
+        return new ServerConfig();
+    }
+
+    public static ServerConfig getTcpServerConfig(String bindIp, Integer bindPort, ServerAioHandler handler, ServerAioListener listener){
+        return new ServerConfig(bindIp ,bindPort, handler, listener);
+    }
+
+    public static ServerConfig getTcpServerConfig(Integer bindPort){
+        return new ServerConfig(null, bindPort, null, null);
+    }
+
+    public static ServerConfig getTcpServerConfig(String bindIp, Integer bindPort){
+        return new ServerConfig(bindIp, bindPort, null, null);
+    }
+
+    public static ServerConfig getWsServerConfig(String bindIp, Integer bindPort, ServerAioHandler handler, ServerAioListener listener){
+        ServerConfig serverConfig = new ServerConfig(PROTOCOL_WEBSOCKET);
+        serverConfig.setBindIp(bindIp);
+        serverConfig.setBindPort(bindPort);
+        serverConfig.setHandler(handler);
+        serverConfig.setListener(listener);
+        return serverConfig;
+    }
+
+    public static ServerConfig getWsServerConfig(Integer bindPort) {
+        return getWsServerConfig(null, bindPort, null, null);
+    }
+
+    public static ServerConfig getWsServerConfig(Integer bindPort, ServerAioHandler handler, ServerAioListener listener) {
+        return getWsServerConfig(null, bindPort, handler, listener);
+    }
+
 
     public String getBindIp() {
         return bindIp;
@@ -89,5 +126,9 @@ public class ServerConfig {
 
     public void setTioUuid(TioUuid tioUuid) {
         this.tioUuid = tioUuid;
+    }
+
+    public String getServerProtocol() {
+        return serverProtocol;
     }
 }

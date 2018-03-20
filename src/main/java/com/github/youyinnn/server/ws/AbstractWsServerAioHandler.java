@@ -1,4 +1,4 @@
-package com.github.youyinnn.server;
+package com.github.youyinnn.server.ws;
 
 import com.github.youyinnn.common.OpCode;
 import com.github.youyinnn.common.WsServerDecoder;
@@ -8,7 +8,6 @@ import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.BaseWsPacket;
 import com.github.youyinnn.common.utils.BASE64Util;
 import com.github.youyinnn.common.utils.SHA1Util;
-import com.github.youyinnn.server.intf.WsMsgHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.tio.core.Aio;
 import org.tio.core.ChannelContext;
@@ -23,15 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * The type Abstract ws server aio handler.
+ *
  * @author youyinnn
  */
-public class WsServerAioHandler implements ServerAioHandler {
-
-    private WsMsgHandler wsMsgHandler;
-
-    public WsServerAioHandler(WsMsgHandler wsMsgHandler) {
-        this.wsMsgHandler = wsMsgHandler;
-    }
+public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
 
     @Override
     public Packet decode(ByteBuffer buffer, ChannelContext channelContext) throws AioDecodeException {
@@ -78,9 +73,9 @@ public class WsServerAioHandler implements ServerAioHandler {
     /**
      * 该方法把http请求协议升级为webSocket协议
      *
-     * @param request
-     * @param channelContext
-     * @return
+     * @param request        the request
+     * @param channelContext the channel context
+     * @return http response
      */
     public static HttpResponse updateWebSocketProtocol(HttpRequest request, ChannelContext channelContext) {
         Map<String, String> headers = request.getHeaders();
@@ -94,7 +89,7 @@ public class WsServerAioHandler implements ServerAioHandler {
 
             httpResponse.setStatus(HttpResponseStatus.C101);
 
-            HashMap<String, String> respHeaders = new HashMap<>();
+            HashMap<String, String> respHeaders = new HashMap<>(10);
             respHeaders.put(HttpConst.ResponseHeaderKey.Connection, HttpConst.ResponseHeaderValue.Connection.Upgrade);
             respHeaders.put(HttpConst.ResponseHeaderKey.Upgrade, "WebSocket");
             respHeaders.put(HttpConst.ResponseHeaderKey.Sec_WebSocket_Accept, acceptKey);
@@ -107,45 +102,44 @@ public class WsServerAioHandler implements ServerAioHandler {
     @Override
     public void handler(Packet packet, ChannelContext channelContext) throws Exception {
         BaseWsPacket wsRequestPacket = (BaseWsPacket) packet;
+        WsSessionContext wsSessionContext = (WsSessionContext) channelContext.getAttribute();
+        HttpRequest request = wsSessionContext.getHandshakeRequestPacket();
+        HttpResponse response = wsSessionContext.getHandshakeResponsePacket();
 
         if (wsRequestPacket.isHandshake()) {
-            WsSessionContext wsSessionContext = (WsSessionContext) channelContext.getAttribute();
-            HttpRequest request = wsSessionContext.getHandshakeRequestPacket();
-            HttpResponse response = wsSessionContext.getHandshakeResponsePacket();
-            HttpResponse handshakeResponse = wsMsgHandler.handshake(request, response, channelContext);
+            beforeHandshake(request, response, channelContext);
+            HttpResponse handshakeResponse = handshake(response);
             if (handshakeResponse == null) {
                 Aio.remove(channelContext, "业务层不同意握手");
             } else {
                 wsSessionContext.setHandshakeResponsePacket(handshakeResponse);
-
                 BaseWsPacket wsResponse = new BaseWsPacket();
                 wsResponse.setHandshake(true);
-                Aio.send(channelContext, wsRequestPacket);
                 wsSessionContext.setHandshaked(true);
+                Aio.send(channelContext, wsRequestPacket);
             }
+            afterHandshaked(request, response, channelContext);
         } else {
+            beforeHandle(request, response, channelContext);
             BaseWsPacket wsResponse =
-                    handle(wsRequestPacket,
-                        wsRequestPacket.getBody(),
-                        wsRequestPacket.getWsOpCode(),
-                            channelContext);
-
+                    handle(wsRequestPacket.getBody(), wsRequestPacket.getWsOpCode(), channelContext);
             if (wsResponse != null) {
                 Aio.send(channelContext, wsResponse);
             }
+            afterHandled(request, response, channelContext);
         }
     }
 
     /**
      * 按照类型处理webSocket消息
      */
-    private BaseWsPacket handle(BaseWsPacket webSocketPacket, byte[] bytes, OpCode opCode, ChannelContext channelContext) throws Exception {
+    private BaseWsPacket handle(byte[] bytes, OpCode opCode, ChannelContext channelContext) throws Exception {
         BaseWsPacket wsResponse = null;
         if (opCode == OpCode.TEXT) {
             if (bytes == null || bytes.length == 0) {
                 Aio.remove(channelContext, "错误的webSocket包, body无效");
             } else {
-                String onText = wsMsgHandler.onText(webSocketPacket, new String(bytes, Const.CHARSET), channelContext);
+                String onText = onText(new String(bytes, Const.CHARSET));
                 if (onText != null) {
                     wsResponse = BaseWsPacket.fromText(onText, Const.CHARSET);
                 }
@@ -154,7 +148,7 @@ public class WsServerAioHandler implements ServerAioHandler {
             if (bytes == null || bytes.length == 0) {
                 Aio.remove(channelContext, "错误的webSocket包, body无效");
             } else {
-                ByteBuffer onBytes = wsMsgHandler.onBytes(webSocketPacket, bytes, channelContext);
+                ByteBuffer onBytes = onBytes(bytes);
                 if (onBytes != null) {
                     byte[] array = onBytes.array();
                     wsResponse = BaseWsPacket.fromBytes(array);
@@ -163,12 +157,64 @@ public class WsServerAioHandler implements ServerAioHandler {
         } else if (opCode == OpCode.PING || opCode == OpCode.PONG) {
             System.err.println("收到" + opCode);
         } else if (opCode == OpCode.CLOSE) {
-            wsMsgHandler.onClose(webSocketPacket, bytes, channelContext);
+            onClose(channelContext);
         } else {
             Aio.remove(channelContext, "错误的webSocket包，错误的Opcode");
         }
-
         return wsResponse;
     }
 
+    private HttpResponse handshake(HttpResponse httpResponse) {
+        return httpResponse;
+    }
+
+    private String onText(String text) {
+        return text;
+    }
+
+    private ByteBuffer onBytes(byte[] bytes) {
+        ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
+        buffer.put(bytes);
+        return buffer;
+    }
+
+    private void onClose(ChannelContext channelContext) {
+        Aio.remove(channelContext, "receive close flag");
+    }
+
+    /**
+     * After handshaked.
+     *
+     * @param request        the request
+     * @param response       the response
+     * @param channelContext the channel context
+     */
+    protected abstract void afterHandshaked(HttpRequest request, HttpResponse response, ChannelContext channelContext);
+
+    /**
+     * Before handshake.
+     *
+     * @param request        the request
+     * @param response       the response
+     * @param channelContext the channel context
+     */
+    protected abstract void beforeHandshake(HttpRequest request, HttpResponse response, ChannelContext channelContext);
+
+    /**
+     * After handled.
+     *
+     * @param request        the request
+     * @param response       the response
+     * @param channelContext the channel context
+     */
+    protected abstract void afterHandled(HttpRequest request, HttpResponse response, ChannelContext channelContext);
+
+    /**
+     * Before handle.
+     *
+     * @param request        the request
+     * @param response       the response
+     * @param channelContext the channel context
+     */
+    protected abstract void beforeHandle(HttpRequest request, HttpResponse response, ChannelContext channelContext);
 }

@@ -5,6 +5,8 @@ import com.github.youyinnn.common.packets.BasePacket;
 import com.github.youyinnn.common.utils.WsTioUuId;
 import com.github.youyinnn.demo.server.MyServerAioHandler;
 import com.github.youyinnn.demo.server.MyServerAioListener;
+import com.github.youyinnn.demo.wsserver.MyWsServerAioHandler;
+import com.github.youyinnn.demo.wsserver.MyWsServerAioListener;
 import com.github.youyinnn.youdbutils.YouDbManager;
 import com.github.youyinnn.youwebutils.second.PropertiesHelper;
 import com.github.youyinnn.youwebutils.third.Log4j2Helper;
@@ -49,15 +51,15 @@ public class Server {
         enableServerLog();
     }
 
-    static boolean isServerLogEnabled() {
+    public static boolean isServerLogEnabled() {
         return serverLogEnabled;
     }
 
-    static boolean isServerHandlerLogEnabled() {
+    public static boolean isServerHandlerLogEnabled() {
         return serverHandlerLogEnabled;
     }
 
-    static boolean isServerListenerLogEnabled() {
+    public static boolean isServerListenerLogEnabled() {
         return serverListenerLogEnabled;
     }
 
@@ -73,7 +75,7 @@ public class Server {
 
     public static void init() {
         if (serverConfig == null) {
-            serverConfig = new ServerConfig();
+            serverConfig = ServerConfig.getTcpServerConfig();
         }
         init(serverConfig);
     }
@@ -91,10 +93,18 @@ public class Server {
             serverConfig.setBindPort(Const.Server.PORT);
         }
         if (serverConfig.getHandler() == null) {
-            serverConfig.setHandler(new MyServerAioHandler());
+            if (ServerConfig.PROTOCOL_TCP.equalsIgnoreCase(serverConfig.getServerProtocol())) {
+                serverConfig.setHandler(new MyServerAioHandler());
+            } else {
+                serverConfig.setHandler(new MyWsServerAioHandler());
+            }
         }
         if (serverConfig.getListener() == null) {
-            serverConfig.setListener(new MyServerAioListener());
+            if (ServerConfig.PROTOCOL_TCP.equalsIgnoreCase(serverConfig.getServerProtocol())) {
+                serverConfig.setListener(new MyServerAioListener());
+            } else {
+                serverConfig.setListener(new MyWsServerAioListener());
+            }
         }
         if (serverConfig.getTioUuid() == null) {
             serverConfig.setTioUuid(new WsTioUuId());
@@ -103,13 +113,22 @@ public class Server {
                 serverConfig.getHandler(), serverConfig.getListener());
 
         aioServer = new AioServer(serverGroupContext);
-
         serverGroupContext.setTioUuid(serverConfig.getTioUuid());
+        if (ServerConfig.PROTOCOL_WEBSOCKET.equalsIgnoreCase(serverConfig.getServerProtocol())) {
+            serverGroupContext.setHeartbeatTimeout(0);
+        }
         if (serverLogEnabled) {
             if (serverConfig.getBindIp() != null) {
-                SERVER_LOG.info("Server named: {} init with IP:{}, Port:{}, PID:{}.", serverGroupContext.getName(), serverConfig.getBindIp(), serverConfig.getBindPort(), PropertiesHelper.getPID());
+                SERVER_LOG.info("Server init with Protocol:{}, IP:{}, Port:{}, PID:{}.",
+                        serverConfig.getServerProtocol(),
+                        serverConfig.getBindIp(),
+                        serverConfig.getBindPort(),
+                        PropertiesHelper.getPID());
             } else {
-                SERVER_LOG.info("Server named: {} init with Port:{}, PID:{}", serverGroupContext.getName(), serverConfig.getBindPort(),PropertiesHelper.getPID());
+                SERVER_LOG.info("Server init with Protocol:{}, Port:{}, PID:{}",
+                        serverConfig.getServerProtocol(),
+                        serverConfig.getBindPort(),
+                        PropertiesHelper.getPID());
             }
         }
     }

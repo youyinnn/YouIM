@@ -1,4 +1,4 @@
-package com.github.youyinnn.server;
+package com.github.youyinnn.server.tcp;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -7,6 +7,7 @@ import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.intf.MsgType;
 import com.github.youyinnn.common.packets.*;
+import com.github.youyinnn.server.Server;
 import com.github.youyinnn.server.service.GroupCheckService;
 import com.github.youyinnn.youdbutils.exceptions.AutowiredException;
 import com.github.youyinnn.youdbutils.ioc.YouServiceIocContainer;
@@ -50,7 +51,7 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
                 if (Server.isServerHandlerLogEnabled()) {
                     SERVER_LOG.info("收到登陆请求: userId:{}.",loginRequestBody.getLoginUserId());
                 }
-                beforeLoginRequestHandle();
+                beforeHandle(msgType);
                 handler = loginRequestHandle(loginRequestBody, channelContext);
                 if (handler) {
                     JSONObject bodyJsonObj = JSON.parseObject(bodyJsonStr);
@@ -63,7 +64,7 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
                         }
                     }
                 }
-                afterLoginRequestHandle();
+                afterHandled(msgType);
             } else if (msgType == MsgType.GROUP_MSG_REQ) {
                 GroupMsgRequestBody groupMsgRequestBody = Json.toBean(bodyJsonStr, GroupMsgRequestBody.class);
                 if (Server.isServerHandlerLogEnabled()) {
@@ -72,9 +73,9 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
                             groupMsgRequestBody.getToGroup(),
                             groupMsgRequestBody.getMsg());
                 }
-                beforeGroupMsgRequestHandle();
+                beforeHandle(msgType);
                 groupMsgRequestHandle(groupMsgRequestBody, channelContext);
-                afterGroupMsgRequestHandle();
+                afterHandled(msgType);
             } else if (msgType == MsgType.JOIN_GROUP_REQ) {
                 JoinGroupRequestBody joinGroupRequestBody = Json.toBean(bodyJsonStr, JoinGroupRequestBody.class);
                 if (Server.isServerHandlerLogEnabled()) {
@@ -82,12 +83,12 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
                             joinGroupRequestBody.getFromUserId(),
                             joinGroupRequestBody.getGroup());
                 }
-                beforeJoinGroupRequestHandle();
+                beforeHandle(msgType);
                 handler = joinGroupRequestHandle(joinGroupRequestBody, channelContext);
                 if (handler) {
                     service.registerGroupInJson(joinGroupRequestBody.getFromUserId(),joinGroupRequestBody.getGroup());
                 }
-                afterJoinGroupRequestHandle();
+                afterHandled(msgType);
             } else if (msgType == MsgType.P2P_REQ) {
                 P2PRequestBody p2PRequestBody = Json.toBean(bodyJsonStr, P2PRequestBody.class);
                 if (Server.isServerHandlerLogEnabled()) {
@@ -96,22 +97,22 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
                             p2PRequestBody.getToUserId(),
                             p2PRequestBody.getMsg());
                 }
-                beforeP2PMsgRequestHandle();
+                beforeHandle(msgType);
                 handler = p2PMsgRequestHandle(p2PRequestBody, channelContext);
-                afterP2PMsgRequestHandle();
+                afterHandled(msgType);
             } else if (msgType == MsgType.LOGOUT_REQ) {
                 LogoutRequestBody logoutRequestBody = Json.toBean(bodyJsonStr, LogoutRequestBody.class);
                 if (Server.isServerHandlerLogEnabled()) {
                     SERVER_LOG.info("收到登出请求: userId:{}.", logoutRequestBody.getLogoutUserId());
                 }
-                beforeLogoutRequestHandle();
+                beforeHandle(msgType);
                 logoutRequestHandle(channelContext);
-                afterLogoutRequestHandle();
+                afterHandled(msgType);
             } else if (msgType == MsgType.QUIT_GROUP_REQ) {
                 QuitGroupRequestBody quitGroupRequestBody = Json.toBean(bodyJsonStr, QuitGroupRequestBody.class);
-                beforeQuitGroupRequestHandle();
+                beforeHandle(msgType);
                 quitGroupRequestHandle(channelContext, quitGroupRequestBody.getGroupId());
-                afterQUitGroupRequestHandle();
+                afterHandled(msgType);
             } else if (msgType == MsgType.HEART_BEAT_REQ) {
                 handler = heartbeatRequestHandler(Json.toBean(bodyJsonStr, GroupMsgRequestBody.class), channelContext);
             }
@@ -179,76 +180,30 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
     /**
      * 必须实现一个Token获取方法
      *
-     * @return token
+     * @return token token
      */
     protected abstract String getToken();
 
     /**
-     * Before login request handle.
+     * Before handle.
+     *
+     * @param msgType the msg type
      */
-    protected abstract void beforeLoginRequestHandle();
+    protected abstract void beforeHandle(byte msgType);
 
     /**
-     * After login request handle.
+     * After handle.
+     *
+     * @param msgType the msg type
      */
-    protected abstract void afterLoginRequestHandle();
-
-    /**
-     * Before group msg request handle.
-     */
-    protected abstract void beforeGroupMsgRequestHandle();
-
-    /**
-     * After group msg request handle.
-     */
-    protected abstract void afterGroupMsgRequestHandle();
-
-    /**
-     * Before join group request handle.
-     */
-    protected abstract void beforeJoinGroupRequestHandle();
-
-    /**
-     * After join group request handle.
-     */
-    protected abstract void afterJoinGroupRequestHandle();
-
-    /**
-     * Before p 2 p msg request handle.
-     */
-    protected abstract void beforeP2PMsgRequestHandle();
-
-    /**
-     * After p 2 p msg request handle.
-     */
-    protected abstract void afterP2PMsgRequestHandle();
-
-    /**
-     * Before logout request handle.
-     */
-    protected abstract void beforeLogoutRequestHandle();
-
-    /**
-     * After logout request handle.
-     */
-    protected abstract void afterLogoutRequestHandle();
-
-    /**
-     * Before quit group request handle.
-     */
-    protected abstract void beforeQuitGroupRequestHandle();
-
-    /**
-     * After q uit group request handle.
-     */
-    protected abstract void afterQUitGroupRequestHandle();
+    protected abstract void afterHandled(byte msgType);
 
     /**
      * 心跳请求处理
      *
      * @param baseMsgBody    the base msg body
      * @param channelContext the channel context
-     * @return boolean
+     * @return boolean boolean
      */
     protected abstract boolean heartbeatRequestHandler(GroupMsgRequestBody baseMsgBody, ChannelContext channelContext);
 }

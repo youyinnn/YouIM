@@ -1,6 +1,7 @@
-package com.github.youyinnn.server;
+package com.github.youyinnn.server.ws;
 
 import com.github.youyinnn.common.WsSessionContext;
+import com.github.youyinnn.server.Server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.tio.core.ChannelContext;

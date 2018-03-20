@@ -1,7 +1,7 @@
 package com.github.youyinnn.demo.server;
 
 import com.github.youyinnn.common.packets.GroupMsgRequestBody;
-import com.github.youyinnn.server.AbstractServerAioHandler;
+import com.github.youyinnn.server.tcp.AbstractServerAioHandler;
 import org.tio.core.ChannelContext;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -19,65 +19,14 @@ public class MyServerAioHandler extends AbstractServerAioHandler {
     }
 
     @Override
-    protected void beforeLoginRequestHandle() {
+    protected void beforeHandle(byte msgType) {
 
     }
 
     @Override
-    protected void afterLoginRequestHandle() {
+    protected void afterHandled(byte msgType) {
 
     }
-
-    @Override
-    protected void beforeGroupMsgRequestHandle() {
-
-    }
-
-    @Override
-    protected void afterGroupMsgRequestHandle() {
-
-    }
-
-    @Override
-    protected void beforeJoinGroupRequestHandle() {
-
-    }
-
-    @Override
-    protected void afterJoinGroupRequestHandle() {
-
-    }
-
-    @Override
-    protected void beforeP2PMsgRequestHandle() {
-
-    }
-
-    @Override
-    protected void afterP2PMsgRequestHandle() {
-
-    }
-
-    @Override
-    protected void beforeLogoutRequestHandle() {
-
-    }
-
-    @Override
-    protected void afterLogoutRequestHandle() {
-
-    }
-
-    @Override
-    protected void beforeQuitGroupRequestHandle() {
-
-    }
-
-    @Override
-    protected void afterQUitGroupRequestHandle() {
-
-    }
-
 
     @Override
     protected boolean heartbeatRequestHandler(GroupMsgRequestBody baseMsgBody, ChannelContext channelContext) {

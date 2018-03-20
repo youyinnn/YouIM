@@ -1,6 +1,6 @@
 package com.github.youyinnn.demo.wsserver;
 
-import com.github.youyinnn.server.AbstractWsServerAioListener;
+import com.github.youyinnn.server.ws.AbstractWsServerAioListener;
 import org.tio.core.ChannelContext;
 import org.tio.core.intf.Packet;
 
