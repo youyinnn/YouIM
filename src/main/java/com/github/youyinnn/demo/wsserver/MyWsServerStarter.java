@@ -1,5 +1,6 @@
 package com.github.youyinnn.demo.wsserver;
 
+import com.github.youyinnn.demo.server.MyServerStarter;
 import com.github.youyinnn.server.Server;
 import com.github.youyinnn.server.ServerConfig;
 
@@ -12,6 +13,7 @@ public class MyWsServerStarter {
         Server.enableAllLogEnabled();
         Server.init(ServerConfig.getWsServerConfig(5999));
         Server.start();
+        MyServerStarter.command();
     }
 
 }

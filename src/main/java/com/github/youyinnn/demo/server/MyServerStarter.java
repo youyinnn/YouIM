@@ -16,7 +16,7 @@ public class MyServerStarter {
         command();
     }
 
-    private static void command() {
+    public static void command() {
         java.util.Scanner sc = new java.util.Scanner(System.in);
         int i = 1;
         StringBuilder sb = new StringBuilder();
@@ -64,7 +64,7 @@ public class MyServerStarter {
             Server.toGroup(msg, toGroup);
         } else if ("ing".equalsIgnoreCase(command)) {
             String userId = args[1];
-            Server.isLogin(userId);
+            System.err.println(Server.isLogin(userId));
         }
     }
 

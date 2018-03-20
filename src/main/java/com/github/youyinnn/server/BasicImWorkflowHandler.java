@@ -2,7 +2,6 @@ package com.github.youyinnn.server;
 
 import com.alibaba.fastjson.JSON;
 import com.github.youyinnn.common.BaseSessionContext;
-import com.github.youyinnn.common.WsSessionContext;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.*;
 import com.github.youyinnn.common.utils.PacketFactory;
@@ -51,23 +50,18 @@ public class BasicImWorkflowHandler {
          * 在该请求连接中获取属性对象,将该请求者id设置到连接通道的属性对象上.
          * 这个设置算是面向用户的设置,和框架无关,仅和用户业务有关.
          */
-        if (Server.isWebSocketProtocol()) {
-            WsSessionContext sessionContext = (WsSessionContext) channelContext.getAttribute();
-            sessionContext.setUserId(userId);
-        } else {
-            BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-            sessionContext.setUserId(userId);
-        }
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        sessionContext.setUserId(userId);
 
         /*
          * 组成登陆的响应包, 发送回登陆的请求方.
          */
         Boolean send;
         if (Server.isWebSocketProtocol()) {
-            BaseWsPacket responsePacket = PacketFactory.loginResponseWsPacket(Const.RequestCode.SUCCESS, token);
+            BaseWsPacket responsePacket = (BaseWsPacket) PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token);
             send = Aio.send(channelContext, responsePacket);
         } else {
-            BasePacket responsePacket = PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token);
+            BasePacket responsePacket = (BasePacket) PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token);
             send = Aio.send(channelContext, responsePacket);
         }
         if (send) {
@@ -93,7 +87,7 @@ public class BasicImWorkflowHandler {
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
 
         BasePacket responsePacket =
-                PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
+                (BasePacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
         Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
     }
 
@@ -107,7 +101,7 @@ public class BasicImWorkflowHandler {
         Aio.bindGroup(channelContext, joinGroupRequestBody.getGroup());
 
         BasePacket responsePacket =
-                PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
+                (BasePacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
 
         Boolean send = Aio.send(channelContext, responsePacket);
         if (send) {
@@ -126,7 +120,7 @@ public class BasicImWorkflowHandler {
         }
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         BasePacket responsePacket =
-                PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
+                (BasePacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
         return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
     }
 
