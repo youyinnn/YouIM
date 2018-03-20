@@ -39,6 +39,10 @@ public class BaseWsPacket extends Packet {
     public BaseWsPacket() {
     }
 
+    public BaseWsPacket(byte[] body) {
+        this.body = body;
+    }
+
     public boolean isHandshake() {
         return isHandshake;
     }

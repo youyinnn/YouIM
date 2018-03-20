@@ -2,6 +2,7 @@ package com.github.youyinnn.server;
 
 import com.alibaba.fastjson.JSON;
 import com.github.youyinnn.common.BaseSessionContext;
+import com.github.youyinnn.common.WsSessionContext;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.*;
 import com.github.youyinnn.common.utils.PacketFactory;
@@ -50,14 +51,25 @@ public class BasicImWorkflowHandler {
          * 在该请求连接中获取属性对象,将该请求者id设置到连接通道的属性对象上.
          * 这个设置算是面向用户的设置,和框架无关,仅和用户业务有关.
          */
-        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        sessionContext.setUserId(userId);
+        if (Server.isWebSocketProtocol()) {
+            WsSessionContext sessionContext = (WsSessionContext) channelContext.getAttribute();
+            sessionContext.setUserId(userId);
+        } else {
+            BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+            sessionContext.setUserId(userId);
+        }
 
         /*
          * 组成登陆的响应包, 发送回登陆的请求方.
          */
-        BasePacket responsePacket = PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token);
-        Boolean send = Aio.send(channelContext, responsePacket);
+        Boolean send;
+        if (Server.isWebSocketProtocol()) {
+            BaseWsPacket responsePacket = PacketFactory.loginResponseWsPacket(Const.RequestCode.SUCCESS, token);
+            send = Aio.send(channelContext, responsePacket);
+        } else {
+            BasePacket responsePacket = PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token);
+            send = Aio.send(channelContext, responsePacket);
+        }
         if (send) {
             String groupJsonStr = service.getGroupJsonStr(userId);
             if (groupJsonStr != null) {

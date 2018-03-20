@@ -1,8 +1,12 @@
 package com.github.youyinnn.common.utils;
 
-import com.alibaba.fastjson.JSON;
+import com.github.youyinnn.common.OpCode;
+import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.intf.MsgType;
 import com.github.youyinnn.common.packets.*;
+import com.github.youyinnn.youwebutils.second.JsonHelper;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author youyinnn
@@ -65,9 +69,20 @@ public class PacketFactory {
         return new BasePacket(MsgType.QUIT_GROUP_REQ, new QuitGroupRequestBody(userId, groupId));
     }
 
-    public static void main(String[] args) {
-        BasePacket basePacket = loginRequestPacket("123");
-        System.out.println(JSON.toJSONString(basePacket));
+    public static BaseWsPacket loginResponseWsPacket(String resultCode, String token) {
+        return getTextWsPacket(JsonHelper.getJsonStr("resultCode", resultCode, "token", token));
+    }
+
+    public static BaseWsPacket getTextWsPacket(String msgBody) {
+        try {
+            BaseWsPacket wsPacket;
+            wsPacket = new BaseWsPacket(msgBody.getBytes(Const.CHARSET));
+            wsPacket.setWsOpCode(OpCode.TEXT);
+            return wsPacket;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

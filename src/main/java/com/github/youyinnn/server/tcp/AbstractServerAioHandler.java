@@ -54,8 +54,6 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
         return null;
     }
 
-
-
     /**
      * 必须实现一个Token获取方法
      *

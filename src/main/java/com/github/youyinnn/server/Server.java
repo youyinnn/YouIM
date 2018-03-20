@@ -161,4 +161,12 @@ public class Server {
     public static AioServer getAioServer() {
         return aioServer;
     }
+
+    public static ServerConfig getServerConfig() {
+        return serverConfig;
+    }
+
+    public static boolean isWebSocketProtocol() {
+        return ServerConfig.PROTOCOL_WEBSOCKET.equalsIgnoreCase(serverConfig.getServerProtocol());
+    }
 }

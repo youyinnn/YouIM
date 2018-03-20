@@ -5,7 +5,7 @@ import com.github.youyinnn.server.model.GroupCheck;
 import com.github.youyinnn.youdbutils.dao.YouDao;
 import com.github.youyinnn.youdbutils.exceptions.NoneffectiveUpdateExecuteException;
 import com.github.youyinnn.youdbutils.ioc.annotations.YouService;
-import com.github.youyinnn.youdbutils.utils.YouCollectionsUtils;
+import com.github.youyinnn.youwebutils.third.YouCollectionsUtils;
 
 import java.util.List;
 

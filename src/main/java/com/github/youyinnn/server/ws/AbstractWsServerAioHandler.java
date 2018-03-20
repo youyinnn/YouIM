@@ -11,6 +11,7 @@ import com.github.youyinnn.common.intf.MsgType;
 import com.github.youyinnn.common.packets.BaseWsPacket;
 import com.github.youyinnn.common.utils.BASE64Util;
 import com.github.youyinnn.common.utils.SHA1Util;
+import com.github.youyinnn.server.BasicImWorkflowHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -145,9 +146,9 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
                 if (msgType == null) {
                     SERVER_LOG.error("无效的msgType");
                 } else {
-                    JSONObject msgBodyJson = JSON.parseObject(textBodyJson.getString("msgBody"));
+                    String msgBody = textBodyJson.getString("msgBody");
                     if (msgType == MsgType.LOGIN_REQ) {
-
+                        BasicImWorkflowHandler.loginRequestHandle(msgBody, channelContext, getToken());
                     } else if (msgType == MsgType.GROUP_MSG_REQ) {
 
                     } else if (msgType == MsgType.JOIN_GROUP_REQ) {
@@ -191,6 +192,13 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
     private void onClose(ChannelContext channelContext) {
         Aio.remove(channelContext, "receive close flag");
     }
+
+    /**
+     * 必须实现一个Token获取方法
+     *
+     * @return token token
+     */
+    protected abstract String getToken();
 
     /**
      * After handshaked.
