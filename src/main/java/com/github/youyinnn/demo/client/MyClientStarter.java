@@ -12,7 +12,7 @@ public class MyClientStarter {
     private static String loginUserId;
 
     public static void main(String[] args) throws Exception {
-        Client.init(5556);
+        Client.init(5578);
         Client.connect();
         command();
     }

@@ -1,14 +1,19 @@
 package com.github.youyinnn.server.ws;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.youyinnn.common.OpCode;
 import com.github.youyinnn.common.WsServerDecoder;
 import com.github.youyinnn.common.WsServerEncoder;
 import com.github.youyinnn.common.WsSessionContext;
 import com.github.youyinnn.common.intf.Const;
+import com.github.youyinnn.common.intf.MsgType;
 import com.github.youyinnn.common.packets.BaseWsPacket;
 import com.github.youyinnn.common.utils.BASE64Util;
 import com.github.youyinnn.common.utils.SHA1Util;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.tio.core.Aio;
 import org.tio.core.ChannelContext;
 import org.tio.core.GroupContext;
@@ -28,6 +33,8 @@ import java.util.Map;
  */
 public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
 
+    private static final Logger SERVER_LOG = LogManager.getLogger("$im_server");
+
     @Override
     public Packet decode(ByteBuffer buffer, ChannelContext channelContext) throws AioDecodeException {
         WsSessionContext wsSessionContext = (WsSessionContext) channelContext.getAttribute();
@@ -39,12 +46,10 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
             if (request == null) {
                 return null;
             }
-
             HttpResponse response = updateWebSocketProtocol(request, channelContext);
             if (response == null) {
                 throw new AioDecodeException("http协议升级到webSocket协议失败");
             }
-
             wsSessionContext.setHandshakeRequestPacket(request);
             wsSessionContext.setHandshakeResponsePacket(response);
 
@@ -134,7 +139,28 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
             if (bytes == null || bytes.length == 0) {
                 Aio.remove(channelContext, "错误的webSocket包, body无效");
             } else {
-                onText(new String(bytes, Const.CHARSET));
+                String textBody = new String(bytes, Const.CHARSET);
+                JSONObject textBodyJson = JSON.parseObject(textBody);
+                Byte msgType = textBodyJson.getByte("msgType");
+                if (msgType == null) {
+                    SERVER_LOG.error("无效的msgType");
+                } else {
+                    JSONObject msgBodyJson = JSON.parseObject(textBodyJson.getString("msgBody"));
+                    if (msgType == MsgType.LOGIN_REQ) {
+
+                    } else if (msgType == MsgType.GROUP_MSG_REQ) {
+
+                    } else if (msgType == MsgType.JOIN_GROUP_REQ) {
+
+                    } else if (msgType == MsgType.P2P_REQ) {
+
+                    } else if (msgType == MsgType.LOGOUT_REQ) {
+
+                    } else if (msgType == MsgType.QUIT_GROUP_REQ) {
+
+                    }
+                }
+
             }
         } else if (opCode == OpCode.BINARY) {
             if (bytes == null || bytes.length == 0) {
@@ -155,9 +181,6 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
         return httpResponse;
     }
 
-    private String onText(String text) {
-        return text;
-    }
 
     private ByteBuffer onBytes(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
