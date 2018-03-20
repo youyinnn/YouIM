@@ -121,11 +121,7 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
             afterHandshaked(request, response, channelContext);
         } else {
             beforeHandle(request, response, channelContext);
-            BaseWsPacket wsResponsePacket =
-                    handle(wsRequestPacket.getBody(), wsRequestPacket.getWsOpCode(), channelContext);
-            if (wsResponsePacket != null) {
-                Aio.send(channelContext, wsResponsePacket);
-            }
+            handle(wsRequestPacket.getBody(), wsRequestPacket.getWsOpCode(), channelContext);
             afterHandled(request, response, channelContext);
         }
     }
@@ -133,26 +129,18 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
     /**
      * 按照类型处理webSocket消息
      */
-    private BaseWsPacket handle(byte[] bytes, OpCode opCode, ChannelContext channelContext) throws Exception {
-        BaseWsPacket wsResponsePacket = null;
+    private void handle(byte[] bytes, OpCode opCode, ChannelContext channelContext) throws Exception {
         if (opCode == OpCode.TEXT) {
             if (bytes == null || bytes.length == 0) {
                 Aio.remove(channelContext, "错误的webSocket包, body无效");
             } else {
-                String onText = onText(new String(bytes, Const.CHARSET));
-                if (onText != null) {
-                    wsResponsePacket = BaseWsPacket.fromText(onText, Const.CHARSET);
-                }
+                onText(new String(bytes, Const.CHARSET));
             }
         } else if (opCode == OpCode.BINARY) {
             if (bytes == null || bytes.length == 0) {
                 Aio.remove(channelContext, "错误的webSocket包, body无效");
             } else {
-                ByteBuffer onBytes = onBytes(bytes);
-                if (onBytes != null) {
-                    byte[] array = onBytes.array();
-                    wsResponsePacket = BaseWsPacket.fromBytes(array);
-                }
+                onBytes(bytes);
             }
         } else if (opCode == OpCode.PING || opCode == OpCode.PONG) {
             System.err.println("收到" + opCode);
@@ -161,7 +149,6 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
         } else {
             Aio.remove(channelContext, "错误的webSocket包，错误的Opcode");
         }
-        return wsResponsePacket;
     }
 
     private HttpResponse handshake(HttpResponse httpResponse) {

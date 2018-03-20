@@ -1,9 +1,10 @@
 package com.github.youyinnn.client;
 
-import com.github.youyinnn.demo.client.MyClientAioHandler;
-import com.github.youyinnn.demo.client.MyClientAioListener;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.BasePacket;
+import com.github.youyinnn.common.utils.PacketFactory;
+import com.github.youyinnn.demo.client.MyClientAioHandler;
+import com.github.youyinnn.demo.client.MyClientAioListener;
 import org.tio.client.AioClient;
 import org.tio.client.ClientChannelContext;
 import org.tio.client.ClientGroupContext;
@@ -116,7 +117,7 @@ public class Client {
     }
 
     public static Boolean login(String userId) {
-        Boolean send = aioSend(BasePacket.loginRequestPacket(userId));
+        Boolean send = aioSend(PacketFactory.loginRequestPacket(userId));
         if (send) {
             loginUserId = userId;
         }
@@ -125,7 +126,7 @@ public class Client {
 
     public static Boolean join(String group, String fromUserId) {
         if (isLogin()) {
-            return aioSend(BasePacket.joinGroupRequestPacket(group, fromUserId));
+            return aioSend(PacketFactory.joinGroupRequestPacket(group, fromUserId));
         } else {
             return false;
         }
@@ -133,7 +134,7 @@ public class Client {
 
     public static Boolean p2G(String msg, String toGroup, String fromUserId) {
         if (isLogin()) {
-            return aioSend(BasePacket.groupMsgRequestPacket(msg, toGroup, fromUserId));
+            return aioSend(PacketFactory.groupMsgRequestPacket(msg, toGroup, fromUserId));
         } else {
             return false;
         }
@@ -141,7 +142,7 @@ public class Client {
 
     public static Boolean p2P(String msg, String toUserId, String fromUserId) {
         if (isLogin()) {
-            return aioSend(BasePacket.p2PMsgRequestPacket(msg, toUserId, fromUserId));
+            return aioSend(PacketFactory.p2PMsgRequestPacket(msg, toUserId, fromUserId));
         } else {
             return false;
         }
@@ -149,7 +150,7 @@ public class Client {
 
     public static Boolean logout() {
         if (isLogin()) {
-            return aioSend(BasePacket.logoutRequestPacket(loginUserId));
+            return aioSend(PacketFactory.logoutRequestPacket(loginUserId));
         } else {
             return false;
         }
@@ -157,7 +158,7 @@ public class Client {
 
     public static Boolean quit(String groupId) {
         if (isLogin()) {
-            return aioSend(BasePacket.quitGroupRequestPacket(loginUserId, groupId));
+            return aioSend(PacketFactory.quitGroupRequestPacket(loginUserId, groupId));
         } else {
             return false;
         }

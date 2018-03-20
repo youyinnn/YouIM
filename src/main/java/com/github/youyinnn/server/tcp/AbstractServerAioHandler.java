@@ -7,6 +7,7 @@ import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.intf.MsgType;
 import com.github.youyinnn.common.packets.*;
+import com.github.youyinnn.common.utils.PacketFactory;
 import com.github.youyinnn.server.Server;
 import com.github.youyinnn.server.service.GroupCheckService;
 import com.github.youyinnn.youdbutils.exceptions.AutowiredException;
@@ -140,7 +141,7 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
         /*
          * 组成登陆的响应包, 发送回登陆的请求方.
          */
-        BasePacket responsePacket = BasePacket.loginResponsePacket(Const.RequestCode.SUCCESS,getToken());
+        BasePacket responsePacket = PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS,getToken());
         return Aio.send(channelContext, responsePacket);
     }
 
@@ -148,7 +149,7 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
 
         BasePacket responsePacket =
-                BasePacket.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
+                PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
         Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
     }
 
@@ -156,14 +157,14 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
         Aio.bindGroup(channelContext, joinGroupRequestBody.getGroup());
 
         BasePacket responsePacket =
-                BasePacket.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
+                PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
         return Aio.send(channelContext, responsePacket);
     }
 
     private Boolean p2PMsgRequestHandle(P2PRequestBody p2PRequestBody, ChannelContext channelContext) {
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         BasePacket responsePacket =
-                BasePacket.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
+                PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
         return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
     }
 

@@ -4,6 +4,7 @@ import com.github.youyinnn.common.AbstractAioHandler;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.intf.MsgType;
 import com.github.youyinnn.common.packets.*;
+import com.github.youyinnn.common.utils.PacketFactory;
 import org.tio.client.intf.ClientAioHandler;
 import org.tio.core.ChannelContext;
 import org.tio.core.intf.Packet;
@@ -16,7 +17,7 @@ import org.tio.utils.json.Json;
  */
 public abstract class AbstractClientAioHandler extends AbstractAioHandler implements ClientAioHandler {
 
-    private static BasePacket heartbeatPacket = BasePacket.heartbeatRequestPacket();
+    private static BasePacket heartbeatPacket = PacketFactory.heartbeatRequestPacket();
 
     @Override
     public Packet heartbeatPacket() {

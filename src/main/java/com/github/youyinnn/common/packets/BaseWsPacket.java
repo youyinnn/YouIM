@@ -3,8 +3,6 @@ package com.github.youyinnn.common.packets;
 import com.github.youyinnn.common.OpCode;
 import org.tio.core.intf.Packet;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * @author youyinnn
  */
@@ -108,23 +106,5 @@ public class BaseWsPacket extends Packet {
     @Override
     public String logstr() {
         return "webSocket";
-    }
-
-    public static BaseWsPacket fromText(String text, String charset) {
-        BaseWsPacket wsResponse = new BaseWsPacket();
-        try {
-            wsResponse.setBody(text.getBytes(charset));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        wsResponse.setWsOpCode(OpCode.TEXT);
-        return wsResponse;
-    }
-
-    public static BaseWsPacket fromBytes(byte[] bytes) {
-        BaseWsPacket wsResponse = new BaseWsPacket();
-        wsResponse.setBody(bytes);
-        wsResponse.setWsOpCode(OpCode.BINARY);
-        return wsResponse;
     }
 }
