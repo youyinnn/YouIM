@@ -146,22 +146,21 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
                 if (msgType == null) {
                     SERVER_LOG.error("无效的msgType");
                 } else {
-                    String msgBody = textBodyJson.getString("msgBody");
+                    String bodyJsonStr = textBodyJson.getString("bodyJsonStr");
                     if (msgType == MsgType.LOGIN_REQ) {
-                        BasicImWorkflowHandler.loginRequestHandle(msgBody, channelContext, getToken());
+                        BasicImWorkflowHandler.loginRequestHandle(bodyJsonStr, channelContext, getToken());
                     } else if (msgType == MsgType.GROUP_MSG_REQ) {
-
+                        BasicImWorkflowHandler.groupMsgRequestHandle(bodyJsonStr, channelContext);
                     } else if (msgType == MsgType.JOIN_GROUP_REQ) {
-
+                        BasicImWorkflowHandler.joinGroupRequestHandle(bodyJsonStr, channelContext);
                     } else if (msgType == MsgType.P2P_REQ) {
-
+                        BasicImWorkflowHandler.p2PMsgRequestHandle(bodyJsonStr, channelContext);
                     } else if (msgType == MsgType.LOGOUT_REQ) {
-
+                        BasicImWorkflowHandler.logoutRequestHandle(bodyJsonStr, channelContext);
                     } else if (msgType == MsgType.QUIT_GROUP_REQ) {
-
+                        BasicImWorkflowHandler.quitGroupRequestHandle(bodyJsonStr, channelContext);
                     }
                 }
-
             }
         } else if (opCode == OpCode.BINARY) {
             if (bytes == null || bytes.length == 0) {

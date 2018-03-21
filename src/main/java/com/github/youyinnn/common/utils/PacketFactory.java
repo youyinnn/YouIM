@@ -68,7 +68,7 @@ public class PacketFactory {
 
     public static Object systemMsgToAllPacket(String msg) {
         if (Server.isWebSocketProtocol()) {
-            return getTextWsPacket("msg", msg);
+            return getTextWsPacket("msg", msg, "fromUserId", "SYSTEM");
         } else {
             return new BasePacket(MsgType.SYS_MSG_2ALL, new P2PResponseBody(msg, "SYSTEM"));
         }

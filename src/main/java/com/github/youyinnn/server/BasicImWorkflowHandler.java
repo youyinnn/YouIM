@@ -86,9 +86,15 @@ public class BasicImWorkflowHandler {
         }
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
 
-        BasePacket responsePacket =
-                (BasePacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
-        Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
+        if (Server.isWebSocketProtocol()) {
+            BaseWsPacket responsePacket =
+                    (BaseWsPacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
+            Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
+        } else {
+            BasePacket responsePacket =
+                    (BasePacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
+            Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
+        }
     }
 
     public static Boolean joinGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
@@ -100,10 +106,16 @@ public class BasicImWorkflowHandler {
         }
         Aio.bindGroup(channelContext, joinGroupRequestBody.getGroup());
 
-        BasePacket responsePacket =
-                (BasePacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
-
-        Boolean send = Aio.send(channelContext, responsePacket);
+        Boolean send;
+        if (Server.isWebSocketProtocol()) {
+            BaseWsPacket responsePacket =
+                    (BaseWsPacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
+            send = Aio.send(channelContext, responsePacket);
+        } else {
+            BasePacket responsePacket =
+                    (BasePacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
+            send = Aio.send(channelContext, responsePacket);
+        }
         if (send) {
             service.registerGroupInJson(joinGroupRequestBody.getFromUserId(),joinGroupRequestBody.getGroup());
         }
@@ -119,9 +131,15 @@ public class BasicImWorkflowHandler {
                     p2PRequestBody.getMsg());
         }
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        BasePacket responsePacket =
-                (BasePacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
-        return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
+        if (Server.isWebSocketProtocol()) {
+            BaseWsPacket responsePacket =
+                    (BaseWsPacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
+            return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
+        } else {
+            BasePacket responsePacket =
+                    (BasePacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
+            return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
+        }
     }
 
     public static void logoutRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
