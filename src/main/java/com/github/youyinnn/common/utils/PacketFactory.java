@@ -6,6 +6,7 @@ import com.github.youyinnn.common.intf.MsgType;
 import com.github.youyinnn.common.packets.*;
 import com.github.youyinnn.server.Server;
 import com.github.youyinnn.youwebutils.second.JsonHelper;
+import org.tio.core.intf.Packet;
 
 import java.io.UnsupportedEncodingException;
 
@@ -18,7 +19,7 @@ public class PacketFactory {
         return new BasePacket(MsgType.LOGIN_REQ, new LoginRequestBody(userId));
     }
 
-    public static Object loginResponsePacket(String resultCode, String token) {
+    public static Packet loginResponsePacket(String resultCode, String token) {
         if (Server.isWebSocketProtocol()) {
             return getTextWsPacket("resultCode", resultCode, "token", token);
         } else {
@@ -30,7 +31,7 @@ public class PacketFactory {
         return new BasePacket(MsgType.JOIN_GROUP_REQ, new JoinGroupRequestBody(group, fromUserId));
     }
 
-    public static Object joinGroupResponsePacket(String resultCode, String msg, String group) {
+    public static Packet joinGroupResponsePacket(String resultCode, String msg, String group) {
         if (Server.isWebSocketProtocol()) {
             return getTextWsPacket("resultCode", resultCode, "msg", msg, "group", group);
         } else {
@@ -42,7 +43,7 @@ public class PacketFactory {
         return new BasePacket(MsgType.P2P_REQ, new P2PRequestBody(msg, toUserId, fromUserId));
     }
 
-    public static Object p2PMsgResponsePacket(String msg, String fromUserId) {
+    public static Packet p2PMsgResponsePacket(String msg, String fromUserId) {
         if (Server.isWebSocketProtocol()) {
             return getTextWsPacket("msg", msg, "fromUserId", fromUserId);
         } else {
@@ -54,7 +55,7 @@ public class PacketFactory {
         return new BasePacket(MsgType.GROUP_MSG_REQ, new GroupMsgRequestBody(msg, toGroup, fromUserId));
     }
 
-    public static Object groupMsgResponsePacket(String msg, String fromUserId, String toGroup) {
+    public static Packet groupMsgResponsePacket(String msg, String fromUserId, String toGroup) {
         if (Server.isWebSocketProtocol()) {
             return getTextWsPacket("msg", msg, "fromUserId", fromUserId, "toGroup", toGroup);
         } else {
@@ -66,7 +67,7 @@ public class PacketFactory {
         return new BasePacket(MsgType.HEART_BEAT_REQ, new BaseBody());
     }
 
-    public static Object systemMsgToAllPacket(String msg) {
+    public static Packet systemMsgToAllPacket(String msg) {
         if (Server.isWebSocketProtocol()) {
             return getTextWsPacket("msg", msg, "fromUserId", "SYSTEM");
         } else {
@@ -74,7 +75,7 @@ public class PacketFactory {
         }
     }
 
-    public static Object systemMsgToOnePacket(String msg) {
+    public static Packet systemMsgToOnePacket(String msg) {
         if (Server.isWebSocketProtocol()) {
             return getTextWsPacket("msg", msg, "fromUserId", "SYSTEM");
         } else {
@@ -82,7 +83,7 @@ public class PacketFactory {
         }
     }
 
-    public static Object systemMsgToGroupPacket(String msg, String toGroup) {
+    public static Packet systemMsgToGroupPacket(String msg, String toGroup) {
         if (Server.isWebSocketProtocol()) {
             return getTextWsPacket("msg", msg, "toGroup", toGroup, "fromUserId", "SYSTEM");
         } else {

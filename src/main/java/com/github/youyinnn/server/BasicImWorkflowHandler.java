@@ -35,8 +35,15 @@ public class BasicImWorkflowHandler {
 
     public static Boolean loginRequestHandle(String bodyJsonStr, ChannelContext channelContext, String token) {
         LoginRequestBody loginRequestBody = Json.toBean(bodyJsonStr, LoginRequestBody.class);
+        // 验证重复登陆
         if (Server.isServerHandlerLogEnabled()) {
-            SERVER_LOG.info("收到登陆请求: userId:{}.",loginRequestBody.getLoginUserId());
+            if (Server.isLogin(loginRequestBody.getLoginUserId())) {
+                SERVER_LOG.info("收到重复登陆请求: userId:{}.",loginRequestBody.getLoginUserId());
+                Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复登陆请求!"));
+                return false;
+            } else {
+                SERVER_LOG.info("收到登陆请求: userId:{}.",loginRequestBody.getLoginUserId());
+            }
         }
         /*
          * 从请求登陆方获取请求者id,将该连接通道和该id进行绑定
@@ -56,14 +63,10 @@ public class BasicImWorkflowHandler {
         /*
          * 组成登陆的响应包, 发送回登陆的请求方.
          */
-        Boolean send;
-        if (Server.isWebSocketProtocol()) {
-            BaseWsPacket responsePacket = (BaseWsPacket) PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token);
-            send = Aio.send(channelContext, responsePacket);
-        } else {
-            BasePacket responsePacket = (BasePacket) PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token);
-            send = Aio.send(channelContext, responsePacket);
-        }
+        Boolean send = Aio.send(channelContext, PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token));
+        /*
+         * 从本地数据库中复原用户的群组关系
+         */
         if (send) {
             String groupJsonStr = service.getGroupJsonStr(userId);
             if (groupJsonStr != null) {
@@ -86,16 +89,8 @@ public class BasicImWorkflowHandler {
                         groupMsgRequestBody.getToGroup(),
                         groupMsgRequestBody.getMsg());
             }
-
-            if (Server.isWebSocketProtocol()) {
-                BaseWsPacket responsePacket =
-                        (BaseWsPacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
-                Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
-            } else {
-                BasePacket responsePacket =
-                        (BasePacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
-                Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
-            }
+            Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(),
+                    PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup()));
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
         }
@@ -106,6 +101,12 @@ public class BasicImWorkflowHandler {
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         if (verifySessionAndMsg(joinGroupRequestBody.getFromUserId(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
+                if (service.isInGroup(joinGroupRequestBody.getFromUserId(), joinGroupRequestBody.getGroup())) {
+                    SERVER_LOG.info("收到重复加群请求: fromUserId:{}, toGroup:{}.",
+                            joinGroupRequestBody.getFromUserId(),
+                            joinGroupRequestBody.getGroup());
+                    Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复加群请求!"));
+                }
                 SERVER_LOG.info("收到加群请求: fromUserId:{}, toGroup:{}.",
                         joinGroupRequestBody.getFromUserId(),
                         joinGroupRequestBody.getGroup());
@@ -113,17 +114,8 @@ public class BasicImWorkflowHandler {
             Aio.bindGroup(channelContext, joinGroupRequestBody.getGroup());
             service.registerGroupInJson(joinGroupRequestBody.getFromUserId(),joinGroupRequestBody.getGroup());
 
-            Boolean send;
-            if (Server.isWebSocketProtocol()) {
-                BaseWsPacket responsePacket =
-                        (BaseWsPacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
-                send = Aio.send(channelContext, responsePacket);
-            } else {
-                BasePacket responsePacket =
-                        (BasePacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
-                send = Aio.send(channelContext, responsePacket);
-            }
-            return send;
+            return Aio.send(channelContext,
+                    PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup()));
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
             return false;
@@ -140,15 +132,8 @@ public class BasicImWorkflowHandler {
                         p2PRequestBody.getToUserId(),
                         p2PRequestBody.getMsg());
             }
-            if (Server.isWebSocketProtocol()) {
-                BaseWsPacket responsePacket =
-                        (BaseWsPacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
-                return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
-            } else {
-                BasePacket responsePacket =
-                        (BasePacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
-                return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
-            }
+            return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(),
+                    PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId()));
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
             return false;
@@ -184,15 +169,8 @@ public class BasicImWorkflowHandler {
         if (Server.isServerHandlerLogEnabled()) {
             SERVER_LOG.error("通信方绑定ID和请求信息中的请求方ID不一致,无法完成请求!");
         }
-        if (Server.isWebSocketProtocol()) {
-            BaseWsPacket responsePacket =
-                    (BaseWsPacket) PacketFactory.p2PMsgResponsePacket("通信方绑定ID和请求信息中的请求方ID不一致,无法完成请求!", "SYSTEM");
-            Aio.send(channelContext, responsePacket);
-        } else {
-            BasePacket responsePacket =
-                    (BasePacket) PacketFactory.p2PMsgResponsePacket("通信方绑定ID和请求信息中的请求方ID不一致,无法完成请求!", "SYSTEM");
-            Aio.send(channelContext, responsePacket);
-        }
+        Aio.send(channelContext,
+                PacketFactory.p2PMsgResponsePacket("通信方绑定ID和请求信息中的请求方ID不一致,无法完成请求!", "SYSTEM"));
     }
 
     private static boolean verifySessionAndMsg(String msgSenderUserId, BaseSessionContext sessionContext) {

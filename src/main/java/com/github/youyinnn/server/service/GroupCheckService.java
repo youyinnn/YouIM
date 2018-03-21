@@ -59,4 +59,9 @@ public class GroupCheckService extends YouDao<GroupCheck> {
         return updateGroupJson(userId, JSON.toJSONString(groupList));
     }
 
+    public boolean isInGroup(String userId, String groupId) {
+        String groupJsonStr = getGroupJsonStr(userId);
+        return groupId.contains(groupJsonStr);
+    }
+
 }
