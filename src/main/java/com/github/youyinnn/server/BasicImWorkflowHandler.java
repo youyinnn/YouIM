@@ -36,14 +36,15 @@ public class BasicImWorkflowHandler {
     public static Boolean loginRequestHandle(String bodyJsonStr, ChannelContext channelContext, String token) {
         LoginRequestBody loginRequestBody = Json.toBean(bodyJsonStr, LoginRequestBody.class);
         // 验证重复登陆
-        if (Server.isServerHandlerLogEnabled()) {
-            if (Server.isLogin(loginRequestBody.getLoginUserId())) {
-                SERVER_LOG.info("收到重复登陆请求: userId:{}.",loginRequestBody.getLoginUserId());
-                Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复登陆请求!"));
-                return false;
-            } else {
-                SERVER_LOG.info("收到登陆请求: userId:{}.",loginRequestBody.getLoginUserId());
+        if (Server.isLogin(loginRequestBody.getLoginUserId())) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到重复登陆请求: userId:{}.", loginRequestBody.getLoginUserId());
             }
+            Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复登陆请求!"));
+            return false;
+        }
+        if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到登陆请求: userId:{}.",loginRequestBody.getLoginUserId());
         }
         /*
          * 从请求登陆方获取请求者id,将该连接通道和该id进行绑定
@@ -100,13 +101,16 @@ public class BasicImWorkflowHandler {
         JoinGroupRequestBody joinGroupRequestBody = Json.toBean(bodyJsonStr, JoinGroupRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         if (verifySessionAndMsg(joinGroupRequestBody.getFromUserId(), sessionContext)) {
-            if (Server.isServerHandlerLogEnabled()) {
-                if (service.isInGroup(joinGroupRequestBody.getFromUserId(), joinGroupRequestBody.getGroup())) {
+            if (service.isInGroup(joinGroupRequestBody.getFromUserId(), joinGroupRequestBody.getGroup())) {
+                if (Server.isServerHandlerLogEnabled()) {
                     SERVER_LOG.info("收到重复加群请求: fromUserId:{}, toGroup:{}.",
                             joinGroupRequestBody.getFromUserId(),
                             joinGroupRequestBody.getGroup());
-                    Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复加群请求!"));
                 }
+                Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复加群请求!"));
+                return false;
+            }
+            if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到加群请求: fromUserId:{}, toGroup:{}.",
                         joinGroupRequestBody.getFromUserId(),
                         joinGroupRequestBody.getGroup());
