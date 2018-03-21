@@ -94,6 +94,9 @@ public class Server {
         if (serverConfig.getBindPort() == null) {
             serverConfig.setBindPort(Const.Server.PORT);
         }
+        if (serverConfig.getBindIp() == null) {
+            serverConfig.setBindIp(Const.Server.LOCAL_SERVER_IP);
+        }
         if (serverConfig.getHandler() == null) {
             if (ServerConfig.PROTOCOL_TCP.equalsIgnoreCase(serverConfig.getServerProtocol())) {
                 serverConfig.setHandler(new MyServerAioHandler());

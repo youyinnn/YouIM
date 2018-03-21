@@ -31,6 +31,11 @@ public class ServerConfig {
         this.bindPort = bindPort;
     }
 
+    public ServerConfig(String bindIp, Integer bindPort) {
+        this.bindIp = bindIp;
+        this.bindPort = bindPort;
+    }
+
     private ServerConfig(String bindIp, Integer bindPort, ServerAioHandler handler, ServerAioListener listener) {
         this.bindIp = bindIp;
         this.bindPort = bindPort;
@@ -55,11 +60,11 @@ public class ServerConfig {
     }
 
     public static ServerConfig getTcpServerConfig(Integer bindPort){
-        return new ServerConfig(null, bindPort, null, null);
+        return getTcpServerConfig(null, bindPort, null, null);
     }
 
     public static ServerConfig getTcpServerConfig(String bindIp, Integer bindPort){
-        return new ServerConfig(bindIp, bindPort, null, null);
+        return getTcpServerConfig(bindIp, bindPort, null, null);
     }
 
     public static ServerConfig getWsServerConfig(String bindIp, Integer bindPort, ServerAioHandler handler, ServerAioListener listener){
@@ -77,6 +82,10 @@ public class ServerConfig {
 
     public static ServerConfig getWsServerConfig(Integer bindPort, ServerAioHandler handler, ServerAioListener listener) {
         return getWsServerConfig(null, bindPort, handler, listener);
+    }
+
+    public static ServerConfig getWsServerConfig() {
+        return getWsServerConfig(null, null, null, null);
     }
 
 

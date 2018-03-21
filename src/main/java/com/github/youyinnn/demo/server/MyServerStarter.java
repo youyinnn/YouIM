@@ -11,7 +11,7 @@ public class MyServerStarter {
 
     public static void main(String[] args) {
         Server.enableAllLogEnabled();
-        Server.init(new ServerConfig(5578));
+        Server.init(new ServerConfig( 5566));
         Server.start();
         command();
     }

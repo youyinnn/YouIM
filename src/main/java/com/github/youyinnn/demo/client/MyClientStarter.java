@@ -2,6 +2,7 @@ package com.github.youyinnn.demo.client;
 
 
 import com.github.youyinnn.client.Client;
+import com.github.youyinnn.client.ClientConfig;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -12,7 +13,7 @@ public class MyClientStarter {
     private static String loginUserId;
 
     public static void main(String[] args) throws Exception {
-        Client.init(5578);
+        Client.init(new ClientConfig(5566));
         Client.connect();
         command();
     }
