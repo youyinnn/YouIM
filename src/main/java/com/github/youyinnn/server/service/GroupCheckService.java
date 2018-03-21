@@ -20,7 +20,7 @@ public class GroupCheckService extends YouDao<GroupCheck> {
                 YouCollectionsUtils.getYouHashMap("userId", userId), "AND");
     }
 
-    public boolean updateGroupJson(String userId, String joinGroupJsonStr) {
+    private boolean updateGroupJson(String userId, String joinGroupJsonStr) {
         try {
             return modelHandler.updateModel(YouCollectionsUtils.getYouHashMap("joinGroupJsonStr", joinGroupJsonStr),
                     YouCollectionsUtils.getYouHashMap("userId", userId), "AND") == 1;
@@ -50,6 +50,13 @@ public class GroupCheckService extends YouDao<GroupCheck> {
             }
         }
         return false;
+    }
+
+    public boolean deleteGroupFromJson(String userId, String groupId) {
+        String groupJsonStr = getGroupJsonStr(userId);
+        List<String> groupList = JSON.parseArray(groupJsonStr, String.class);
+        groupList.remove(groupId);
+        return updateGroupJson(userId, JSON.toJSONString(groupList));
     }
 
 }

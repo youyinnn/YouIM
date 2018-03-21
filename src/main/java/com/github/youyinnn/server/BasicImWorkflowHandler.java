@@ -78,83 +78,125 @@ public class BasicImWorkflowHandler {
 
     public static void groupMsgRequestHandle(String bodyJsonStr, ChannelContext channelContext){
         GroupMsgRequestBody groupMsgRequestBody = Json.toBean(bodyJsonStr, GroupMsgRequestBody.class);
-        if (Server.isServerHandlerLogEnabled()) {
-            SERVER_LOG.info("收到群组消息请求: fromUserId:{}, toGroup:{}, msg:{}.",
-                    groupMsgRequestBody.getFromUserId(),
-                    groupMsgRequestBody.getToGroup(),
-                    groupMsgRequestBody.getMsg());
-        }
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(groupMsgRequestBody.getFromUserId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到群组消息请求: fromUserId:{}, toGroup:{}, msg:{}.",
+                        groupMsgRequestBody.getFromUserId(),
+                        groupMsgRequestBody.getToGroup(),
+                        groupMsgRequestBody.getMsg());
+            }
 
-        if (Server.isWebSocketProtocol()) {
-            BaseWsPacket responsePacket =
-                    (BaseWsPacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
-            Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
+            if (Server.isWebSocketProtocol()) {
+                BaseWsPacket responsePacket =
+                        (BaseWsPacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
+                Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
+            } else {
+                BasePacket responsePacket =
+                        (BasePacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
+                Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
+            }
         } else {
-            BasePacket responsePacket =
-                    (BasePacket) PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup());
-            Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(), responsePacket);
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
         }
     }
 
     public static Boolean joinGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
         JoinGroupRequestBody joinGroupRequestBody = Json.toBean(bodyJsonStr, JoinGroupRequestBody.class);
-        if (Server.isServerHandlerLogEnabled()) {
-            SERVER_LOG.info("收到加群请求: fromUserId:{}, toGroup:{}.",
-                    joinGroupRequestBody.getFromUserId(),
-                    joinGroupRequestBody.getGroup());
-        }
-        Aio.bindGroup(channelContext, joinGroupRequestBody.getGroup());
-
-        Boolean send;
-        if (Server.isWebSocketProtocol()) {
-            BaseWsPacket responsePacket =
-                    (BaseWsPacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
-            send = Aio.send(channelContext, responsePacket);
-        } else {
-            BasePacket responsePacket =
-                    (BasePacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
-            send = Aio.send(channelContext, responsePacket);
-        }
-        if (send) {
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(joinGroupRequestBody.getFromUserId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到加群请求: fromUserId:{}, toGroup:{}.",
+                        joinGroupRequestBody.getFromUserId(),
+                        joinGroupRequestBody.getGroup());
+            }
+            Aio.bindGroup(channelContext, joinGroupRequestBody.getGroup());
             service.registerGroupInJson(joinGroupRequestBody.getFromUserId(),joinGroupRequestBody.getGroup());
+
+            Boolean send;
+            if (Server.isWebSocketProtocol()) {
+                BaseWsPacket responsePacket =
+                        (BaseWsPacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
+                send = Aio.send(channelContext, responsePacket);
+            } else {
+                BasePacket responsePacket =
+                        (BasePacket) PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup());
+                send = Aio.send(channelContext, responsePacket);
+            }
+            return send;
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+            return false;
         }
-        return send;
     }
 
     public static Boolean p2PMsgRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
         P2PRequestBody p2PRequestBody = Json.toBean(bodyJsonStr, P2PRequestBody.class);
-        if (Server.isServerHandlerLogEnabled()) {
-            SERVER_LOG.info("收到P2P请求: fromUserId:{}, toUserId:{}, msg:{}.",
-                    p2PRequestBody.getFromUserId(),
-                    p2PRequestBody.getToUserId(),
-                    p2PRequestBody.getMsg());
-        }
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (Server.isWebSocketProtocol()) {
-            BaseWsPacket responsePacket =
-                    (BaseWsPacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
-            return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
+        if (verifySessionAndMsg(p2PRequestBody.getFromUserId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到P2P请求: fromUserId:{}, toUserId:{}, msg:{}.",
+                        p2PRequestBody.getFromUserId(),
+                        p2PRequestBody.getToUserId(),
+                        p2PRequestBody.getMsg());
+            }
+            if (Server.isWebSocketProtocol()) {
+                BaseWsPacket responsePacket =
+                        (BaseWsPacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
+                return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
+            } else {
+                BasePacket responsePacket =
+                        (BasePacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
+                return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
+            }
         } else {
-            BasePacket responsePacket =
-                    (BasePacket) PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId());
-            return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(), responsePacket);
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+            return false;
         }
     }
 
     public static void logoutRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
         LogoutRequestBody logoutRequestBody = Json.toBean(bodyJsonStr, LogoutRequestBody.class);
-        if (Server.isServerHandlerLogEnabled()) {
-            SERVER_LOG.info("收到登出请求: userId:{}.", logoutRequestBody.getLogoutUserId());
-        }
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        sessionContext.setUserId(null);
-        Aio.unbindUser(channelContext);
+        if (verifySessionAndMsg(logoutRequestBody.getLogoutUserId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到登出请求: userId:{}.", sessionContext.getUserId());
+            }
+            sessionContext.setUserId(null);
+            Aio.unbindUser(channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
     }
 
     public static void quitGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
         QuitGroupRequestBody quitGroupRequestBody = Json.toBean(bodyJsonStr, QuitGroupRequestBody.class);
-        Aio.unbindGroup(quitGroupRequestBody.getGroupId(), channelContext);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(quitGroupRequestBody.getFromUserId(), sessionContext)) {
+            Aio.unbindGroup(quitGroupRequestBody.getGroupId(), channelContext);
+            service.deleteGroupFromJson(quitGroupRequestBody.getFromUserId(), quitGroupRequestBody.getGroupId());
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
+    }
+
+    private static void differenceBetweenMsgUserIdAndSessionUserId(ChannelContext channelContext) {
+        if (Server.isServerHandlerLogEnabled()) {
+            SERVER_LOG.error("通信方绑定ID和请求信息中的请求方ID不一致,无法完成请求!");
+        }
+        if (Server.isWebSocketProtocol()) {
+            BaseWsPacket responsePacket =
+                    (BaseWsPacket) PacketFactory.p2PMsgResponsePacket("通信方绑定ID和请求信息中的请求方ID不一致,无法完成请求!", "SYSTEM");
+            Aio.send(channelContext, responsePacket);
+        } else {
+            BasePacket responsePacket =
+                    (BasePacket) PacketFactory.p2PMsgResponsePacket("通信方绑定ID和请求信息中的请求方ID不一致,无法完成请求!", "SYSTEM");
+            Aio.send(channelContext, responsePacket);
+        }
+    }
+
+    private static boolean verifySessionAndMsg(String msgSenderUserId, BaseSessionContext sessionContext) {
+        return msgSenderUserId != null && msgSenderUserId.equals(sessionContext.getUserId());
     }
 
     public static Boolean heartbeatRequestHandler(String bodyJsonStr, ChannelContext channelContext) {

@@ -32,7 +32,7 @@ public class PacketFactory {
 
     public static Object joinGroupResponsePacket(String resultCode, String msg, String group) {
         if (Server.isWebSocketProtocol()) {
-            return getTextWsPacket("resultCote", group, "msg", msg, "group", group);
+            return getTextWsPacket("resultCode", resultCode, "msg", msg, "group", group);
         } else {
             return new BasePacket(MsgType.JOIN_GROUP_RESP, new JoinGroupResponseBody(resultCode, msg, group));
         }
@@ -44,7 +44,7 @@ public class PacketFactory {
 
     public static Object p2PMsgResponsePacket(String msg, String fromUserId) {
         if (Server.isWebSocketProtocol()) {
-            return getTextWsPacket("msg", "fromUserId", fromUserId);
+            return getTextWsPacket("msg", msg, "fromUserId", fromUserId);
         } else {
             return new BasePacket(MsgType.P2P_RESP, new P2PResponseBody(msg, fromUserId));
         }
@@ -94,8 +94,8 @@ public class PacketFactory {
         return new BasePacket(MsgType.LOGOUT_REQ, new LogoutRequestBody(userId));
     }
 
-    public static BasePacket quitGroupRequestPacket(String userId, String groupId) {
-        return new BasePacket(MsgType.QUIT_GROUP_REQ, new QuitGroupRequestBody(userId, groupId));
+    public static BasePacket quitGroupRequestPacket(String fromUserId, String groupId) {
+        return new BasePacket(MsgType.QUIT_GROUP_REQ, new QuitGroupRequestBody(fromUserId, groupId));
     }
 
     private static BaseWsPacket getTextWsPacket(Object ... objects) {

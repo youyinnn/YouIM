@@ -146,7 +146,7 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
                 if (msgType == null) {
                     SERVER_LOG.error("无效的msgType");
                 } else {
-                    String bodyJsonStr = textBodyJson.getString("bodyJsonStr");
+                    String bodyJsonStr = textBodyJson.getString("msgBody");
                     if (msgType == MsgType.LOGIN_REQ) {
                         BasicImWorkflowHandler.loginRequestHandle(bodyJsonStr, channelContext, getToken());
                     } else if (msgType == MsgType.GROUP_MSG_REQ) {

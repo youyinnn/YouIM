@@ -5,24 +5,19 @@ package com.github.youyinnn.common.packets;
  */
 public class QuitGroupRequestBody extends BaseBody {
 
-    private String userId;
+    private String fromUserId;
 
     private String groupId;
 
     public QuitGroupRequestBody() {
     }
 
-    public QuitGroupRequestBody(String userId, String groupId) {
-        this.userId = userId;
-        this.groupId = groupId;
+    public String getFromUserId() {
+        return fromUserId;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setFromUserId(String fromUserId) {
+        this.fromUserId = fromUserId;
     }
 
     public String getGroupId() {
@@ -30,6 +25,12 @@ public class QuitGroupRequestBody extends BaseBody {
     }
 
     public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public QuitGroupRequestBody(String fromUserId, String groupId) {
+
+        this.fromUserId = fromUserId;
         this.groupId = groupId;
     }
 }
