@@ -10,6 +10,9 @@ import com.github.youyinnn.demo.server.MyServerAioListener;
 import com.github.youyinnn.demo.wsserver.MyWsServerAioHandler;
 import com.github.youyinnn.demo.wsserver.MyWsServerAioListener;
 import com.github.youyinnn.youdbutils.YouDbManager;
+import com.github.youyinnn.youdbutils.druid.YouDruid;
+import com.github.youyinnn.youdbutils.exceptions.DataSourceInitException;
+import com.github.youyinnn.youdbutils.exceptions.YouDbManagerException;
 import com.github.youyinnn.youwebutils.second.PropertiesHelper;
 import com.github.youyinnn.youwebutils.third.Log4j2Helper;
 import org.apache.logging.log4j.LogManager;
@@ -67,13 +70,11 @@ public class Server {
 
     static {
         try {
-            Log4j2Helper.useConfig("$serverConf/$log4j2.xml");
+            Log4j2Helper.useConfig("$imconf/$youimlog4j2.xml");
         } catch (IOException | DocumentException e) {
             e.printStackTrace();
         }
     }
-
-    private static final Logger SERVER_LOG = LogManager.getLogger("$im_server");
 
     public static void init() {
         if (serverConfig == null) {
@@ -84,9 +85,13 @@ public class Server {
 
     public static void init(ServerConfig serverConfig) {
         Server.serverConfig = serverConfig;
-        YouDbManager.youDruid.initSQLiteDataSource("$serverConf/$sqlite.properties");
-        YouDbManager.scanPackageForModel("com.github.youyinnn.server.model");
-        YouDbManager.scanPackageForService("com.github.youyinnn.server.service");
+        try {
+            YouDbManager.signInYouDruid(YouDruid.initSQLiteDataSource("$imconf/$sqlite.properties", "a", true));
+            YouDbManager.scanPackageForModelAndService("com.github.youyinnn.server.model",
+                    "com.github.youyinnn.server.service", "a");
+        } catch (DataSourceInitException | YouDbManagerException e) {
+            e.printStackTrace();
+        }
 
         if (serverConfig.getGroupContextName() == null) {
             serverConfig.setGroupContextName(Const.Server.DEF_GROUP_CONTEXT_NAME);
@@ -123,7 +128,8 @@ public class Server {
             serverGroupContext.setHeartbeatTimeout(0);
         }
         if (serverLogEnabled) {
-            SERVER_LOG.info("Server init with Protocol:{}, Port:{}, PID:{}.",
+            Logger serverLog = LogManager.getLogger("$im_server");
+            serverLog.info("Server init with Protocol:{}, Port:{}, PID:{}.",
                     serverConfig.getServerProtocol(),
                     serverConfig.getBindPort(),
                     PropertiesHelper.getPID());
@@ -131,11 +137,12 @@ public class Server {
     }
 
     public static void start() {
+        Logger serverLog = Log4j2Helper.getLogger("$im_server");
         try {
             aioServer.start(serverConfig.getBindIp(), serverConfig.getBindPort());
-            SERVER_LOG.info("Started success in: Host: {}, PID: {}", aioServer.getServerNode(), PropertiesHelper.getPID());
+            serverLog.info("Started success in: Host: {}, PID: {}", aioServer.getServerNode(), PropertiesHelper.getPID());
         } catch (IOException e) {
-            SERVER_LOG.error(e.getMessage(), "Started fail because:" + e);
+            serverLog.error(e.getMessage(), "Started fail because:" + e);
         }
     }
 

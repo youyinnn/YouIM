@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author youyinnn
  */
-@YouService
+@YouService(dataSourceName = "a")
 public class GroupCheckService extends YouDao<GroupCheck> {
 
     public String getGroupJsonStr(String userId) {
