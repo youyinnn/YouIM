@@ -12,8 +12,8 @@ import com.github.youyinnn.common.packets.BaseWsPacket;
 import com.github.youyinnn.common.utils.BASE64Util;
 import com.github.youyinnn.common.utils.SHA1Util;
 import com.github.youyinnn.server.BasicImWorkflowHandler;
+import com.github.youyinnn.youwebutils.third.Log4j2Helper;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.tio.core.Aio;
 import org.tio.core.ChannelContext;
@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
 
-    private static final Logger SERVER_LOG = LogManager.getLogger("$im_server");
+    private static final Logger SERVER_LOG = Log4j2Helper.getLogger("$im_server");
 
     @Override
     public Packet decode(ByteBuffer buffer, ChannelContext channelContext) throws AioDecodeException {

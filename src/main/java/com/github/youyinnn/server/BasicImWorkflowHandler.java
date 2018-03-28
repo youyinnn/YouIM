@@ -1,33 +1,30 @@
 package com.github.youyinnn.server;
 
-import com.alibaba.fastjson.JSON;
 import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.*;
 import com.github.youyinnn.common.utils.PacketFactory;
-import com.github.youyinnn.server.service.GroupCheckService;
+import com.github.youyinnn.server.service.ServerService;
 import com.github.youyinnn.youdbutils.exceptions.AutowiredException;
 import com.github.youyinnn.youdbutils.ioc.YouServiceIocContainer;
-import org.apache.logging.log4j.LogManager;
+import com.github.youyinnn.youwebutils.third.Log4j2Helper;
 import org.apache.logging.log4j.Logger;
 import org.tio.core.Aio;
 import org.tio.core.ChannelContext;
 import org.tio.utils.json.Json;
-
-import java.util.List;
 
 /**
  * @author youyinnn
  */
 public class BasicImWorkflowHandler {
 
-    private static GroupCheckService service;
+    private static ServerService service;
 
-    private static final Logger SERVER_LOG = LogManager.getLogger("$im_server");
+    private static final Logger SERVER_LOG = Log4j2Helper.getLogger("$im_server");
 
     static {
         try {
-            service = (GroupCheckService) YouServiceIocContainer.getYouService(GroupCheckService.class);
+            service = (ServerService) YouServiceIocContainer.getYouService(ServerService.class);
         } catch (AutowiredException e) {
             e.printStackTrace();
         }
@@ -68,15 +65,15 @@ public class BasicImWorkflowHandler {
         /*
          * 从本地数据库中复原用户的群组关系
          */
-        if (send) {
-            String groupJsonStr = service.getGroupJsonStr(userId);
-            if (groupJsonStr != null) {
-                List<String> groups = JSON.parseArray(groupJsonStr, String.class);
-                for (String group : groups) {
-                    Aio.bindGroup(channelContext,group);
-                }
-            }
-        }
+        //if (send) {
+        //    String groupJsonStr = dao.getGroupJsonStr(userId);
+        //    if (groupJsonStr != null) {
+        //        List<String> groups = JSON.parseArray(groupJsonStr, String.class);
+        //        for (String group : groups) {
+        //            Aio.bindGroup(channelContext,group);
+        //        }
+        //    }
+        //}
         return send;
     }
 
@@ -101,22 +98,22 @@ public class BasicImWorkflowHandler {
         JoinGroupRequestBody joinGroupRequestBody = Json.toBean(bodyJsonStr, JoinGroupRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         if (verifySessionAndMsg(joinGroupRequestBody.getFromUserId(), sessionContext)) {
-            if (service.isInGroup(joinGroupRequestBody.getFromUserId(), joinGroupRequestBody.getGroup())) {
-                if (Server.isServerHandlerLogEnabled()) {
-                    SERVER_LOG.info("收到重复加群请求: fromUserId:{}, toGroup:{}.",
-                            joinGroupRequestBody.getFromUserId(),
-                            joinGroupRequestBody.getGroup());
-                }
-                Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复加群请求!"));
-                return false;
-            }
+            //if (dao.isInGroup(joinGroupRequestBody.getFromUserId(), joinGroupRequestBody.getGroup())) {
+            //    if (Server.isServerHandlerLogEnabled()) {
+            //        SERVER_LOG.info("收到重复加群请求: fromUserId:{}, toGroup:{}.",
+            //                joinGroupRequestBody.getFromUserId(),
+            //                joinGroupRequestBody.getGroup());
+            //    }
+            //    Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复加群请求!"));
+            //    return false;
+            //}
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到加群请求: fromUserId:{}, toGroup:{}.",
                         joinGroupRequestBody.getFromUserId(),
                         joinGroupRequestBody.getGroup());
             }
             Aio.bindGroup(channelContext, joinGroupRequestBody.getGroup());
-            service.registerGroupInJson(joinGroupRequestBody.getFromUserId(),joinGroupRequestBody.getGroup());
+            //dao.registerGroupInJson(joinGroupRequestBody.getFromUserId(),joinGroupRequestBody.getGroup());
 
             return Aio.send(channelContext,
                     PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup()));
@@ -163,7 +160,7 @@ public class BasicImWorkflowHandler {
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         if (verifySessionAndMsg(quitGroupRequestBody.getFromUserId(), sessionContext)) {
             Aio.unbindGroup(quitGroupRequestBody.getGroupId(), channelContext);
-            service.deleteGroupFromJson(quitGroupRequestBody.getFromUserId(), quitGroupRequestBody.getGroupId());
+            //dao.removeGroupFromJson(quitGroupRequestBody.getFromUserId(), quitGroupRequestBody.getGroupId());
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
         }

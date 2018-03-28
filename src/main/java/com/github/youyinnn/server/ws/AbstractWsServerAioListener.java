@@ -2,7 +2,7 @@ package com.github.youyinnn.server.ws;
 
 import com.github.youyinnn.common.WsSessionContext;
 import com.github.youyinnn.server.Server;
-import org.apache.logging.log4j.LogManager;
+import com.github.youyinnn.youwebutils.third.Log4j2Helper;
 import org.apache.logging.log4j.Logger;
 import org.tio.core.ChannelContext;
 import org.tio.server.intf.ServerAioListener;
@@ -12,7 +12,7 @@ import org.tio.server.intf.ServerAioListener;
  */
 public abstract class AbstractWsServerAioListener  implements ServerAioListener {
 
-    private static final Logger SERVER_LOG = LogManager.getLogger("$im_server");
+    private static final Logger SERVER_LOG = Log4j2Helper.getLogger("$im_server");
 
     @Override
     public void onAfterConnected(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {

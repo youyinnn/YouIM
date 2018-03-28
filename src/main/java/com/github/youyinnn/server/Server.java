@@ -15,7 +15,6 @@ import com.github.youyinnn.youdbutils.exceptions.DataSourceInitException;
 import com.github.youyinnn.youdbutils.exceptions.YouDbManagerException;
 import com.github.youyinnn.youwebutils.second.PropertiesHelper;
 import com.github.youyinnn.youwebutils.third.Log4j2Helper;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.tio.core.Aio;
@@ -70,7 +69,7 @@ public class Server {
 
     static {
         try {
-            Log4j2Helper.useConfig("$imconf/$youimlog4j2.xml");
+            Log4j2Helper.useConfig(Server.class.getResource("/$imconf/$youimlog4j2.xml"));
         } catch (IOException | DocumentException e) {
             e.printStackTrace();
         }
@@ -85,14 +84,15 @@ public class Server {
 
     public static void init(ServerConfig serverConfig) {
         Server.serverConfig = serverConfig;
-        try {
-            YouDbManager.signInYouDruid(YouDruid.initSQLiteDataSource("$imconf/$sqlite.properties", "a", true));
-            YouDbManager.scanPackageForModelAndService("com.github.youyinnn.server.model",
-                    "com.github.youyinnn.server.service", "a");
-        } catch (DataSourceInitException | YouDbManagerException e) {
-            e.printStackTrace();
+        if (serverConfig.isUserManagementModuleEnabled()) {
+            try {
+                YouDbManager.signInYouDruid(YouDruid.initMySQLDataSource(serverConfig.getSqlPropertiesFile(), "im", true));
+                YouDbManager.scanPackageForModelAndService("com.github.youyinnn.server.model",
+                        "com.github.youyinnn.server.dao", "im");
+            } catch (DataSourceInitException | YouDbManagerException e) {
+                e.printStackTrace();
+            }
         }
-
         if (serverConfig.getGroupContextName() == null) {
             serverConfig.setGroupContextName(Const.Server.DEF_GROUP_CONTEXT_NAME);
         }
@@ -128,7 +128,7 @@ public class Server {
             serverGroupContext.setHeartbeatTimeout(0);
         }
         if (serverLogEnabled) {
-            Logger serverLog = LogManager.getLogger("$im_server");
+            Logger serverLog = Log4j2Helper.getLogger("$im_server");
             serverLog.info("Server init with Protocol:{}, Port:{}, PID:{}.",
                     serverConfig.getServerProtocol(),
                     serverConfig.getBindPort(),
