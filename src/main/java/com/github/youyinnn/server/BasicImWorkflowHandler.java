@@ -4,9 +4,6 @@ import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.*;
 import com.github.youyinnn.common.utils.PacketFactory;
-import com.github.youyinnn.server.service.ServerService;
-import com.github.youyinnn.youdbutils.exceptions.AutowiredException;
-import com.github.youyinnn.youdbutils.ioc.YouServiceIocContainer;
 import com.github.youyinnn.youwebutils.third.Log4j2Helper;
 import org.apache.logging.log4j.Logger;
 import org.tio.core.Aio;
@@ -18,17 +15,7 @@ import org.tio.utils.json.Json;
  */
 public class BasicImWorkflowHandler {
 
-    private static ServerService service;
-
     private static final Logger SERVER_LOG = Log4j2Helper.getLogger("$im_server");
-
-    static {
-        try {
-            service = (ServerService) YouServiceIocContainer.getYouService(ServerService.class);
-        } catch (AutowiredException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static Boolean loginRequestHandle(String bodyJsonStr, ChannelContext channelContext, String token) {
         LoginRequestBody loginRequestBody = Json.toBean(bodyJsonStr, LoginRequestBody.class);
@@ -61,20 +48,7 @@ public class BasicImWorkflowHandler {
         /*
          * 组成登陆的响应包, 发送回登陆的请求方.
          */
-        Boolean send = Aio.send(channelContext, PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token));
-        /*
-         * 从本地数据库中复原用户的群组关系
-         */
-        //if (send) {
-        //    String groupJsonStr = dao.getGroupJsonStr(userId);
-        //    if (groupJsonStr != null) {
-        //        List<String> groups = JSON.parseArray(groupJsonStr, String.class);
-        //        for (String group : groups) {
-        //            Aio.bindGroup(channelContext,group);
-        //        }
-        //    }
-        //}
-        return send;
+        return Aio.send(channelContext, PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token));
     }
 
     public static void groupMsgRequestHandle(String bodyJsonStr, ChannelContext channelContext){
@@ -97,26 +71,17 @@ public class BasicImWorkflowHandler {
     public static Boolean joinGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
         JoinGroupRequestBody joinGroupRequestBody = Json.toBean(bodyJsonStr, JoinGroupRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(joinGroupRequestBody.getFromUserId(), sessionContext)) {
-            //if (dao.isInGroup(joinGroupRequestBody.getFromUserId(), joinGroupRequestBody.getGroup())) {
-            //    if (Server.isServerHandlerLogEnabled()) {
-            //        SERVER_LOG.info("收到重复加群请求: fromUserId:{}, toGroup:{}.",
-            //                joinGroupRequestBody.getFromUserId(),
-            //                joinGroupRequestBody.getGroup());
-            //    }
-            //    Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复加群请求!"));
-            //    return false;
-            //}
+        String fromUserId = joinGroupRequestBody.getFromUserId();
+        if (verifySessionAndMsg(fromUserId, sessionContext)) {
+            String groupId = joinGroupRequestBody.getGroup();
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到加群请求: fromUserId:{}, toGroup:{}.",
-                        joinGroupRequestBody.getFromUserId(),
-                        joinGroupRequestBody.getGroup());
+                        fromUserId,
+                        groupId);
             }
-            Aio.bindGroup(channelContext, joinGroupRequestBody.getGroup());
-            //dao.registerGroupInJson(joinGroupRequestBody.getFromUserId(),joinGroupRequestBody.getGroup());
-
+            Aio.bindGroup(channelContext, groupId);
             return Aio.send(channelContext,
-                    PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"",joinGroupRequestBody.getGroup()));
+                    PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"", groupId));
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
             return false;
@@ -160,7 +125,6 @@ public class BasicImWorkflowHandler {
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         if (verifySessionAndMsg(quitGroupRequestBody.getFromUserId(), sessionContext)) {
             Aio.unbindGroup(quitGroupRequestBody.getGroupId(), channelContext);
-            //dao.removeGroupFromJson(quitGroupRequestBody.getFromUserId(), quitGroupRequestBody.getGroupId());
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
         }

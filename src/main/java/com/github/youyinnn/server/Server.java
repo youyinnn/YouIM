@@ -70,7 +70,7 @@ public class Server {
     static {
         try {
             Log4j2Helper.useConfig(Server.class.getResource("/$imconf/$youimlog4j2.xml"));
-        } catch (IOException | DocumentException e) {
+        } catch (DocumentException e) {
             e.printStackTrace();
         }
     }
