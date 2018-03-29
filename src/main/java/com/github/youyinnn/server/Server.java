@@ -1,7 +1,6 @@
 package com.github.youyinnn.server;
 
 import com.github.youyinnn.common.intf.Const;
-import com.github.youyinnn.common.packets.BasePacket;
 import com.github.youyinnn.common.utils.PacketFactory;
 import com.github.youyinnn.common.utils.WsTioUuId;
 import com.github.youyinnn.demo.server.MyServerAioHandler;
@@ -154,11 +153,11 @@ public class Server {
     }
 
     public static void toUser(String msg, String userId) {
-        Aio.sendToUser(serverGroupContext, userId, (BasePacket) PacketFactory.systemMsgToOnePacket(msg));
+        Aio.sendToUser(serverGroupContext, userId, PacketFactory.systemMsgToOnePacket(msg));
     }
 
     public static void toGroup(String msg, String toGroup) {
-        Aio.sendToGroup(serverGroupContext, toGroup, (BasePacket) PacketFactory.systemMsgToGroupPacket(msg, toGroup));
+        Aio.sendToGroup(serverGroupContext, toGroup, PacketFactory.systemMsgToGroupPacket(msg, toGroup));
     }
 
     public static boolean isLogin(String userId) {
