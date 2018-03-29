@@ -2,7 +2,6 @@ package com.github.youyinnn.server;
 
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.BasePacket;
-import com.github.youyinnn.common.packets.BaseWsPacket;
 import com.github.youyinnn.common.utils.PacketFactory;
 import com.github.youyinnn.common.utils.WsTioUuId;
 import com.github.youyinnn.demo.server.MyServerAioHandler;
@@ -88,7 +87,7 @@ public class Server {
             try {
                 YouDbManager.signInYouDruid(YouDruid.initMySQLDataSource(serverConfig.getSqlPropertiesFile(), "im", true));
                 YouDbManager.scanPackageForModelAndService("com.github.youyinnn.server.model",
-                        "com.github.youyinnn.server.dao", "im");
+                        "com.github.youyinnn.server.service", "im");
             } catch (DataSourceInitException | YouDbManagerException e) {
                 e.printStackTrace();
             }
@@ -151,27 +150,15 @@ public class Server {
     }
 
     public static void toAllUser(String msg) {
-        if (isWebSocketProtocol()) {
-            Aio.sendToAll(serverGroupContext, (BaseWsPacket) PacketFactory.systemMsgToAllPacket(msg));
-        } else {
-            Aio.sendToAll(serverGroupContext, (BasePacket) PacketFactory.systemMsgToAllPacket(msg));
-        }
+        Aio.sendToAll(serverGroupContext, PacketFactory.systemMsgToAllPacket(msg));
     }
 
     public static void toUser(String msg, String userId) {
-        if (isWebSocketProtocol()) {
-            Aio.sendToUser(serverGroupContext, userId, (BaseWsPacket) PacketFactory.systemMsgToOnePacket(msg));
-        } else {
-            Aio.sendToUser(serverGroupContext, userId, (BasePacket) PacketFactory.systemMsgToOnePacket(msg));
-        }
+        Aio.sendToUser(serverGroupContext, userId, (BasePacket) PacketFactory.systemMsgToOnePacket(msg));
     }
 
     public static void toGroup(String msg, String toGroup) {
-        if (isWebSocketProtocol()) {
-            Aio.sendToGroup(serverGroupContext, toGroup, (BaseWsPacket) PacketFactory.systemMsgToGroupPacket(msg, toGroup));
-        } else {
-            Aio.sendToGroup(serverGroupContext, toGroup, (BasePacket) PacketFactory.systemMsgToGroupPacket(msg, toGroup));
-        }
+        Aio.sendToGroup(serverGroupContext, toGroup, (BasePacket) PacketFactory.systemMsgToGroupPacket(msg, toGroup));
     }
 
     public static boolean isLogin(String userId) {

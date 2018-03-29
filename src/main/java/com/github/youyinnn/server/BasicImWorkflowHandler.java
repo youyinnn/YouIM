@@ -24,7 +24,7 @@ public class BasicImWorkflowHandler {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到重复登陆请求: userId:{}.", loginRequestBody.getLoginUserId());
             }
-            Aio.send(channelContext, PacketFactory.systemMsgToOnePacket("收到重复登陆请求!"));
+            Aio.send(channelContext, PacketFactory.loginResponsePacket(Const.RequestCode.FAIL, "登陆请求重复!"));
             return false;
         }
         if (Server.isServerHandlerLogEnabled()) {
