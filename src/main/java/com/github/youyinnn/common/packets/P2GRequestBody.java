@@ -3,7 +3,7 @@ package com.github.youyinnn.common.packets;
 /**
  * @author youyinnn
  */
-public class GroupMsgResponseBody extends BaseBody {
+public class P2GRequestBody extends BaseBody {
 
     /**
      * 消息内容
@@ -11,14 +11,14 @@ public class GroupMsgResponseBody extends BaseBody {
     private String msg;
 
     /**
-     * 发送消息者Id
-     */
-    private String fromUserId;
-
-    /**
      * 发送到哪个组
      */
     private String toGroup;
+
+    /**
+     * 发送者id
+     */
+    private String fromUserId;
 
     public String getMsg() {
         return msg;
@@ -26,14 +26,6 @@ public class GroupMsgResponseBody extends BaseBody {
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    public String getFromUserId() {
-        return fromUserId;
-    }
-
-    public void setFromUserId(String fromUserId) {
-        this.fromUserId = fromUserId;
     }
 
     public String getToGroup() {
@@ -44,12 +36,20 @@ public class GroupMsgResponseBody extends BaseBody {
         this.toGroup = toGroup;
     }
 
-    public GroupMsgResponseBody() {
+    public P2GRequestBody() {
     }
 
-    public GroupMsgResponseBody(String msg, String fromUserId, String toGroup) {
-        this.msg = msg;
+    public String getFromUserId() {
+        return fromUserId;
+    }
+
+    public void setFromUserId(String fromUserId) {
         this.fromUserId = fromUserId;
+    }
+
+    public P2GRequestBody(String msg, String toGroup, String fromUserId) {
+        this.msg = msg;
         this.toGroup = toGroup;
+        this.fromUserId = fromUserId;
     }
 }

@@ -18,7 +18,7 @@ public class MyClientAioHandler extends AbstractClientAioHandler {
     }
 
     @Override
-    protected Object s2GHandler(BasePacket packet, GroupMsgResponseBody baseMsgBody, ChannelContext channelContext) {
+    protected Object s2GHandler(BasePacket packet, P2GResponseBody baseMsgBody, ChannelContext channelContext) {
         System.err.println("群组收到系统消息:" + Json.toJson(baseMsgBody));
         return null;
     }
@@ -48,7 +48,7 @@ public class MyClientAioHandler extends AbstractClientAioHandler {
     }
 
     @Override
-    protected Object groupMsgResponseHandler(BasePacket packet, GroupMsgResponseBody baseMsgBody, ChannelContext channelContext) {
+    protected Object groupMsgResponseHandler(BasePacket packet, P2GResponseBody baseMsgBody, ChannelContext channelContext) {
         System.err.println("收到群组消息:" + Json.toJson(baseMsgBody));
         return null;
     }

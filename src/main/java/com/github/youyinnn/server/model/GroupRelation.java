@@ -9,7 +9,7 @@ public class GroupRelation {
 
     private String groupId;
 
-    private String ownerUserId;
+    private String ownerId;
 
     private String administratorIds;
 
@@ -31,12 +31,12 @@ public class GroupRelation {
         this.groupId = groupId;
     }
 
-    public String getOwnerUserId() {
-        return ownerUserId;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwnerUserId(String ownerUserId) {
-        this.ownerUserId = ownerUserId;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getAdministratorIds() {

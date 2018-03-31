@@ -3,15 +3,15 @@ package com.github.youyinnn.common.packets;
 /**
  * @author youyinnn
  */
-public class JoinGroupResponseBody extends BaseBody{
+public class AddFriendConfirmMsgBody extends BaseBody{
 
     private boolean confirmResult;
 
-    private String groupId;
+    private String fromUserId;
 
     private String toUserId;
 
-    public JoinGroupResponseBody() {
+    public AddFriendConfirmMsgBody() {
     }
 
     public boolean isConfirmResult() {
@@ -22,12 +22,12 @@ public class JoinGroupResponseBody extends BaseBody{
         this.confirmResult = confirmResult;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getFromUserId() {
+        return fromUserId;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setFromUserId(String fromUserId) {
+        this.fromUserId = fromUserId;
     }
 
     public String getToUserId() {
@@ -38,9 +38,9 @@ public class JoinGroupResponseBody extends BaseBody{
         this.toUserId = toUserId;
     }
 
-    public JoinGroupResponseBody(boolean confirmResult, String groupId, String toUserId) {
+    public AddFriendConfirmMsgBody(boolean confirmResult, String fromUserId, String toUserId) {
         this.confirmResult = confirmResult;
-        this.groupId = groupId;
+        this.fromUserId = fromUserId;
         this.toUserId = toUserId;
     }
 }

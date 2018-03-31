@@ -3,23 +3,23 @@ package com.github.youyinnn.common.packets;
 /**
  * @author youyinnn
  */
-public class JoinGroupResponseBody extends BaseBody{
+public class AddAdminRequestBody extends BaseBody{
 
-    private boolean confirmResult;
+    private String ownerId;
 
     private String groupId;
 
     private String toUserId;
 
-    public JoinGroupResponseBody() {
+    public AddAdminRequestBody() {
     }
 
-    public boolean isConfirmResult() {
-        return confirmResult;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setConfirmResult(boolean confirmResult) {
-        this.confirmResult = confirmResult;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getGroupId() {
@@ -38,8 +38,8 @@ public class JoinGroupResponseBody extends BaseBody{
         this.toUserId = toUserId;
     }
 
-    public JoinGroupResponseBody(boolean confirmResult, String groupId, String toUserId) {
-        this.confirmResult = confirmResult;
+    public AddAdminRequestBody(String ownerId, String groupId, String toUserId) {
+        this.ownerId = ownerId;
         this.groupId = groupId;
         this.toUserId = toUserId;
     }

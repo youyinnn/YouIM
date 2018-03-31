@@ -106,7 +106,7 @@ public class BASE64Util {
 			result[outCursor++] = (byte) (ch2 << 6 | ch3);
 		}
 
-		// Translate partial group, if present
+		// Translate partial groupId, if present
 		if (missingBytesInLastGroup != 0) {
 			int ch0 = base64toInt(s.charAt(inCursor++), alphaToInt);
 			int ch1 = base64toInt(s.charAt(inCursor++), alphaToInt);
@@ -175,7 +175,7 @@ public class BASE64Util {
 			result.append(intToAlpha[byte2 & 0x3f]);
 		}
 
-		// Translate partial group if present
+		// Translate partial groupId if present
 		if (numBytesInPartialGroup != 0) {
 			int byte0 = a[inCursor++] & 0xff;
 			result.append(intToAlpha[byte0 >> 2]);

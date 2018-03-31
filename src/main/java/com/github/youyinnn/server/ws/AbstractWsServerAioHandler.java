@@ -149,16 +149,34 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
                     String bodyJsonStr = textBodyJson.getString("msgBody");
                     if (msgType == MsgType.LOGIN_REQ) {
                         BasicImWorkflowHandler.loginRequestHandle(bodyJsonStr, channelContext, getToken());
-                    } else if (msgType == MsgType.GROUP_MSG_REQ) {
-                        BasicImWorkflowHandler.groupMsgRequestHandle(bodyJsonStr, channelContext);
-                    } else if (msgType == MsgType.JOIN_GROUP_REQ) {
-                        BasicImWorkflowHandler.joinGroupRequestHandle(bodyJsonStr, channelContext);
-                    } else if (msgType == MsgType.P2P_REQ) {
-                        BasicImWorkflowHandler.p2PMsgRequestHandle(bodyJsonStr, channelContext);
                     } else if (msgType == MsgType.LOGOUT_REQ) {
                         BasicImWorkflowHandler.logoutRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.P2P_REQ) {
+                        BasicImWorkflowHandler.p2PMsgRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.P2G_REQ) {
+                        BasicImWorkflowHandler.p2GRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.ADD_FRIEND_REQ) {
+                        BasicImWorkflowHandler.addFriendRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.JOIN_GROUP_REQ) {
+                        BasicImWorkflowHandler.joinGroupRequestHandle(bodyJsonStr, channelContext);
                     } else if (msgType == MsgType.QUIT_GROUP_REQ) {
                         BasicImWorkflowHandler.quitGroupRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.REMOVE_FRIEND_REQ) {
+                        BasicImWorkflowHandler.removeFriendRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.KICK_MEMBER_REQ) {
+                        BasicImWorkflowHandler.kickMemberRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.ADD_ADMIN_REQ) {
+                        BasicImWorkflowHandler.addAdminRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.REMOVE_ADMIN_REQ) {
+                        BasicImWorkflowHandler.removeAdminRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.DISSOLVE_GROUP_REQ) {
+                        BasicImWorkflowHandler.dissolveGroupRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.ADD_FRIEND_CONFIRM_MSG) {
+                        BasicImWorkflowHandler.addFriendConfirmMsgHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.JOIN_GROUP_CONFIRM_MSG) {
+                        BasicImWorkflowHandler.joinGroupConfirmMsgHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.HEART_BEAT_REQ) {
+                        BasicImWorkflowHandler.heartbeatRequestHandler(bodyJsonStr, channelContext);
                     }
                 }
             }

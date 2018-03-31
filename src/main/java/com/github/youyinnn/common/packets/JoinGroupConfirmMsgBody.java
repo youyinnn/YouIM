@@ -3,7 +3,7 @@ package com.github.youyinnn.common.packets;
 /**
  * @author youyinnn
  */
-public class JoinGroupResponseBody extends BaseBody{
+public class JoinGroupConfirmMsgBody extends BaseBody{
 
     private boolean confirmResult;
 
@@ -11,7 +11,9 @@ public class JoinGroupResponseBody extends BaseBody{
 
     private String toUserId;
 
-    public JoinGroupResponseBody() {
+    private String handleAdministratorId;
+
+    public JoinGroupConfirmMsgBody() {
     }
 
     public boolean isConfirmResult() {
@@ -38,9 +40,18 @@ public class JoinGroupResponseBody extends BaseBody{
         this.toUserId = toUserId;
     }
 
-    public JoinGroupResponseBody(boolean confirmResult, String groupId, String toUserId) {
+    public String getHandleAdministratorId() {
+        return handleAdministratorId;
+    }
+
+    public void setHandleAdministratorId(String handleAdministratorId) {
+        this.handleAdministratorId = handleAdministratorId;
+    }
+
+    public JoinGroupConfirmMsgBody(boolean confirmResult, String groupId, String toUserId, String handleAdministratorId) {
         this.confirmResult = confirmResult;
         this.groupId = groupId;
         this.toUserId = toUserId;
+        this.handleAdministratorId = handleAdministratorId;
     }
 }

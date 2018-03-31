@@ -4,6 +4,7 @@ import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.packets.*;
 import com.github.youyinnn.common.utils.PacketFactory;
+import com.github.youyinnn.youdbutils.exceptions.NoneffectiveUpdateExecuteException;
 import com.github.youyinnn.youwebutils.third.Log4j2Helper;
 import org.apache.logging.log4j.Logger;
 import org.tio.core.Aio;
@@ -45,46 +46,28 @@ public class BasicImWorkflowHandler {
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         sessionContext.setUserId(userId);
 
+        Boolean send = Aio.send(channelContext, PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token));
+
+        // 用户登陆处理
+        UserManagementHandler.userLoginHandle(loginRequestBody, channelContext);
         /*
          * 组成登陆的响应包, 发送回登陆的请求方.
          */
-        return Aio.send(channelContext, PacketFactory.loginResponsePacket(Const.RequestCode.SUCCESS, token));
+        return send;
     }
 
-    public static void groupMsgRequestHandle(String bodyJsonStr, ChannelContext channelContext){
-        GroupMsgRequestBody groupMsgRequestBody = Json.toBean(bodyJsonStr, GroupMsgRequestBody.class);
+    public static void logoutRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
+        LogoutRequestBody logoutRequestBody = Json.toBean(bodyJsonStr, LogoutRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(groupMsgRequestBody.getFromUserId(), sessionContext)) {
+        if (verifySessionAndMsg(logoutRequestBody.getLogoutUserId(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
-                SERVER_LOG.info("收到群组消息请求: fromUserId:{}, toGroup:{}, msg:{}.",
-                        groupMsgRequestBody.getFromUserId(),
-                        groupMsgRequestBody.getToGroup(),
-                        groupMsgRequestBody.getMsg());
+                SERVER_LOG.info("收到登出请求: userId:{}.", sessionContext.getUserId());
             }
-            Aio.sendToGroup(channelContext.getGroupContext(), groupMsgRequestBody.getToGroup(),
-                    PacketFactory.groupMsgResponsePacket(groupMsgRequestBody.getMsg(), sessionContext.getUserId(), groupMsgRequestBody.getToGroup()));
+            sessionContext.setUserId(null);
+            Aio.unbindUser(channelContext);
+            UserManagementHandler.userLogoutHandle(logoutRequestBody, channelContext);
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
-        }
-    }
-
-    public static Boolean joinGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
-        JoinGroupRequestBody joinGroupRequestBody = Json.toBean(bodyJsonStr, JoinGroupRequestBody.class);
-        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        String fromUserId = joinGroupRequestBody.getFromUserId();
-        if (verifySessionAndMsg(fromUserId, sessionContext)) {
-            String groupId = joinGroupRequestBody.getGroup();
-            if (Server.isServerHandlerLogEnabled()) {
-                SERVER_LOG.info("收到加群请求: fromUserId:{}, toGroup:{}.",
-                        fromUserId,
-                        groupId);
-            }
-            Aio.bindGroup(channelContext, groupId);
-            return Aio.send(channelContext,
-                    PacketFactory.joinGroupResponsePacket(Const.RequestCode.SUCCESS,"", groupId));
-        } else {
-            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
-            return false;
         }
     }
 
@@ -98,33 +81,190 @@ public class BasicImWorkflowHandler {
                         p2PRequestBody.getToUserId(),
                         p2PRequestBody.getMsg());
             }
-            return Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(),
+            Boolean send = Aio.sendToUser(channelContext.getGroupContext(), p2PRequestBody.getToUserId(),
                     PacketFactory.p2PMsgResponsePacket(p2PRequestBody.getMsg(), sessionContext.getUserId()));
+            UserManagementHandler.p2pMsgHandle(p2PRequestBody, channelContext, send);
+            return send;
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
             return false;
         }
     }
 
-    public static void logoutRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
-        LogoutRequestBody logoutRequestBody = Json.toBean(bodyJsonStr, LogoutRequestBody.class);
+    public static void p2GRequestHandle(String bodyJsonStr, ChannelContext channelContext){
+        P2GRequestBody p2GRequestBody = Json.toBean(bodyJsonStr, P2GRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(logoutRequestBody.getLogoutUserId(), sessionContext)) {
+        if (verifySessionAndMsg(p2GRequestBody.getFromUserId(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
-                SERVER_LOG.info("收到登出请求: userId:{}.", sessionContext.getUserId());
+                SERVER_LOG.info("收到群组消息请求: fromUserId:{}, toGroup:{}, msg:{}.",
+                        p2GRequestBody.getFromUserId(),
+                        p2GRequestBody.getToGroup(),
+                        p2GRequestBody.getMsg());
             }
-            sessionContext.setUserId(null);
-            Aio.unbindUser(channelContext);
+            Aio.sendToGroup(channelContext.getGroupContext(), p2GRequestBody.getToGroup(),
+                    PacketFactory.p2gResponsePacket(p2GRequestBody.getMsg(), sessionContext.getUserId(), p2GRequestBody.getToGroup()));
+            UserManagementHandler.groupMsgHandle(p2GRequestBody, channelContext);
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
         }
     }
 
-    public static void quitGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
+    public static Boolean addFriendRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
+        AddFriendRequestBody addFriendRequestBody = Json.toBean(bodyJsonStr, AddFriendRequestBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(addFriendRequestBody.getFromUserId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到加好友请求: fromUserId:{}, toUserId:{}.",
+                        addFriendRequestBody.getFromUserId(),
+                        addFriendRequestBody.getToUserId());
+            }
+            UserManagementHandler.addFriendRequestHandle(addFriendRequestBody, channelContext);
+        }
+        return null;
+    }
+
+    public static Boolean joinGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
+        JoinGroupRequestBody joinGroupRequestBody = Json.toBean(bodyJsonStr, JoinGroupRequestBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        String fromUserId = joinGroupRequestBody.getFromUserId();
+        if (verifySessionAndMsg(fromUserId, sessionContext)) {
+            String groupId = joinGroupRequestBody.getGroup();
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到加群请求: fromUserId:{}, toGroup:{}.",
+                        fromUserId,
+                        groupId);
+            }
+            return UserManagementHandler.joinGroupRequestHandle(joinGroupRequestBody, channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+            return false;
+        }
+    }
+
+    public static void quitGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         QuitGroupRequestBody quitGroupRequestBody = Json.toBean(bodyJsonStr, QuitGroupRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         if (verifySessionAndMsg(quitGroupRequestBody.getFromUserId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到退群请求: fromUserId:{}, toGroup:{}.",
+                        quitGroupRequestBody.getFromUserId(),
+                        quitGroupRequestBody.getGroupId());
+            }
             Aio.unbindGroup(quitGroupRequestBody.getGroupId(), channelContext);
+            UserManagementHandler.quitGroupRequestHandle(quitGroupRequestBody, channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
+    }
+
+    public static void removeFriendRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
+        RemoveFriendRequestBody removeFriendRequestBody = Json.toBean(bodyJsonStr, RemoveFriendRequestBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(removeFriendRequestBody.getFromUserId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到删除好友请求: fromUserId:{}, toUserId:{}.",
+                        removeFriendRequestBody.getFromUserId(),
+                        removeFriendRequestBody.getToUserId());
+            }
+            UserManagementHandler.removeFriendRequestHandle(removeFriendRequestBody, channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
+    }
+
+    public static void kickMemberRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
+        KickMemberRequestBody kickMemberRequestBody = Json.toBean(bodyJsonStr, KickMemberRequestBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(kickMemberRequestBody.getFromAdministratorId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到踢出用户的请求: administratorId:{}, toUserId:{}, groupId:{}.",
+                        kickMemberRequestBody.getFromAdministratorId(),
+                        kickMemberRequestBody.getToUserId(),
+                        kickMemberRequestBody.getFromGroup());
+            }
+            UserManagementHandler.kickMemberRequestHandle(kickMemberRequestBody, channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
+    }
+
+    public static void addAdminRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
+        AddAdminRequestBody addAdminRequestBody = Json.toBean(bodyJsonStr, AddAdminRequestBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(addAdminRequestBody.getOwnerId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到添加管理员请求: groupId:{}, ownerId:{}, toUserId:{}.",
+                        addAdminRequestBody.getGroupId(),
+                        addAdminRequestBody.getOwnerId(),
+                        addAdminRequestBody.getToUserId());
+            }
+            UserManagementHandler.addAdminRequestHandle(addAdminRequestBody, channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
+    }
+
+    public static void removeAdminRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
+        RemoveAdminRequestBody removeAdminRequestBody = Json.toBean(bodyJsonStr, RemoveAdminRequestBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(removeAdminRequestBody.getOwnerId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到移除管理员权限请求: groupId:{}, ownerId:{}, fromUserId:{}.",
+                        removeAdminRequestBody.getGroupId(),
+                        removeAdminRequestBody.getOwnerId(),
+                        removeAdminRequestBody.getFromUserId());
+            }
+            UserManagementHandler.removeAdminRequestHandle(removeAdminRequestBody, channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
+    }
+
+    public static void dissolveGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
+        DissolveGroupRequestBody groupDissolveRequestBody = Json.toBean(bodyJsonStr, DissolveGroupRequestBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(groupDissolveRequestBody.getOwnerId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到解散群组请求: groupId, ownerId:{}.",
+                        groupDissolveRequestBody.getGroupId(),
+                        groupDissolveRequestBody.getOwnerId());
+            }
+            UserManagementHandler.dissolveGroupRequestHandle(groupDissolveRequestBody, channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
+    }
+
+    public static void addFriendConfirmMsgHandle(String bodyJsonStr, ChannelContext channelContext) {
+        AddFriendConfirmMsgBody addFriendConfirmMsgBody = Json.toBean(bodyJsonStr, AddFriendConfirmMsgBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(addFriendConfirmMsgBody.getFromUserId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到返回添加好友确认信息的请求: fromUserId:{}, toUserId:{}," +
+                                " confirmResult:{}.",
+                        addFriendConfirmMsgBody.getFromUserId(),
+                        addFriendConfirmMsgBody.getToUserId(),
+                        addFriendConfirmMsgBody.isConfirmResult());
+            }
+            UserManagementHandler.addFriendConfirmMsgHandle(addFriendConfirmMsgBody, channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
+    }
+
+    public static void joinGroupConfirmMsgHandle(String bodyJsonStr, ChannelContext channelContext) {
+        JoinGroupConfirmMsgBody joinGroupConfirmMsgBody = Json.toBean(bodyJsonStr, JoinGroupConfirmMsgBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(joinGroupConfirmMsgBody.getHandleAdministratorId(), sessionContext)) {
+            if (Server.isServerHandlerLogEnabled()) {
+                SERVER_LOG.info("收到返回的申请入群确认信息的请求: groupId:{}, handleAdministratorId:{}," +
+                                " toUserId:{}, confirmResult:{}.",
+                        joinGroupConfirmMsgBody.getGroupId(),
+                        joinGroupConfirmMsgBody.getHandleAdministratorId(),
+                        joinGroupConfirmMsgBody.getToUserId(),
+                        joinGroupConfirmMsgBody.isConfirmResult());
+            }
+            UserManagementHandler.joinGroupConfirmMsgHandle(joinGroupConfirmMsgBody, channelContext);
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
         }

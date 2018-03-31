@@ -22,33 +22,23 @@ public abstract class AbstractServerAioHandler extends AbstractAioHandler implem
         bodyJsonStr = new String(packet.getMsgBody(), Const.CHARSET);
         if (packet.getMsgBody() != null) {
             Boolean handle = true;
+            beforeHandle(msgType);
             if (msgType == MsgType.LOGIN_REQ) {
-                beforeHandle(msgType);
                 handle = BasicImWorkflowHandler.loginRequestHandle(bodyJsonStr, channelContext, getToken());
-                afterHandled(msgType);
-            } else if (msgType == MsgType.GROUP_MSG_REQ) {
-                beforeHandle(msgType);
-                BasicImWorkflowHandler.groupMsgRequestHandle(bodyJsonStr, channelContext);
-                afterHandled(msgType);
+            } else if (msgType == MsgType.P2G_REQ) {
+                BasicImWorkflowHandler.p2GRequestHandle(bodyJsonStr, channelContext);
             } else if (msgType == MsgType.JOIN_GROUP_REQ) {
-                beforeHandle(msgType);
                 handle = BasicImWorkflowHandler.joinGroupRequestHandle(bodyJsonStr, channelContext);
-                afterHandled(msgType);
             } else if (msgType == MsgType.P2P_REQ) {
-                beforeHandle(msgType);
                 handle = BasicImWorkflowHandler.p2PMsgRequestHandle(bodyJsonStr, channelContext);
-                afterHandled(msgType);
             } else if (msgType == MsgType.LOGOUT_REQ) {
-                beforeHandle(msgType);
                 BasicImWorkflowHandler.logoutRequestHandle(bodyJsonStr, channelContext);
-                afterHandled(msgType);
             } else if (msgType == MsgType.QUIT_GROUP_REQ) {
-                beforeHandle(msgType);
                 BasicImWorkflowHandler.quitGroupRequestHandle(bodyJsonStr, channelContext);
-                afterHandled(msgType);
             } else if (msgType == MsgType.HEART_BEAT_REQ) {
                 handle = BasicImWorkflowHandler.heartbeatRequestHandler(bodyJsonStr, channelContext);
             }
+            afterHandled(msgType);
             return handle;
         }
         return null;

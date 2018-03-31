@@ -79,13 +79,13 @@ public class ServerService {
     /**
      * 添加群组关系
      * @param groupId
-     * @param ownerUserId
+     * @param ownerId
      * @return
      * @throws NoneffectiveUpdateExecuteException
      */
-    public boolean addGroupRelation(String groupId, String ownerUserId) throws NoneffectiveUpdateExecuteException {
-        return userRelationDao.joinGroup(ownerUserId, groupId)
-                && groupRelationDao.addGroupRelation(groupId, ownerUserId);
+    public boolean addGroupRelation(String groupId, String ownerId) throws NoneffectiveUpdateExecuteException {
+        return userRelationDao.joinGroup(ownerId, groupId)
+                && groupRelationDao.addGroupRelation(groupId, ownerId);
     }
 
     /**
@@ -124,13 +124,13 @@ public class ServerService {
     /**
      * 把用户升级为管理员
      * @param groupId
-     * @param ownerUserId
+     * @param ownerId
      * @param userId
      * @return
      * @throws NoneffectiveUpdateExecuteException
      */
-    public boolean addUserToAdmin(String groupId, String ownerUserId, String userId) throws NoneffectiveUpdateExecuteException {
-        return groupRelationDao.isUserOwnedTheGroup(ownerUserId, groupId)
+    public boolean addUserToAdmin(String groupId, String ownerId, String userId) throws NoneffectiveUpdateExecuteException {
+        return groupRelationDao.isUserOwnedTheGroup(ownerId, groupId)
                 && groupRelationDao.isUserInGroup(groupId, userId)
                 && groupRelationDao.addUserToAdmin(groupId, userId);
     }
@@ -161,31 +161,31 @@ public class ServerService {
     /**
      * 移除用户管理权限
      * @param groupId
-     * @param ownerUserId
+     * @param ownerId
      * @param userId
      * @return
      * @throws NoneffectiveUpdateExecuteException
      */
-    public boolean removeUserFromAdmin(String groupId, String ownerUserId, String userId) throws NoneffectiveUpdateExecuteException {
-        return !ownerUserId.equals(userId)
-                && groupRelationDao.isUserOwnedTheGroup(ownerUserId, groupId)
+    public boolean removeUserFromAdmin(String groupId, String ownerId, String userId) throws NoneffectiveUpdateExecuteException {
+        return !ownerId.equals(userId)
+                && groupRelationDao.isUserOwnedTheGroup(ownerId, groupId)
                 && groupRelationDao.removeUserFromAdmin(groupId, userId);
     }
 
     /**
      * 解散群组
      * @param groupId
-     * @param ownerUserId
+     * @param ownerId
      * @return
      * @throws NoneffectiveUpdateExecuteException
      */
-    public boolean dissolveTheGroup(String groupId, String ownerUserId) throws NoneffectiveUpdateExecuteException {
+    public boolean dissolveTheGroup(String groupId, String ownerId) throws NoneffectiveUpdateExecuteException {
         HashSet<String> groupMemberIds = groupRelationDao.getGroupMemberIds(groupId);
         if (groupMemberIds != null) {
             for (String groupMemberId : groupMemberIds) {
                 userRelationDao.quitGroup(groupMemberId, groupId);
             }
-            return groupRelationDao.dissolveTheGroup(groupId, ownerUserId);
+            return groupRelationDao.dissolveTheGroup(groupId, ownerId);
         } else {
             return false;
         }

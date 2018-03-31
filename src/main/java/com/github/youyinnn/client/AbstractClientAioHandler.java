@@ -43,17 +43,17 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
                 baseMsgBody = Json.toBean(jsonStr, JoinGroupResponseBody.class);
                 return joinGroupResponseHandler(packet, (JoinGroupResponseBody) baseMsgBody, channelContext);
             }
-            if (msgType == MsgType.GROUP_MSG_RESP) {
-                baseMsgBody = Json.toBean(jsonStr, GroupMsgResponseBody.class);
-                return groupMsgResponseHandler(packet, (GroupMsgResponseBody) baseMsgBody, channelContext);
+            if (msgType == MsgType.P2G_RESP) {
+                baseMsgBody = Json.toBean(jsonStr, P2GResponseBody.class);
+                return groupMsgResponseHandler(packet, (P2GResponseBody) baseMsgBody, channelContext);
             }
             if (msgType == MsgType.SYS_MSG_2ONE || msgType == MsgType.SYS_MSG_2ALL) {
                 baseMsgBody = Json.toBean(jsonStr, P2PResponseBody.class);
                 return s2PHandler(packet, (P2PResponseBody) baseMsgBody, channelContext);
             }
             if (msgType == MsgType.SYS_MSG_2GROUP) {
-                baseMsgBody = Json.toBean(jsonStr, GroupMsgResponseBody.class);
-                return s2GHandler(packet, (GroupMsgResponseBody) baseMsgBody, channelContext);
+                baseMsgBody = Json.toBean(jsonStr, P2GResponseBody.class);
+                return s2GHandler(packet, (P2GResponseBody) baseMsgBody, channelContext);
             }
         }
 
@@ -78,7 +78,7 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
      * @param channelContext the channel context
      * @return the object
      */
-    protected abstract Object s2GHandler(BasePacket packet, GroupMsgResponseBody baseMsgBody, ChannelContext channelContext) ;
+    protected abstract Object s2GHandler(BasePacket packet, P2GResponseBody baseMsgBody, ChannelContext channelContext) ;
 
     /**
      * 登陆响应处理
@@ -118,5 +118,5 @@ public abstract class AbstractClientAioHandler extends AbstractAioHandler implem
      * @param channelContext the channel context
      * @return object
      */
-    protected abstract Object groupMsgResponseHandler(BasePacket packet, GroupMsgResponseBody baseMsgBody, ChannelContext channelContext) ;
+    protected abstract Object groupMsgResponseHandler(BasePacket packet, P2GResponseBody baseMsgBody, ChannelContext channelContext) ;
 }

@@ -94,9 +94,9 @@ public class Client {
         return send;
     }
 
-    public static Boolean join(String group, String fromUserId) {
+    public static Boolean join(String groupId, String fromUserId) {
         if (isLogin()) {
-            return aioSend(PacketFactory.joinGroupRequestPacket(group, fromUserId));
+            return aioSend(PacketFactory.joinGroupRequestPacket(groupId, fromUserId));
         } else {
             return false;
         }
@@ -104,7 +104,7 @@ public class Client {
 
     public static Boolean p2G(String msg, String toGroup, String fromUserId) {
         if (isLogin()) {
-            return aioSend(PacketFactory.groupMsgRequestPacket(msg, toGroup, fromUserId));
+            return aioSend(PacketFactory.p2GRequestPacket(msg, toGroup, fromUserId));
         } else {
             return false;
         }

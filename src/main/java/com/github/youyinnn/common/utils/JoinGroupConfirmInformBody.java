@@ -1,30 +1,28 @@
-package com.github.youyinnn.common.packets;
+package com.github.youyinnn.common.utils;
+
+import com.github.youyinnn.common.packets.BaseBody;
 
 /**
  * @author youyinnn
  */
-public class JoinGroupRequestBody extends BaseBody {
+public class JoinGroupConfirmInformBody extends BaseBody {
 
-    /**
-     * 要加入的群组
-     */
     private String groupId;
 
-    /**
-     * 请求者Id
-     */
     private String fromUserId;
 
-    public String getGroup() {
+    public JoinGroupConfirmInformBody() {
+    }
+
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroup(String groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
     public String getFromUserId() {
-
         return fromUserId;
     }
 
@@ -32,12 +30,8 @@ public class JoinGroupRequestBody extends BaseBody {
         this.fromUserId = fromUserId;
     }
 
-    public JoinGroupRequestBody() {
-    }
-
-    public JoinGroupRequestBody(String groupId, String fromUserId) {
+    public JoinGroupConfirmInformBody(String groupId, String fromUserId) {
         this.groupId = groupId;
         this.fromUserId = fromUserId;
     }
-
 }

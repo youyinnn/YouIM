@@ -18,15 +18,15 @@ public class GroupRelationDao extends YouDao<GroupRelation>{
                 null, "AND") != null;
     }
 
-    public boolean addGroupRelation(String groupId, String ownerUserId) throws NoneffectiveUpdateExecuteException {
+    public boolean addGroupRelation(String groupId, String ownerId) throws NoneffectiveUpdateExecuteException {
         if (isGroupRelationExist(groupId)) {
             return false;
         } else {
             GroupRelation groupRelation = new GroupRelation();
             groupRelation.setGroupId(groupId);
-            groupRelation.setOwnerUserId(ownerUserId);
-            groupRelation.setAdministratorIds("[\""+ownerUserId+"\"]");
-            groupRelation.setGroupMemberIds("[\""+ownerUserId+"\"]");
+            groupRelation.setOwnerId(ownerId);
+            groupRelation.setAdministratorIds("[\""+ownerId+"\"]");
+            groupRelation.setGroupMemberIds("[\""+ownerId+"\"]");
             return modelHandler.saveModel(groupRelation) == 1;
         }
     }
@@ -43,20 +43,20 @@ public class GroupRelationDao extends YouDao<GroupRelation>{
         return new HashSet<>(JSON.parseArray(administratorIds, String.class));
     }
 
-    public String getOwnerUserId(String groupId) {
-        return (String) modelHandler.getModelFieldValue("ownerUserId",
+    public String getOwnerId(String groupId) {
+        return (String) modelHandler.getModelFieldValue("ownerId",
                 YouCollectionsUtils.getYouHashMap("groupId", groupId), "AND");
     }
 
-    public boolean handOverGroupTo(String groupId, String newOwnerUserId) throws NoneffectiveUpdateExecuteException {
-        return !getOwnerUserId(groupId).equals(newOwnerUserId) &&
-                isUserInGroup(groupId, newOwnerUserId) &&
-                modelHandler.updateModel(YouCollectionsUtils.getYouHashMap("ownerUserId", newOwnerUserId),
+    public boolean handOverGroupTo(String groupId, String newOwnerId) throws NoneffectiveUpdateExecuteException {
+        return !getOwnerId(groupId).equals(newOwnerId) &&
+                isUserInGroup(groupId, newOwnerId) &&
+                modelHandler.updateModel(YouCollectionsUtils.getYouHashMap("ownerId", newOwnerId),
                         YouCollectionsUtils.getYouHashMap("groupId", groupId), "AND") == 1;
     }
 
     public boolean isUserOwnedTheGroup(String userId, String groupId) {
-        return getOwnerUserId(groupId).equals(userId);
+        return getOwnerId(groupId).equals(userId);
     }
 
     public boolean isUserInGroup(String groupId, String userId) {
@@ -107,9 +107,9 @@ public class GroupRelationDao extends YouDao<GroupRelation>{
         return groupMemberIds.remove(userId) && updateGroupMemberIds(groupId, groupMemberIds);
     }
 
-    public boolean dissolveTheGroup(String groupId, String ownerUserId) throws NoneffectiveUpdateExecuteException {
+    public boolean dissolveTheGroup(String groupId, String ownerId) throws NoneffectiveUpdateExecuteException {
         return modelHandler.deleteModel(
-                YouCollectionsUtils.getYouHashMap("groupId", groupId, "ownerUserId", ownerUserId), "AND") == 1;
+                YouCollectionsUtils.getYouHashMap("groupId", groupId, "ownerId", ownerId), "AND") == 1;
     }
 
 }

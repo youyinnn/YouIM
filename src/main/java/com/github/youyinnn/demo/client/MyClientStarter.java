@@ -65,12 +65,12 @@ public class MyClientStarter {
             loginUserId = userId;
             Client.login(userId);
         } else if ("join".equalsIgnoreCase(command)) {
-            String group = args[1];
-            Client.join(group, loginUserId);
+            String groupId = args[1];
+            Client.join(groupId, loginUserId);
         } else if ("p2g".equalsIgnoreCase(command)) {
-            String group = args[1];
+            String groupId = args[1];
             String msg = args[2];
-            Client.p2G(msg, group, loginUserId);
+            Client.p2G(msg, groupId, loginUserId);
         } else if ("p2P".equalsIgnoreCase(command)) {
             String toUserId = args[1];
             String msg = args[2];

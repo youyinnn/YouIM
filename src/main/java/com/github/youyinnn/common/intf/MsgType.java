@@ -37,11 +37,11 @@ public interface MsgType {
     /**
      * 群聊消息请求
      */
-    byte GROUP_MSG_REQ = 7;
+    byte P2G_REQ = 7;
     /**
      * 群聊消息响应
      */
-    byte GROUP_MSG_RESP = 8;
+    byte P2G_RESP = 8;
 
     /**
      * 登出请求
@@ -61,7 +61,7 @@ public interface MsgType {
     /**
      * 退群响应
      */
-    byte QUIT_GROUP_RESP = 12;
+    byte QUIT_GROUP_INFORM = 12;
 
     /**
      * 添加好友请求
@@ -79,9 +79,9 @@ public interface MsgType {
     byte REMOVE_FRIEND_REQ = 15;
 
     /**
-     * 移除好友响应
+     * 移除好友通知
      */
-    byte REMOVE_FRIEND_RESP = 16;
+    byte REMOVE_FRIEND_INFORM = 16;
 
     /**
      * 踢出成员请求
@@ -89,9 +89,9 @@ public interface MsgType {
     byte KICK_MEMBER_REQ = 17;
 
     /**
-     * 踢出成员响应
+     * 踢出成员通知
      */
-    byte KICK_MEMBER_RESP = 18;
+    byte KICK_MEMBER_INFORM = 18;
 
     /**
      * 授权管理请求
@@ -99,9 +99,9 @@ public interface MsgType {
     byte ADD_ADMIN_REQ = 19;
 
     /**
-     * 授权管理响应
+     * 授权管理通知
      */
-    byte ADD_ADMIN_RESP = 20;
+    byte ADD_ADMIN_INFORM = 20;
 
     /**
      * 撤销管理请求
@@ -109,9 +109,9 @@ public interface MsgType {
     byte REMOVE_ADMIN_REQ = 21;
 
     /**
-     * 撤销管理响应
+     * 撤销管理通知
      */
-    byte REMOVE_ADMIN_RESP = 22;
+    byte REMOVE_ADMIN_INFORM = 22;
 
     /**
      * 心跳
@@ -134,24 +134,24 @@ public interface MsgType {
     byte SYS_MSG_2GROUP = 102;
 
     /**
-     * 系统发送的加好友确认通知
+     * 系统发送给处理申请者B的加好友确认通知
      */
-    byte SYS_FRIEND_ADD_CONFIRM = 103;
+    byte SYS_ADD_FRIEND_CONFIRM = 103;
 
     /**
-     * 用户返回的加好友确认
+     * 返回给申请者A的加好友确认通知
      */
-    byte FRIEND_ADD_CONFIRM = 104;
+    byte ADD_FRIEND_CONFIRM_MSG = 104;
 
     /**
-     * 系统发送的群组加入确认通知
+     * 系统发送给管理员的的群组加入确认通知
      */
-    byte SYS_GROUP_ADD_CONFRIM = 105;
+    byte SYS_JOIN_GROUP_CONFIRM = 105;
 
     /**
-     * 用户返回的群组加入确认
+     * 返回给用户的的群组加入确认通知
      */
-    byte GROUP_ADD_CONFIRM = 106;
+    byte JOIN_GROUP_CONFIRM_MSG = 106;
 
     /**
      * 好友上线消息布告
@@ -172,5 +172,15 @@ public interface MsgType {
      * 群组成员下线布告
      */
     byte MEMBER_OFFLINE_INFORM = 108;
+
+    /**
+     * 群组解散请求
+     */
+    byte DISSOLVE_GROUP_REQ = 109;
+
+    /**
+     * 群组解散布告
+     */
+    byte DISSOLVE_GROUP_INFORM = 110;
 
 }
