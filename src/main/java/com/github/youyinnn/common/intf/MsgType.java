@@ -183,4 +183,13 @@ public interface MsgType {
      */
     byte DISSOLVE_GROUP_INFORM = 110;
 
+    /**
+     * 注册用户请求
+     */
+    byte SIGN_IN_USER_REQ = 111;
+
+    /**
+     * 注册群组请求
+     */
+    byte SIGN_IN_GROUP_REQ = 112;
 }

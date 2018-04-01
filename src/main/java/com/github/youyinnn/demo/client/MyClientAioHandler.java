@@ -3,6 +3,10 @@ package com.github.youyinnn.demo.client;
 import com.github.youyinnn.client.AbstractClientAioHandler;
 import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.packets.*;
+import com.github.youyinnn.common.packets.response.JoinGroupResponseBody;
+import com.github.youyinnn.common.packets.response.LoginResponseBody;
+import com.github.youyinnn.common.packets.response.P2GResponseBody;
+import com.github.youyinnn.common.packets.response.P2PResponseBody;
 import org.tio.core.ChannelContext;
 import org.tio.utils.json.Json;
 

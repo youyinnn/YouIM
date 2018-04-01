@@ -177,6 +177,10 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
                         BasicImWorkflowHandler.joinGroupConfirmMsgHandle(bodyJsonStr, channelContext);
                     } else if (msgType == MsgType.HEART_BEAT_REQ) {
                         BasicImWorkflowHandler.heartbeatRequestHandler(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.SIGN_IN_USER_REQ) {
+                        BasicImWorkflowHandler.signInUserRequestHandle(bodyJsonStr, channelContext);
+                    } else if (msgType == MsgType.SIGN_IN_GROUP_REQ) {
+                        BasicImWorkflowHandler.signInGroupRequestHandle(bodyJsonStr, channelContext);
                     }
                 }
             }

@@ -2,7 +2,9 @@ package com.github.youyinnn.server;
 
 import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.intf.Const;
-import com.github.youyinnn.common.packets.*;
+import com.github.youyinnn.common.packets.confirm.AddFriendConfirmMsgBody;
+import com.github.youyinnn.common.packets.confirm.JoinGroupConfirmMsgBody;
+import com.github.youyinnn.common.packets.request.*;
 import com.github.youyinnn.common.utils.PacketFactory;
 import com.github.youyinnn.youdbutils.exceptions.NoneffectiveUpdateExecuteException;
 import com.github.youyinnn.youwebutils.third.Log4j2Helper;
@@ -268,6 +270,21 @@ public class BasicImWorkflowHandler {
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
         }
+    }
+
+    public static void signInGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
+        SignInGroupRequestBody signInGroupRequestBody = Json.toBean(bodyJsonStr, SignInGroupRequestBody.class);
+        BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
+        if (verifySessionAndMsg(signInGroupRequestBody.getOwnerId(), sessionContext)) {
+            UserManagementHandler.signInGroupRequestBody(signInGroupRequestBody, channelContext);
+        } else {
+            differenceBetweenMsgUserIdAndSessionUserId(channelContext);
+        }
+    }
+
+    public static void signInUserRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
+        SignInUserRequestBody signInUserRequestBody = Json.toBean(bodyJsonStr, SignInUserRequestBody.class);
+        UserManagementHandler.signInUserRequestBody(signInUserRequestBody, channelContext);
     }
 
     private static void differenceBetweenMsgUserIdAndSessionUserId(ChannelContext channelContext) {

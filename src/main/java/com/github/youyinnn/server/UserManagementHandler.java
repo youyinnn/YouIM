@@ -1,6 +1,8 @@
 package com.github.youyinnn.server;
 
-import com.github.youyinnn.common.packets.*;
+import com.github.youyinnn.common.packets.confirm.AddFriendConfirmMsgBody;
+import com.github.youyinnn.common.packets.confirm.JoinGroupConfirmMsgBody;
+import com.github.youyinnn.common.packets.request.*;
 import com.github.youyinnn.common.utils.PacketFactory;
 import com.github.youyinnn.server.service.ServerService;
 import com.github.youyinnn.youdbutils.exceptions.AutowiredException;
@@ -233,6 +235,19 @@ public class UserManagementHandler {
                 Aio.sendToUser(channelContext.getGroupContext(), toUserId,
                         PacketFactory.joinGroupResponsePacket(confirmResult, groupId, toUserId));
             }
+        }
+    }
+
+    public static void signInGroupRequestBody(SignInGroupRequestBody signInGroupRequestBody, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
+        if (service != null) {
+            service.addGroupRelation(signInGroupRequestBody.getGroupId(),
+                    signInGroupRequestBody.getOwnerId());
+        }
+    }
+
+    public static void signInUserRequestBody(SignInUserRequestBody signInUserRequestBody, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
+        if (service != null) {
+            service.addUserRelation(signInUserRequestBody.getUserId());
         }
     }
 }
