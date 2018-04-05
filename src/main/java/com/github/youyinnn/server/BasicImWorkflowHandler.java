@@ -71,12 +71,14 @@ public class BasicImWorkflowHandler {
     public static void logoutRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
         LogoutRequestBody logoutRequestBody = Json.toBean(bodyJsonStr, LogoutRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(logoutRequestBody.getLogoutUserId(), sessionContext)) {
+        if (verifySessionAndMsg(logoutRequestBody.getLogoutUserId(), logoutRequestBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到登出请求: userId:{}.", sessionContext.getUserId());
             }
             sessionContext.setUserId(null);
+            sessionContext.setToken(null);
             Aio.unbindUser(channelContext);
+            Aio.unbindToken(channelContext);
             UserManagementHandler.userLogoutHandle(logoutRequestBody, channelContext);
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
@@ -86,7 +88,7 @@ public class BasicImWorkflowHandler {
     public static Boolean p2PMsgRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
         P2PRequestBody p2PRequestBody = Json.toBean(bodyJsonStr, P2PRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(p2PRequestBody.getFromUserId(), sessionContext)) {
+        if (verifySessionAndMsg(p2PRequestBody.getFromUserId(), p2PRequestBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到P2P请求: fromUserId:{}, toUserId:{}, msg:{}.",
                         p2PRequestBody.getFromUserId(),
@@ -106,7 +108,7 @@ public class BasicImWorkflowHandler {
     public static void p2GRequestHandle(String bodyJsonStr, ChannelContext channelContext){
         P2GRequestBody p2GRequestBody = Json.toBean(bodyJsonStr, P2GRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(p2GRequestBody.getFromUserId(), sessionContext)) {
+        if (verifySessionAndMsg(p2GRequestBody.getFromUserId(), p2GRequestBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到群组消息请求: fromUserId:{}, toGroup:{}, msg:{}.",
                         p2GRequestBody.getFromUserId(),
@@ -124,7 +126,7 @@ public class BasicImWorkflowHandler {
     public static Boolean addFriendRequestHandle(String bodyJsonStr, ChannelContext channelContext) {
         AddFriendRequestBody addFriendRequestBody = Json.toBean(bodyJsonStr, AddFriendRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(addFriendRequestBody.getFromUserId(), sessionContext)) {
+        if (verifySessionAndMsg(addFriendRequestBody.getFromUserId(), addFriendRequestBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到加好友请求: fromUserId:{}, toUserId:{}.",
                         addFriendRequestBody.getFromUserId(),
@@ -139,7 +141,7 @@ public class BasicImWorkflowHandler {
         JoinGroupRequestBody joinGroupRequestBody = Json.toBean(bodyJsonStr, JoinGroupRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
         String fromUserId = joinGroupRequestBody.getFromUserId();
-        if (verifySessionAndMsg(fromUserId, sessionContext)) {
+        if (verifySessionAndMsg(fromUserId, joinGroupRequestBody.getToken(), sessionContext)) {
             String groupId = joinGroupRequestBody.getGroupId();
             if (!Server.isUserInGroup(joinGroupRequestBody.getFromUserId(), groupId)) {
                 if (Server.isServerHandlerLogEnabled()) {
@@ -164,7 +166,7 @@ public class BasicImWorkflowHandler {
     public static void quitGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         QuitGroupRequestBody quitGroupRequestBody = Json.toBean(bodyJsonStr, QuitGroupRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(quitGroupRequestBody.getFromUserId(), sessionContext)) {
+        if (verifySessionAndMsg(quitGroupRequestBody.getFromUserId(), quitGroupRequestBody.getToken(), sessionContext)) {
             if (Server.isUserInGroup(quitGroupRequestBody.getFromUserId(), quitGroupRequestBody.getGroupId())) {
                 if (Server.isServerHandlerLogEnabled()) {
                     SERVER_LOG.info("收到有效的退群请求: fromUserId:{}, toGroup:{}.",
@@ -188,7 +190,7 @@ public class BasicImWorkflowHandler {
     public static void removeFriendRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         RemoveFriendRequestBody removeFriendRequestBody = Json.toBean(bodyJsonStr, RemoveFriendRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(removeFriendRequestBody.getFromUserId(), sessionContext)) {
+        if (verifySessionAndMsg(removeFriendRequestBody.getFromUserId(), removeFriendRequestBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到删除好友请求: fromUserId:{}, toUserId:{}.",
                         removeFriendRequestBody.getFromUserId(),
@@ -203,7 +205,7 @@ public class BasicImWorkflowHandler {
     public static void kickMemberRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         KickMemberRequestBody kickMemberRequestBody = Json.toBean(bodyJsonStr, KickMemberRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(kickMemberRequestBody.getFromAdministratorId(), sessionContext)) {
+        if (verifySessionAndMsg(kickMemberRequestBody.getFromAdministratorId(), kickMemberRequestBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到踢出用户的请求: administratorId:{}, toUserId:{}, groupId:{}.",
                         kickMemberRequestBody.getFromAdministratorId(),
@@ -219,7 +221,7 @@ public class BasicImWorkflowHandler {
     public static void addAdminRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         AddAdminRequestBody addAdminRequestBody = Json.toBean(bodyJsonStr, AddAdminRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(addAdminRequestBody.getOwnerId(), sessionContext)) {
+        if (verifySessionAndMsg(addAdminRequestBody.getOwnerId(), addAdminRequestBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到添加管理员请求: groupId:{}, ownerId:{}, toUserId:{}.",
                         addAdminRequestBody.getGroupId(),
@@ -235,7 +237,7 @@ public class BasicImWorkflowHandler {
     public static void removeAdminRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         RemoveAdminRequestBody removeAdminRequestBody = Json.toBean(bodyJsonStr, RemoveAdminRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(removeAdminRequestBody.getOwnerId(), sessionContext)) {
+        if (verifySessionAndMsg(removeAdminRequestBody.getOwnerId(), removeAdminRequestBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到移除管理员权限请求: groupId:{}, ownerId:{}, fromUserId:{}.",
                         removeAdminRequestBody.getGroupId(),
@@ -251,7 +253,7 @@ public class BasicImWorkflowHandler {
     public static void dissolveGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         DissolveGroupRequestBody groupDissolveRequestBody = Json.toBean(bodyJsonStr, DissolveGroupRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(groupDissolveRequestBody.getOwnerId(), sessionContext)) {
+        if (verifySessionAndMsg(groupDissolveRequestBody.getOwnerId(), groupDissolveRequestBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到解散群组请求: groupId:{}, ownerId:{}.",
                         groupDissolveRequestBody.getGroupId(),
@@ -266,7 +268,7 @@ public class BasicImWorkflowHandler {
     public static void addFriendConfirmMsgHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         AddFriendConfirmMsgBody addFriendConfirmMsgBody = Json.toBean(bodyJsonStr, AddFriendConfirmMsgBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(addFriendConfirmMsgBody.getFromUserId(), sessionContext)) {
+        if (verifySessionAndMsg(addFriendConfirmMsgBody.getFromUserId(), addFriendConfirmMsgBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到返回添加好友确认信息的请求: fromUserId:{}, toUserId:{}," +
                                 " confirmResult:{}.",
@@ -283,7 +285,7 @@ public class BasicImWorkflowHandler {
     public static void joinGroupConfirmMsgHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         JoinGroupConfirmMsgBody joinGroupConfirmMsgBody = Json.toBean(bodyJsonStr, JoinGroupConfirmMsgBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(joinGroupConfirmMsgBody.getHandleAdministratorId(), sessionContext)) {
+        if (verifySessionAndMsg(joinGroupConfirmMsgBody.getHandleAdministratorId(), joinGroupConfirmMsgBody.getToken(), sessionContext)) {
             if (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到返回的申请入群确认信息的请求: groupId:{}, handleAdministratorId:{}," +
                                 " toUserId:{}, confirmResult:{}.",
@@ -301,7 +303,7 @@ public class BasicImWorkflowHandler {
     public static void signInGroupRequestHandle(String bodyJsonStr, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         SignInGroupRequestBody signInGroupRequestBody = Json.toBean(bodyJsonStr, SignInGroupRequestBody.class);
         BaseSessionContext sessionContext = (BaseSessionContext) channelContext.getAttribute();
-        if (verifySessionAndMsg(signInGroupRequestBody.getOwnerId(), sessionContext)) {
+        if (verifySessionAndMsg(signInGroupRequestBody.getOwnerId(), signInGroupRequestBody.getToken(), sessionContext)) {
             if  (Server.isServerHandlerLogEnabled()) {
                 SERVER_LOG.info("收到创建群组关系的申请: groupId: {}, ownerId:{}" ,
                         signInGroupRequestBody.getGroupId(),
@@ -326,8 +328,9 @@ public class BasicImWorkflowHandler {
                 PacketFactory.systemMsgToOnePacket("通信方绑定ID和请求信息中的请求方ID不一致,无法完成请求!"));
     }
 
-    private static boolean verifySessionAndMsg(String msgSenderUserId, BaseSessionContext sessionContext) {
-        return msgSenderUserId != null && msgSenderUserId.equals(sessionContext.getUserId());
+    private static boolean verifySessionAndMsg(String msgSenderUserId, String token, BaseSessionContext sessionContext) {
+        return (msgSenderUserId != null && msgSenderUserId.equals(sessionContext.getUserId())) &&
+                (token != null && token.equals(sessionContext.getToken()));
     }
 
     public static Boolean heartbeatRequestHandler(String bodyJsonStr, ChannelContext channelContext) {

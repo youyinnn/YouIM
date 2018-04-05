@@ -9,11 +9,9 @@ public class LoginResponseBody extends BaseBody {
 
     private String resultCode;
 
-    private String token;
-
     public LoginResponseBody(String resultCode, String token) {
         this.resultCode = resultCode;
-        this.token = token;
+        super.setToken(token);
     }
 
     public LoginResponseBody() {
@@ -28,11 +26,4 @@ public class LoginResponseBody extends BaseBody {
         this.resultCode = resultCode;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

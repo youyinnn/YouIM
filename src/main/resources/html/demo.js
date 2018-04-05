@@ -1,6 +1,11 @@
 var chetbox
 var funbox
 var ws
+var token
+
+function showtoken() {
+  console.log(token);
+}
 
 function connect() {
   ws = new WebSocket("ws://localhost:5999");
@@ -17,6 +22,7 @@ function connect() {
         user.disabled = 'true'
         var send = document.getElementById('sendButton')
         send.disabled = null
+        token = ojbk.token
       } else {
         addmsg(null, '登陆失败:' + ojbk.token, 'sys', 'red')
       }
@@ -115,7 +121,7 @@ function send() {
       if (toid === '') {
         addmsg(null, '请指定需要发送的用户ID!', 'local', 'p')
       } else {
-        var json = '{"msgType" : "5", "msgBody":{"toUserId" : "' + toid + '","msg" : "' + msg + '","fromUserId" : "' + userId + '"}}'
+        var json = '{"msgType" : "5", "msgBody":{"token" : "'+token+'", toUserId" : "' + toid + '","msg" : "' + msg + '","fromUserId" : "' + userId + '"}}'
         console.log(json);
         ws.send(json)
       }
@@ -124,7 +130,7 @@ function send() {
       if (gid === '') {
         addmsg(null, '请指定需要发送的群组ID!', 'local', 'p')
       } else {
-        var json = '{"msgType" : "7", "msgBody":{"toGroup" : "' + gid + '","msg" : "' + msg + '","fromUserId" : "' + userId + '"}}'
+        var json = '{"msgType" : "7", "msgBody":{"token" : "'+token+'", "toGroup" : "' + gid + '","msg" : "' + msg + '","fromUserId" : "' + userId + '"}}'
         console.log(json);
         ws.send(json)
       }
@@ -205,7 +211,7 @@ function joingroup() {
   } else {
     var userId = document.getElementById('fromid').value
     var groupId = document.getElementById('gid').value
-    var json = '{"msgType" : "3", "msgBody":{"fromUserId" : "' + userId + '","groupId" : "' + groupId + '"}}'
+    var json = '{"msgType" : "3", "msgBody":{"token" : "'+token+'", "fromUserId" : "' + userId + '","groupId" : "' + groupId + '"}}'
     ws.send(json)
   }
 }
@@ -229,7 +235,7 @@ function logout() {
     addmsg(null, '连接已经关闭，或者打开连接失败, 请确认服务器是否启动!', 'local', 'red')
   } else {
     var userId = document.getElementById('fromid').value
-    var json = '{"msgType" : "9", "msgBody":{"logoutUserId" : "' + userId + '"}}'
+    var json = '{"msgType" : "9", "msgBody":{"token" : "'+token+'", "logoutUserId" : "' + userId + '"}}'
     ws.send(json)
     addmsg(null, '登出成功!', 'local', 'e')
     var user = document.getElementById('fromid')
@@ -247,7 +253,7 @@ function quitgroup() {
   } else {
     var userId = document.getElementById('fromid').value
     var groupId = document.getElementById('gid').value
-    var json = '{"msgType" : "11", "msgBody":{"fromUserId" : "' + userId + '", "groupId" : "' + groupId + '"}}'
+    var json = '{"msgType" : "11", "msgBody":{"token" : "'+token+'", "fromUserId" : "' + userId + '", "groupId" : "' + groupId + '"}}'
     ws.send(json)
   }
 }
@@ -260,7 +266,7 @@ function addfriend() {
   } else {
     var userId = document.getElementById('fromid').value
     var toid = document.getElementById('toid').value
-    var json = '{"msgType" : "13", "msgBody":{"toUserId" : "' + toid + '","fromUserId":"' + userId + '"}}'
+    var json = '{"msgType" : "13", "msgBody":{"token" : "'+token+'", "toUserId" : "' + toid + '","fromUserId":"' + userId + '"}}'
     ws.send(json)
   }
 }
@@ -273,7 +279,7 @@ function removefriend() {
   } else {
     var userId = document.getElementById('fromid').value
     var toid = document.getElementById('toid').value
-    var json = '{"msgType" : "15", "msgBody":{"fromUserId" : "' + userId + '","toUserId":"' + toid + '"}}'
+    var json = '{"msgType" : "15", "msgBody":{"token" : "'+token+'", "fromUserId" : "' + userId + '","toUserId":"' + toid + '"}}'
     ws.send(json)
   }
 }
@@ -287,7 +293,7 @@ function kickmember() {
     var userId = document.getElementById('fromid').value
     var groupId = document.getElementById('gid').value
     var toid = document.getElementById('toid').value
-    var json = '{"msgType" : "17", "msgBody":{"fromAdministratorId" : "' + userId + '" , "fromGroup" : "' + groupId + '", "toUSerId" : "' + toid + '"}}'
+    var json = '{"msgType" : "17", "msgBody":{"token" : "'+token+'", "fromAdministratorId" : "' + userId + '" , "fromGroup" : "' + groupId + '", "toUSerId" : "' + toid + '"}}'
     ws.send(json)
   }
 }
@@ -301,7 +307,7 @@ function addadmin() {
     var userId = document.getElementById('fromid').value
     var groupId = document.getElementById('gid').value
     var toid = document.getElementById('toid').value
-    var json = '{"msgType" : "19", "msgBody":{"ownerId" : "' + userId + '", "groupId" : "' + groupId + '", "toUserId" : "' + toid + '"}}'
+    var json = '{"msgType" : "19", "msgBody":{"token" : "'+token+'", "ownerId" : "' + userId + '", "groupId" : "' + groupId + '", "toUserId" : "' + toid + '"}}'
     ws.send(json)
   }
 }
@@ -315,7 +321,7 @@ function removeadmin() {
     var userId = document.getElementById('fromid').value
     var groupId = document.getElementById('gid').value
     var toid = document.getElementById('toid').value
-    var json = '{"msgType" : "21", "msgBody":{"ownerId" : "' + userId + '", "groupId" : "' + groupId + '", "fromUserId" : "' + toid + '"}}'
+    var json = '{"msgType" : "21", "msgBody":{"token" : "'+token+'", "ownerId" : "' + userId + '", "groupId" : "' + groupId + '", "fromUserId" : "' + toid + '"}}'
     ws.send(json)
   }
 }
@@ -341,10 +347,10 @@ function comfirmaddfriend() {
     var toid = document.getElementById('toid').value
     var confirm = document.getElementById('confirm').value
     if (confirm === 'true') {
-      var json = '{"msgType" : "104", "msgBody":{"fromUserId" : "' + userId + '","toUserId":"' + toid + '","confirmResult": ' + true + '}}'
+      var json = '{"msgType" : "104", "msgBody":{"token" : "'+token+'", "fromUserId" : "' + userId + '","toUserId":"' + toid + '","confirmResult": ' + true + '}}'
       ws.send(json)
     } else {
-      var json = '{"msgType" : "104", "msgBody":{"fromUserId" : "' + userId + '","toUserId":"' + toid + '","confirmResult": ' + false + '}}'
+      var json = '{"msgType" : "104", "msgBody":{"token" : "'+token+'", "fromUserId" : "' + userId + '","toUserId":"' + toid + '","confirmResult": ' + false + '}}'
       ws.send(json)
     }
   }
@@ -361,10 +367,10 @@ function confirmjoingroup() {
     var confirm = document.getElementById('confirm').value
     var gid = document.getElementById('gid').value
     if (confirm === 'true') {
-      var json = '{"msgType" : "106", "msgBody":{"handleAdministratorId" : "' + userId + '", "groupId" : "' + gid + '", "toUserId" : "' + toid + '","confirmResult": ' + true + '}}'
+      var json = '{"msgType" : "106", "msgBody":{"token" : "'+token+'", "handleAdministratorId" : "' + userId + '", "groupId" : "' + gid + '", "toUserId" : "' + toid + '","confirmResult": ' + true + '}}'
       ws.send(json)
     } else {
-      var json = '{"msgType" : "106", "msgBody":{"handleAdministratorId" : "' + userId + '", "groupId" : "' + gid + '", "toUserId" : "' + toid + '","confirmResult": ' + false + '}}'
+      var json = '{"msgType" : "106", "msgBody":{"token" : "'+token+'", "handleAdministratorId" : "' + userId + '", "groupId" : "' + gid + '", "toUserId" : "' + toid + '","confirmResult": ' + false + '}}'
       ws.send(json)
     }
   }
@@ -378,7 +384,7 @@ function dissolvegroup() {
   } else {
     var userId = document.getElementById('fromid').value
     var groupId = document.getElementById('gid').value
-    var json = '{"msgType" : "111", "msgBody":{"groupId" : "' + groupId + '", "ownerId" : "' + userId + '" }}'
+    var json = '{"msgType" : "111", "msgBody":{"token" : "'+token+'", "groupId" : "' + groupId + '", "ownerId" : "' + userId + '" }}'
     ws.send(json)
   }
 }
@@ -403,7 +409,7 @@ function groupsignin() {
   } else {
     var userId = document.getElementById('fromid').value
     var gid = document.getElementById('gid').value
-    var json = '{"msgType" : "114", "msgBody":{"ownerId" : "' + userId + '", "groupId" : "' + gid + '"}}'
+    var json = '{"msgType" : "114", "msgBody":{"token" : "'+token+'", "ownerId" : "' + userId + '", "groupId" : "' + gid + '"}}'
     ws.send(json)
   }
 }

@@ -1,9 +1,11 @@
 package com.github.youyinnn.common.packets.request;
 
+import com.github.youyinnn.common.packets.BaseBody;
+
 /**
  * @author youyinnn
  */
-public class SignInGroupRequestBody {
+public class SignInGroupRequestBody extends BaseBody {
 
     private String groupId;
 
