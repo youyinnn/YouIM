@@ -1,8 +1,83 @@
-#box{
-  height: 500px;
-  width: 600px;
-  margin: 0 auto;
-  background-color :rgba(53,103,82,.56);
+
+#e{
+  height: 7%;
+  text-align: center;
+}
+.cb{
+  height: 70%;
+  border-radius: 20px;
+  /* 取消烦人的选中边框样式 */
+  outline: none;
+  margin: 10px auto;
+    background-color: rgb(255, 255, 255);
+}
+
+.a{
+  display: block;
+  text-align: center;
+  height: 10%;
+  position: relative;
+  top: 150px;
+  /* 取消烦人的选中边框样式 */
+  outline: none;
+  margin: 10px auto;
+}
+
+#fromid{
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 1px rgb(103,103,103) solid;
+  border-radius: 20px;
+}
+#toid{
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 1px rgb(103,103,103) solid;
+  border-radius: 20px;
+}
+#gid{
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 1px rgb(103,103,103) solid;
+  border-radius: 20px;
+}
+#confirm{
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 1px rgb(103,103,103) solid;
+  border-radius: 20px;
+}
+
+#btarea{
+  height: 35%;
+  position: relative;
+  top: 39%;
+  left: 2%;
+}
+
+.funb {
+  height: 16%;
+  border-radius: 20px;
+  /* 取消烦人的选中边框样式 */
+  outline:none;
+  background-color: rgb(255, 255, 255);
+}
+
+#funbox{
+  height: 97%;
+  width: 28%;
+  position: fixed;
+  right: 10px;
+  background-color :rgba(112, 186, 214, 1);
+  box-shadow: 3px 3px 5px 2px rgb(80,80,80);
+  border-radius: 20px;
+}
+
+#chetbox{
+  height: 97%;
+  width: 70%;
+  position: fixed;
+  background-color :rgba(112, 186, 214, 1);
   box-shadow: 3px 3px 5px 2px rgb(80,80,80);
   border-radius: 20px;
 }
@@ -10,28 +85,43 @@
 #content{
   position: relative;
   top: 20px;
-  margin: 10px auto;
-  width: 85%;
-  height: 80%;
+  margin: 0 auto;
+  width: 95%;
+  height: 90%;
   border: 1px rgb(103,103,103) solid;
   box-shadow: 3px 3px 5px 2px rgb(80,80,80);
+  background-color: #ffffff;
+  border-radius: 20px;
 }
 
 #textId{
   padding-left: 10px;
   padding-right: 10px;
   height: 70%;
-  width: 70%;
+  width: 75%;
   border: 2px rgb(103,103,103) solid;
+  border-radius: 20px;
 }
 
 #inputBox{
   text-align: center;
-  height: 10%;
+  height: 5%;
   position: relative;
   top: 30px;
   /* 取消烦人的选中边框样式 */
   outline: none;
+}
+
+.line{
+  word-break:break-all;
+  padding-left: 17px;
+  padding-right: 17px;
+  line-height: 30px;
+  /* height: 7%; */
+  width: 92%;
+  margin: 8px auto;
+  box-shadow: 1px 1px 1px 1px rgb(80,80,80);
+  border-radius: 20px;
 }
 
 #sendButton{
@@ -40,9 +130,11 @@
   border-radius: 20px;
   /* 取消烦人的选中边框样式 */
   outline:none;
+  background-color: rgb(255, 255, 255);
 }
 
 #contentId{
+    overflow:auto;
     width: 99%;
     height: 100%;
 }

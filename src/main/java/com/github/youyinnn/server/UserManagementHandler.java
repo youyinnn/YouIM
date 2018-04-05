@@ -36,6 +36,10 @@ public class UserManagementHandler {
         }
     }
 
+    public static boolean isUserExist(String userId) {
+        return service.isUserExist(userId);
+    }
+
     public static void userLoginHandle(LoginRequestBody loginRequestBody, ChannelContext channelContext) {
         if (service != null) {
             GroupContext groupContext = channelContext.getGroupContext();
@@ -98,7 +102,7 @@ public class UserManagementHandler {
     }
 
     public static boolean joinGroupRequestHandle(JoinGroupRequestBody joinGroupRequestBody, ChannelContext channelContext) {
-        String groupId = joinGroupRequestBody.getGroup();
+        String groupId = joinGroupRequestBody.getGroupId();
         if (service != null) {
             String fromUserId = joinGroupRequestBody.getFromUserId();
             GroupContext groupContext = channelContext.getGroupContext();
@@ -148,6 +152,10 @@ public class UserManagementHandler {
             String fromGroup = kickMemberRequestBody.getFromGroup();
             boolean kick = service.kickUserOutOfGroup(fromGroup, fromAdministratorUserId, toUserId);
             if (kick) {
+                ChannelContext toUserChannelContext = Server.getChannelContext(toUserId);
+                if (toUserChannelContext != null) {
+                    Aio.unbindGroup(fromGroup, toUserChannelContext);
+                }
                 Packet kickMemberInformPacket = PacketFactory.kickMemberInformPacket(fromAdministratorUserId, toUserId, fromGroup);
                 Boolean send = Aio.sendToUser(channelContext.getGroupContext(), toUserId,
                         kickMemberInformPacket);
@@ -196,10 +204,10 @@ public class UserManagementHandler {
             String groupId = groupDissolveRequestBody.getGroupId();
             String ownerId = groupDissolveRequestBody.getOwnerId();
             GroupContext groupContext = channelContext.getGroupContext();
+            HashSet<String> memberIds = service.getMemberIds(groupId);
             boolean dissolveTheGroup = service.dissolveTheGroup(groupId, ownerId);
             if (dissolveTheGroup) {
                 Packet dissolveGroupInformPacket = PacketFactory.dissolveGroupInformPacket(groupId);
-                HashSet<String> memberIds = service.getMemberIds(groupId);
                 for (String memberId : memberIds) {
                     boolean login = Server.isLogin(memberId);
                     Boolean send = false;
@@ -211,11 +219,14 @@ public class UserManagementHandler {
         }
     }
 
-    public static void addFriendConfirmMsgHandle(AddFriendConfirmMsgBody addFriendConfirmMsgBody, ChannelContext channelContext) {
+    public static void addFriendConfirmMsgHandle(AddFriendConfirmMsgBody addFriendConfirmMsgBody, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         if (service != null) {
             String fromUserId = addFriendConfirmMsgBody.getFromUserId();
             String toUserId = addFriendConfirmMsgBody.getToUserId();
             boolean confirmResult = addFriendConfirmMsgBody.isConfirmResult();
+            if (confirmResult) {
+                service.addFriend(fromUserId, toUserId);
+            }
             boolean login = Server.isLogin(toUserId);
             if (login) {
                 Aio.sendToUser(channelContext.getGroupContext(), toUserId,
@@ -224,16 +235,25 @@ public class UserManagementHandler {
         }
     }
 
-    public static void joinGroupConfirmMsgHandle(JoinGroupConfirmMsgBody joinGroupConfirmMsgBody, ChannelContext channelContext) {
+    public static void joinGroupConfirmMsgHandle(JoinGroupConfirmMsgBody joinGroupConfirmMsgBody, ChannelContext channelContext) throws NoneffectiveUpdateExecuteException {
         if (service != null) {
             String groupId = joinGroupConfirmMsgBody.getGroupId();
             String handleAdministratorId = joinGroupConfirmMsgBody.getHandleAdministratorId();
             String toUserId = joinGroupConfirmMsgBody.getToUserId();
             boolean confirmResult = joinGroupConfirmMsgBody.isConfirmResult();
             boolean login = Server.isLogin(toUserId);
+            Packet joinGroupResponsePacket = PacketFactory.joinGroupResponsePacket(confirmResult, groupId, toUserId);
+            if (confirmResult) {
+                Aio.sendToGroup(channelContext.getGroupContext(), groupId, joinGroupResponsePacket);
+                ChannelContext newMemberChannelContext = Server.getChannelContext(toUserId);
+                if (newMemberChannelContext != null) {
+                    Aio.bindGroup(newMemberChannelContext, groupId);
+                }
+                service.addUserToGroup(groupId, handleAdministratorId, toUserId);
+            }
             if (login) {
                 Aio.sendToUser(channelContext.getGroupContext(), toUserId,
-                        PacketFactory.joinGroupResponsePacket(confirmResult, groupId, toUserId));
+                        joinGroupResponsePacket);
             }
         }
     }

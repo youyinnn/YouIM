@@ -23,6 +23,16 @@ public class ServerService {
     private GroupRelationDao groupRelationDao;
 
     /**
+     * 用户是否存在
+     *
+     * @param userId the user id
+     * @return the boolean
+     */
+    public boolean isUserExist(String userId) {
+        return userRelationDao.isUserRelationExist(userId);
+    }
+
+    /**
      * 添加好友关系
      *
      * @param userId the user id
@@ -86,8 +96,11 @@ public class ServerService {
      * @throws NoneffectiveUpdateExecuteException the noneffective update execute exception
      */
     public boolean quitFromGroup(String userId, String groupId) throws NoneffectiveUpdateExecuteException {
+        if (groupRelationDao.isUserAdminTheGroup(userId, groupId)) {
+            groupRelationDao.removeUserFromAdmin(groupId, userId);
+        }
         return userRelationDao.quitGroup(userId, groupId)
-                && groupRelationDao.removeUserFromGroup(groupId, userId);
+                && (groupRelationDao.removeUserFromGroup(groupId, userId));
     }
 
     /**

@@ -1,22 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>WebSocket</title>
-    <script src="./demo.js"></script>
-    <link type="text/css" rel="stylesheet" href="./demo.css">
-</head>
-<body onload="initWs()">
 
-  <div id="box">
+<head>
+  <meta charset="UTF-8">
+  <title>WebSocket</title>
+  <script src="./demo.js"></script>
+  <link type="text/css" rel="stylesheet" href="./demo.css">
+</head>
+<body>
+
+  <div id="chetbox">
     <div id="content">
-        <textarea rows="20" cols="60" id="contentId"></textarea>
+      <div id="contentId"></div>
     </div>
     <div id="inputBox">
-      <input name="text" id="textId" value='{"msgType":1,"msgBody":{"loginUserId":"123"}}'/>
-      <button id="sendButton" onClick="send()" >Send</button>
+      <input id="textId" />
+      <button id="sendButton" onclick="send()" disabled="true">Send</button>
+    </div>
+  </div>
+  <div id="funbox">
+    <div id="e">
+      <button class="cb" onclick="connect()" type="button" id="connect">连接服务器</button>
+      <button class="cb" onclick="disconnect()" type="button" id="disconnect">断开服务器</button>
+      <button class="cb" onclick="clean()" type="button">清屏</button>
+    </div>
+    <div>
+      <div class="a">
+        操作的用户ID:
+        <input id="fromid" value="123" />
+      </div>
+      <div class="a">
+        指向的用户ID:
+        <input id="toid" />
+      </div>
+      <div class="a">
+        指向的群组ID:
+        <input id="gid" />
+      </div>
+      <div class="a">
+        申请确认信息:
+        <input id="confirm" value="true" />
+      </div>
+    </div>
+    <div id="btarea">
+      <button class="funb" onclick="login()" type="button" id="login">登陆</button>
+      <button class="funb" onclick="logout()" type="button" id="logout">登出</button>
+      <button class="funb" onclick="p2p()" type="button" id="p2p">p2p</button>
+      <button class="funb" onclick="p2g()" type="button" id="p2g">p2g</button>
+      <br>
+      <button class="funb" onclick="addfriend()" type="button" id="addfriend">添加好友</button>
+      <button class="funb" onclick="removefriend()" type="button" id="removefriend">删除好友</button>
+      <br>
+      <button class="funb" onclick="joingroup()" type="button" id="joingroup">进入群组</button>
+      <button class="funb" onclick="quitgroup()" type="button" id="quitgroup">退出群组</button>
+      <button class="funb" onclick="addadmin()" type="button" id="addadmin">授权管理</button>
+      <button class="funb" onclick="removeadmin()" type="button" id="removeadmin">撤销管理</button>
+      <button class="funb" onclick="kickmember()" type="button" id="kickmember">踢出成员</button>
+      <button class="funb" onclick="dissolvegroup()" type="button" id="dissolvegroup">解散群组</button>
+      <br>
+      <button class="funb" onclick="comfirmaddfriend()" type="button" id="comfirmaddfriend">确认好友申请</button>
+      <button class="funb" onclick="confirmjoingroup()" type="button" id="confirmjoingroup">确认加群申请</button>
+      <br>
+      <button class="funb" onclick="usersignin()" type="button" id="usersignin">注册用户</button>
+      <button class="funb" onclick="groupsignin()" type="button" id="groupsignin">注册群组</button>
+      <button class="funb" onclick="heartbeat()" type="button" id="groupsignin">心跳</button>
     </div>
   </div>
 
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 package com.github.youyinnn.server;
 
+import com.github.youyinnn.common.BaseSessionContext;
 import com.github.youyinnn.common.intf.Const;
 import com.github.youyinnn.common.utils.PacketFactory;
 import com.github.youyinnn.common.utils.WsTioUuId;
@@ -16,8 +17,10 @@ import com.github.youyinnn.youwebutils.third.Log4j2Helper;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.tio.core.Aio;
+import org.tio.core.ChannelContext;
 import org.tio.server.AioServer;
 import org.tio.server.ServerGroupContext;
+import org.tio.utils.lock.SetWithLock;
 
 import java.io.IOException;
 
@@ -123,7 +126,7 @@ public class Server {
         aioServer = new AioServer(serverGroupContext);
         serverGroupContext.setTioUuid(serverConfig.getTioUuid());
         if (ServerConfig.PROTOCOL_WEBSOCKET.equalsIgnoreCase(serverConfig.getServerProtocol())) {
-            serverGroupContext.setHeartbeatTimeout(0);
+            serverGroupContext.setHeartbeatTimeout(-1);
         }
         if (serverLogEnabled) {
             Logger serverLog = Log4j2Helper.getLogger("$im_server");
@@ -162,6 +165,26 @@ public class Server {
 
     public static boolean isLogin(String userId) {
         return serverGroupContext.users.find(serverGroupContext, userId) != null;
+    }
+
+    public static ChannelContext getChannelContext(String userId) {
+        for (ChannelContext next : serverGroupContext.connecteds.getObj()) {
+            BaseSessionContext sessionContext = (BaseSessionContext) next.getAttribute();
+            if (sessionContext.getUserId().equals(userId)) {
+                return next;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isUserInGroup(String userId, String groupId) {
+        SetWithLock<ChannelContext> clients1 = serverGroupContext.groups.clients(serverGroupContext, groupId);
+        for (ChannelContext channelContext : clients1.getObj()) {
+            if (channelContext.getUserid().equals(userId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static ServerGroupContext getServerGroupContext() {

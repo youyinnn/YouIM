@@ -139,7 +139,7 @@ public interface MsgType {
     byte SYS_ADD_FRIEND_CONFIRM = 103;
 
     /**
-     * 返回给申请者A的加好友确认通知
+     * B返回给系统的关于申请者A的加好友确认结果
      */
     byte ADD_FRIEND_CONFIRM_MSG = 104;
 
@@ -149,47 +149,47 @@ public interface MsgType {
     byte SYS_JOIN_GROUP_CONFIRM = 105;
 
     /**
-     * 返回给用户的的群组加入确认通知
+     * 管理返回给系统的关于用户的的群组加入确认结果
      */
     byte JOIN_GROUP_CONFIRM_MSG = 106;
 
     /**
      * 好友上线消息布告
      */
-    byte FRIEND_ONLINE_INFORM = 105;
+    byte FRIEND_ONLINE_INFORM = 107;
 
     /**
      * 好友下线消息布告
      */
-    byte FRIEND_OFFLINE_INFORM = 106;
+    byte FRIEND_OFFLINE_INFORM = 108;
 
     /**
      * 群组成员上线布告
      */
-    byte MEMBER_ONLINE_INFORM = 107;
+    byte MEMBER_ONLINE_INFORM = 109;
 
     /**
      * 群组成员下线布告
      */
-    byte MEMBER_OFFLINE_INFORM = 108;
+    byte MEMBER_OFFLINE_INFORM = 110;
 
     /**
      * 群组解散请求
      */
-    byte DISSOLVE_GROUP_REQ = 109;
+    byte DISSOLVE_GROUP_REQ = 111;
 
     /**
      * 群组解散布告
      */
-    byte DISSOLVE_GROUP_INFORM = 110;
+    byte DISSOLVE_GROUP_INFORM = 112;
 
     /**
      * 注册用户请求
      */
-    byte SIGN_IN_USER_REQ = 111;
+    byte SIGN_IN_USER_REQ = 113;
 
     /**
      * 注册群组请求
      */
-    byte SIGN_IN_GROUP_REQ = 112;
+    byte SIGN_IN_GROUP_REQ = 114;
 }

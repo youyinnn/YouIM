@@ -17,16 +17,18 @@ public class JoinGroupRequestBody extends BaseBody {
      */
     private String fromUserId;
 
-    public String getGroup() {
+    public JoinGroupRequestBody() {
+    }
+
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroup(String groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
     public String getFromUserId() {
-
         return fromUserId;
     }
 
@@ -34,12 +36,8 @@ public class JoinGroupRequestBody extends BaseBody {
         this.fromUserId = fromUserId;
     }
 
-    public JoinGroupRequestBody() {
-    }
-
     public JoinGroupRequestBody(String groupId, String fromUserId) {
         this.groupId = groupId;
         this.fromUserId = fromUserId;
     }
-
 }
