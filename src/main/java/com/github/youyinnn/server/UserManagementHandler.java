@@ -262,6 +262,7 @@ public class UserManagementHandler {
         if (service != null) {
             service.addGroupRelation(signInGroupRequestBody.getGroupId(),
                     signInGroupRequestBody.getOwnerId());
+            Aio.bindGroup(channelContext, signInGroupRequestBody.getGroupId());
         }
     }
 

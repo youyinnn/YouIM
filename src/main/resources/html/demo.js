@@ -84,7 +84,7 @@ function connect() {
       addmsg('群[' + ojbk.groupId + ']的消息', '用户[' + ojbk.userId + ']下线了', null, 'o')
     }
     if (msgType === 112) {
-      addmsg('群[' + ojbk.groupId + ']解散了', null, 'o')
+      addmsg(null, '群[' + ojbk.groupId + ']解散了', 'sys', 'o')
     }
   }
   ws.onclose = function (event) {}

@@ -115,9 +115,11 @@ public class BasicImWorkflowHandler {
                         p2GRequestBody.getToGroup(),
                         p2GRequestBody.getMsg());
             }
-            Aio.sendToGroup(channelContext.getGroupContext(), p2GRequestBody.getToGroup(),
-                    PacketFactory.p2gResponsePacket(p2GRequestBody.getMsg(), sessionContext.getUserId(), p2GRequestBody.getToGroup()));
-            UserManagementHandler.groupMsgHandle(p2GRequestBody, channelContext);
+            if (Server.isUserInGroup(p2GRequestBody.getFromUserId(), p2GRequestBody.getToGroup())) {
+                Aio.sendToGroup(channelContext.getGroupContext(), p2GRequestBody.getToGroup(),
+                        PacketFactory.p2gResponsePacket(p2GRequestBody.getMsg(), sessionContext.getUserId(), p2GRequestBody.getToGroup()));
+                UserManagementHandler.groupMsgHandle(p2GRequestBody, channelContext);
+            }
         } else {
             differenceBetweenMsgUserIdAndSessionUserId(channelContext);
         }

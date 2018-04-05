@@ -178,8 +178,8 @@ public class Server {
     }
 
     public static boolean isUserInGroup(String userId, String groupId) {
-        SetWithLock<ChannelContext> clients1 = serverGroupContext.groups.clients(serverGroupContext, groupId);
-        for (ChannelContext channelContext : clients1.getObj()) {
+        SetWithLock<ChannelContext> channelContexts = serverGroupContext.groups.clients(serverGroupContext, groupId);
+        for (ChannelContext channelContext : channelContexts.getObj()) {
             if (channelContext.getUserid().equals(userId)) {
                 return true;
             }
