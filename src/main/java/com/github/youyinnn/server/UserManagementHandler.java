@@ -149,17 +149,17 @@ public class UserManagementHandler {
         if (service != null) {
             String fromAdministratorUserId = kickMemberRequestBody.getFromAdministratorId();
             String toUserId = kickMemberRequestBody.getToUserId();
-            String fromGroup = kickMemberRequestBody.getFromGroup();
-            boolean kick = service.kickUserOutOfGroup(fromGroup, fromAdministratorUserId, toUserId);
+            String fromGroupId = kickMemberRequestBody.getFromGroup();
+            boolean kick = service.kickUserOutOfGroup(fromGroupId, fromAdministratorUserId, toUserId);
             if (kick) {
                 ChannelContext toUserChannelContext = Server.getChannelContext(toUserId);
                 if (toUserChannelContext != null) {
-                    Aio.unbindGroup(fromGroup, toUserChannelContext);
+                    Aio.unbindGroup(fromGroupId, toUserChannelContext);
                 }
-                Packet kickMemberInformPacket = PacketFactory.kickMemberInformPacket(fromAdministratorUserId, toUserId, fromGroup);
+                Packet kickMemberInformPacket = PacketFactory.kickMemberInformPacket(fromAdministratorUserId, toUserId, fromGroupId);
                 Boolean send = Aio.sendToUser(channelContext.getGroupContext(), toUserId,
                         kickMemberInformPacket);
-                Aio.sendToGroup(channelContext.getGroupContext(), fromGroup, kickMemberInformPacket);
+                Aio.sendToGroup(channelContext.getGroupContext(), fromGroupId, kickMemberInformPacket);
                 // TODO: 消息记录
             } else {
 

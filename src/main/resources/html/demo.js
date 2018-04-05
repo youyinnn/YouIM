@@ -54,7 +54,7 @@ function connect() {
       addmsg(null, '用户[' + ojbk.fromUserId + ']已经移除和你的好友关系!', 'sys', 'p')
     }
     if (msgType === 18) {
-      addmsg(null, '用户[' + ojbk.toUserId + ']已经被管理员从[' + ojbk.fromGroup + ']', 'sys', 'p')
+      addmsg(null, '用户[' + ojbk.toUserId + ']已经被管理员从[' + ojbk.fromGroupId + ']踢出!', 'sys', 'p')
     }
     if (msgType === 20) {
       addmsg(null, '您已经被授予所在群[' + ojbk.groupId + ']的管理权限!', 'sys', 'p')
@@ -121,7 +121,7 @@ function send() {
       if (toid === '') {
         addmsg(null, '请指定需要发送的用户ID!', 'local', 'p')
       } else {
-        var json = '{"msgType" : "5", "msgBody":{"token" : "'+token+'", toUserId" : "' + toid + '","msg" : "' + msg + '","fromUserId" : "' + userId + '"}}'
+        var json = '{"msgType" : "5", "msgBody":{"token" : "'+token+'", "toUserId" : "' + toid + '","msg" : "' + msg + '","fromUserId" : "' + userId + '"}}'
         console.log(json);
         ws.send(json)
       }
@@ -293,7 +293,7 @@ function kickmember() {
     var userId = document.getElementById('fromid').value
     var groupId = document.getElementById('gid').value
     var toid = document.getElementById('toid').value
-    var json = '{"msgType" : "17", "msgBody":{"token" : "'+token+'", "fromAdministratorId" : "' + userId + '" , "fromGroup" : "' + groupId + '", "toUSerId" : "' + toid + '"}}'
+    var json = '{"msgType" : "17", "msgBody":{"token" : "'+token+'", "fromAdministratorId" : "' + userId + '" , "fromGroupId" : "' + groupId + '", "toUSerId" : "' + toid + '"}}'
     ws.send(json)
   }
 }

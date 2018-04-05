@@ -9,7 +9,7 @@ public class KickMemberInformBody extends BaseBody {
 
     private String fromAdministratorUserId;
 
-    private String fromGroup;
+    private String fromGroupId;
 
     private String toUserId;
 
@@ -25,11 +25,11 @@ public class KickMemberInformBody extends BaseBody {
     }
 
     public String getFromGroup() {
-        return fromGroup;
+        return fromGroupId;
     }
 
-    public void setFromGroup(String fromGroup) {
-        this.fromGroup = fromGroup;
+    public void setFromGroup(String fromGroupId) {
+        this.fromGroupId = fromGroupId;
     }
 
     public String getToUserId() {
@@ -40,10 +40,10 @@ public class KickMemberInformBody extends BaseBody {
         this.toUserId = toUserId;
     }
 
-    public KickMemberInformBody(String fromAdministratorUserId, String fromGroup, String toUserId) {
+    public KickMemberInformBody(String fromAdministratorUserId, String fromGroupId, String toUserId) {
 
         this.fromAdministratorUserId = fromAdministratorUserId;
-        this.fromGroup = fromGroup;
+        this.fromGroupId = fromGroupId;
         this.toUserId = toUserId;
     }
 }

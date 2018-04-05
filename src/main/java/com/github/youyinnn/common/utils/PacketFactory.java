@@ -167,12 +167,12 @@ public class PacketFactory {
         }
     }
 
-    public static Packet kickMemberInformPacket(String fromAdministratorUserId, String toUserId, String fromGroup) {
+    public static Packet kickMemberInformPacket(String fromAdministratorUserId, String toUserId, String fromGroupId) {
         if (Server.isWebSocketProtocol()) {
             return getTextWsPacket(MsgType.KICK_MEMBER_INFORM,
-                    "fromAdministratorUserId", fromAdministratorUserId, "fromGroup", fromGroup, "toUserId", toUserId);
+                    "fromAdministratorUserId", fromAdministratorUserId, "fromGroupId", fromGroupId, "toUserId", toUserId);
         } else {
-            return new BasePacket(MsgType.KICK_MEMBER_INFORM, new KickMemberInformBody(fromAdministratorUserId, fromGroup, toUserId));
+            return new BasePacket(MsgType.KICK_MEMBER_INFORM, new KickMemberInformBody(fromAdministratorUserId, fromGroupId, toUserId));
         }
     }
 
