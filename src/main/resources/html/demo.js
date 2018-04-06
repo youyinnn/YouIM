@@ -89,7 +89,7 @@ function connect() {
   }
   ws.onclose = function (event) {}
   ws.onopen = function (event) {
-    ws.send("hello tio server");
+    // ws.send("hello tio server");
     addmsg(null, '连接服务器成功!', 'local', 'green')
   }
   ws.onerror = function (event) {

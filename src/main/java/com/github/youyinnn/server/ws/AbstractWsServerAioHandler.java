@@ -141,7 +141,13 @@ public abstract class AbstractWsServerAioHandler implements ServerAioHandler {
                 Aio.remove(channelContext, "错误的webSocket包, body无效");
             } else {
                 String textBody = new String(bytes, Const.CHARSET);
-                JSONObject textBodyJson = JSON.parseObject(textBody);
+                JSONObject textBodyJson;
+                try {
+                    textBodyJson = JSON.parseObject(textBody);
+                } catch (Exception e) {
+                    SERVER_LOG.error("无效的消息格式, 请使用Json格式发送消息!");
+                    return;
+                }
                 Byte msgType = textBodyJson.getByte("msgType");
                 if (msgType == null) {
                     SERVER_LOG.error("无效的msgType");
