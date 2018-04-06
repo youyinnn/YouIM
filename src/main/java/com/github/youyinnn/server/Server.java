@@ -10,8 +10,6 @@ import com.github.youyinnn.demo.wsserver.MyWsServerAioHandler;
 import com.github.youyinnn.demo.wsserver.MyWsServerAioListener;
 import com.github.youyinnn.youdbutils.YouDbManager;
 import com.github.youyinnn.youdbutils.druid.YouDruid;
-import com.github.youyinnn.youdbutils.exceptions.DataSourceInitException;
-import com.github.youyinnn.youdbutils.exceptions.YouDbManagerException;
 import com.github.youyinnn.youwebutils.second.PropertiesHelper;
 import com.github.youyinnn.youwebutils.third.Log4j2Helper;
 import org.apache.logging.log4j.Logger;
@@ -88,9 +86,10 @@ public class Server {
         if (serverConfig.isUserManagementModuleEnabled()) {
             try {
                 YouDbManager.signInYouDruid(YouDruid.initMySQLDataSource(serverConfig.getSqlPropertiesFile(), "im", true));
+                YouDbManager.setInitSql("im", Server.class.getClassLoader().getResource("im-init.sql"));
                 YouDbManager.scanPackageForModelAndService("com.github.youyinnn.server.model",
                         "com.github.youyinnn.server.service", "im");
-            } catch (DataSourceInitException | YouDbManagerException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

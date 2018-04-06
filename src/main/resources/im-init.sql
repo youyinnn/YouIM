@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `group_relation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` varchar(18) DEFAULT NULL,
-  `owner_user_id` varchar(18) DEFAULT NULL,
+  `owner_id` varchar(18) DEFAULT NULL,
   `administrator_ids` varchar(255) DEFAULT '[]',
   `group_member_ids` varchar(3600) DEFAULT '[]',
   PRIMARY KEY (`id`)
